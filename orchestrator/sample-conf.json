@@ -1,0 +1,26 @@
+{
+    "envoy_host": "",
+    "failure_rate": [
+        25,
+        50
+    ],
+    "users": [
+        10,
+        100
+    ],
+    "rounds": 5,
+    "patterns": [
+        {
+            "name": "retry",
+            "platform": "java8",
+            "lib": "r4j",
+            "url": "http://hostx/r4j/retry",
+            "config_template": {
+                "Count": 5,
+                "SleepDuration": 50,
+                "SleepDurationType": "EXPONENTIAL_BACKOFF",
+                "ExponentialBackoffPow": 1.5
+            }
+        }
+    ]
+}

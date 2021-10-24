@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+
+  orchestrator:
+    build:
+      context: ./orchestrator
+    container_name: orchestrator
+    depends_on:
+      - httpbin
+      - envoyproxy
+  
+  httpbin:
+    image: kennethreitz/httpbin
+    container_name: httpbin
+    ports:
+      - 9000:80
+  
+  envoyproxy:
+    image: envoyproxy/envoy-dev
+    container_name: envoyproxy
+    ports:
+      - 8080:8080
+      - 9901:9901
+      - 9211:9211
+    volumes:
+      - ./server/envoy.yaml:/etc/envoy/envoy.yaml
+
+  
