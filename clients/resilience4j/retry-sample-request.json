@@ -1,0 +1,6 @@
+{
+	"maxAttempts": 3,
+	"waitDuration": 500,
+	"intervalFunction": "EXPONENTIAL_BACKOFF",
+	"initialIntervalMillis": 500
+}
