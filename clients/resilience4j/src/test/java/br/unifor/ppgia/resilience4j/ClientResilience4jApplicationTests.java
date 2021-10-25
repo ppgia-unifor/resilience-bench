@@ -1,4 +1,4 @@
-package br.unifor.ppgia.clientresilience4j;
+package br.unifor.ppgia.resilience4j;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

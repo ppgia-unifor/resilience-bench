@@ -1,4 +1,4 @@
-package br.unifor.ppgia.clientresilience4j;
+package br.unifor.ppgia.resilience4j;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

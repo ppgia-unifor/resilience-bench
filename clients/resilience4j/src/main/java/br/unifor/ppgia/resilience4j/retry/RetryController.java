@@ -1,6 +1,6 @@
-package br.unifor.ppgia.clientresilience4j.retry;
+package br.unifor.ppgia.resilience4j.retry;
 
-import br.unifor.ppgia.clientresilience4j.BackendService;
+import br.unifor.ppgia.resilience4j.BackendService;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;

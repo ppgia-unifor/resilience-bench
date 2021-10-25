@@ -1,4 +1,4 @@
-package br.unifor.ppgia.clientresilience4j;
+package br.unifor.ppgia.resilience4j;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

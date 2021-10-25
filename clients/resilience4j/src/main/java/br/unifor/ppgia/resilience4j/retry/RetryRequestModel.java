@@ -1,4 +1,4 @@
-package br.unifor.ppgia.clientresilience4j.retry;
+package br.unifor.ppgia.resilience4j.retry;
 
 public class RetryRequestModel {
     private final Integer maxAttempts;

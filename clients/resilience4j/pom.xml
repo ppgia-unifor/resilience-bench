@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 	<groupId>br.unifor.ppgia</groupId>
-	<artifactId>client-resilience4j</artifactId>
+	<artifactId>resilience4j</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>client-resilience4j</name>
 	<properties>
