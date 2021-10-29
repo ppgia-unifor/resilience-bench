@@ -1,5 +1,4 @@
-﻿using System;
-namespace ResiliencePatterns.Polly.Models
+﻿namespace ResiliencePatterns.Polly.Models
 {
     public class CircuitBreakerConfig
     {

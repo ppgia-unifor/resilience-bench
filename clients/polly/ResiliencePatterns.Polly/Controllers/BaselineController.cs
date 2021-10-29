@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ResiliencePatterns.Polly.Models;
+using Polly;
 
 namespace ResiliencePatterns.Polly.Controllers
 {
@@ -10,10 +10,10 @@ namespace ResiliencePatterns.Polly.Controllers
     {
         private BackendService backendService = new BackendService();
 
-        public async Task<MetricStatus> IndexAsync()
+        public async Task<Metrics> IndexAsync()
         {
-            await backendService.MakeRequest();
-            return new MetricStatus();
+            var result = await backendService.MakeRequestAsync(Policy.NoOpAsync());
+            return result;
         }
     }
 }

@@ -2,51 +2,63 @@
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Polly;
 
 namespace ResiliencePatterns.Polly
 {
     public class BackendService
     {
-        public BackendService()
+        private static HttpClient httpClient;
+
+        public static HttpClient HttpClient
         {
+            get
+            {
+                if (httpClient == null)
+                {
+                    lock (httpClient)
+                    {
+                        httpClient = new HttpClient();
+                        httpClient.BaseAddress = new Uri("https://httpbin.org");
+                    }
+                }
+                return httpClient;
+            }
         }
 
-        public async Task<HttpResponseMessage> MakeRequest()
+        public async Task<Metrics> MakeRequestAsync(AsyncPolicy policy)
         {
-            try
+            var maxRequestsAllowed = 4;
+            var targetSuccessfulRequests = 25;
+            var metrics = new Metrics();
+            var externalStopwatch = new Stopwatch();
+            externalStopwatch.Start();
+
+            while (metrics.SuccessfulRequest < targetSuccessfulRequests && maxRequestsAllowed > metrics.TotalRequests)
             {
-                //var stopWatch = new Stopwatch();
-                //stopWatch.Start();
+                var internalStopwatch = new Stopwatch();
+                internalStopwatch.Start();
 
-                //HttpResponseMessage result = null;
-                // result = await ResponseViaTCP(urlConfiguration);
-                var httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri("https://httpbin.org");
-                var result = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/500"));
-
-                //stopWatch.Stop();
-
-                if (result.IsSuccessStatusCode)
+                var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
                 {
-                    //_metrics.IncrementeResilienceModuleSuccess();
-                    //_metrics.IncrementeResilienceModuleSuccessTime(stopWatch.ElapsedMilliseconds);
-                }
-                else
-                {
-                    //_metrics.IncrementeResilienceModuleErrorTime(stopWatch.ElapsedMilliseconds);
-                }
+                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/500"));
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        metrics.RegisterError(internalStopwatch.ElapsedMilliseconds);
+                    }
+                    return result;
+                });
 
-                if (!result.IsSuccessStatusCode)
-                    throw new HttpRequestException();
+                internalStopwatch.Stop();
 
-                return result;
+                if (policyResult.Outcome == OutcomeType.Successful)
+                    metrics.RegisterSuccess(internalStopwatch.ElapsedMilliseconds);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                //_metrics.IncrementeResilienceModuleError();
-                throw;
-            }
+
+            externalStopwatch.Stop();
+            metrics.TotalTime = externalStopwatch.ElapsedMilliseconds;
+
+            return metrics;
         }
     }
 }

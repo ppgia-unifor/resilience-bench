@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
-using Polly.Retry;
 using ResiliencePatterns.Polly.Models;
 
 namespace ResiliencePatterns.Polly.Controllers
@@ -14,28 +13,21 @@ namespace ResiliencePatterns.Polly.Controllers
         private BackendService backendService = new BackendService();
 
         [HttpPost]
-        public async Task<MetricStatus> IndexAsync(RetryConfig retryConfig)
+        public async Task<Metrics> IndexAsync(RetryConfig retryConfig)
         {
             var retry = CreateRetryExponencialBackoff(retryConfig);
-            var result = await retry.ExecuteAndCaptureAsync(async () => await backendService.MakeRequest());
-
-            return new MetricStatus();
+            var result = await backendService.MakeRequestAsync(retry);
+            return result;
         }
 
-        private AsyncRetryPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)
+        private AsyncPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)
         {
             return Policy
                 .Handle<Exception>()
                 .WaitAndRetryAsync(
                     retryCount: retryConfig.Count,
                     sleepDurationProvider: (i) =>
-                        TimeSpan.FromMilliseconds(Math.Pow(retryConfig.ExponentialBackoffPow, i) * retryConfig.SleepDuration),
-                    onRetry: (exception, timeout, context) =>
-                    {
-                        //_metricService.RetryMetric.IncrementRetryCount();
-                        //_metricService.RetryMetric.IncrementRetryTotalTimeout((long)timeout.TotalMilliseconds);
-                        Console.WriteLine($"\tNew timeout of [{timeout}]");
-                    });
+                        TimeSpan.FromMilliseconds(Math.Pow(retryConfig.ExponentialBackoffPow, i) * retryConfig.SleepDuration));
         }
     }
 }
