@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
@@ -10,14 +11,18 @@ namespace ResiliencePatterns.Polly.Controllers
     [Route("[controller]")]
     public class CircuitBreakerController : Controller
     {
-        private BackendService backendService = new BackendService();
+        private readonly Client _client;
+
+        public CircuitBreakerController(Client client)
+        {
+            _client = client;
+        }
 
         [HttpPost]
-        public async Task<Metrics> IndexAsync(CircuitBreakerConfig circuitBreakerConfig)
+        public async Task<List<ClientMetrics>> IndexAsync(CircuitBreakerConfig circuitBreakerConfig)
         {
             var cb = CreateCircuitBreakerSimplePolicy(circuitBreakerConfig);
-            var result = await backendService.MakeRequestAsync(cb);
-            return result;
+            return await _client.SpawnAsync(cb, 5);
         }
 
         private AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)

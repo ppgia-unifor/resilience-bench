@@ -8,31 +8,22 @@ namespace ResiliencePatterns.Polly
 {
     public class BackendService
     {
-        private static HttpClient httpClient;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public static HttpClient HttpClient
+        public BackendService(IHttpClientFactory clientFactory)
         {
-            get
-            {
-                if (httpClient == null)
-                {
-                    lock (httpClient)
-                    {
-                        httpClient = new HttpClient();
-                        httpClient.BaseAddress = new Uri("https://httpbin.org");
-                    }
-                }
-                return httpClient;
-            }
+            _clientFactory = clientFactory;
+            HttpClient = _clientFactory.CreateClient("backend");
         }
 
-        public async Task<Metrics> MakeRequestAsync(AsyncPolicy policy)
+        public HttpClient HttpClient { get; }
+
+        public async Task<ResilienceModuleMetrics> MakeRequestAsync(AsyncPolicy policy, int clientId)
         {
-            var maxRequestsAllowed = 4;
+            var maxRequestsAllowed = 10;
             var targetSuccessfulRequests = 25;
-            var metrics = new Metrics();
-            var externalStopwatch = new Stopwatch();
-            externalStopwatch.Start();
+            var metrics = new ResilienceModuleMetrics(clientId);
+            Random rnd = new Random();
 
             while (metrics.SuccessfulRequest < targetSuccessfulRequests && maxRequestsAllowed > metrics.TotalRequests)
             {
@@ -41,7 +32,7 @@ namespace ResiliencePatterns.Polly
 
                 var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
                 {
-                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/500"));
+                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/" + rnd.Next(2, 5) + "00"));
                     if (!result.IsSuccessStatusCode)
                     {
                         metrics.RegisterError(internalStopwatch.ElapsedMilliseconds);
@@ -54,10 +45,6 @@ namespace ResiliencePatterns.Polly
                 if (policyResult.Outcome == OutcomeType.Successful)
                     metrics.RegisterSuccess(internalStopwatch.ElapsedMilliseconds);
             }
-
-            externalStopwatch.Stop();
-            metrics.TotalTime = externalStopwatch.ElapsedMilliseconds;
-
             return metrics;
         }
     }

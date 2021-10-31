@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
 
@@ -8,12 +9,16 @@ namespace ResiliencePatterns.Polly.Controllers
     [Route("[controller]")]
     public class BaselineController : Controller
     {
-        private BackendService backendService = new BackendService();
+        private readonly Client _client;
 
-        public async Task<Metrics> IndexAsync()
+        public BaselineController(Client client)
         {
-            var result = await backendService.MakeRequestAsync(Policy.NoOpAsync());
-            return result;
+            _client = client;
+        }
+
+        public async Task<List<ClientMetrics>> IndexAsync()
+        {
+            return await _client.SpawnAsync(Policy.NoOpAsync(), 5);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
@@ -10,14 +11,18 @@ namespace ResiliencePatterns.Polly.Controllers
     [Route("[controller]")]
     public class RetryController : Controller
     {
-        private BackendService backendService = new BackendService();
+        private readonly Client _client;
+
+        public RetryController(Client client)
+        {
+            _client = client;
+        }
 
         [HttpPost]
-        public async Task<Metrics> IndexAsync(RetryConfig retryConfig)
+        public async Task<IEnumerable<ClientMetrics>> IndexAsync(Config<RetryConfig> retryConfig)
         {
-            var retry = CreateRetryExponencialBackoff(retryConfig);
-            var result = await backendService.MakeRequestAsync(retry);
-            return result;
+            var retry = CreateRetryExponencialBackoff(retryConfig.Params);
+            return await _client.SpawnAsync(retry, retryConfig.Users);
         }
 
         private AsyncPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)
