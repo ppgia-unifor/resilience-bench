@@ -18,7 +18,7 @@ namespace ResiliencePatterns.Polly.Controllers
 
         public async Task<List<ClientMetrics>> IndexAsync(Config<object> config)
         {
-            return await _client.SpawnAsync(Policy.NoOpAsync(), config.Users);
+            return await _client.SpawnAsync(Policy.NoOpAsync(), config);
         }
     }
 }

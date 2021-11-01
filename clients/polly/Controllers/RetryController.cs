@@ -22,7 +22,7 @@ namespace ResiliencePatterns.Polly.Controllers
         public async Task<IEnumerable<ClientMetrics>> IndexAsync(Config<RetryConfig> retryConfig)
         {
             var retry = CreateRetryExponencialBackoff(retryConfig.Params);
-            return await _client.SpawnAsync(retry, retryConfig.Users);
+            return await _client.SpawnAsync(retry, retryConfig);
         }
 
         private AsyncPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)

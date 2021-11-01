@@ -22,7 +22,7 @@ namespace ResiliencePatterns.Polly.Controllers
         public async Task<List<ClientMetrics>> IndexAsync(Config<CircuitBreakerConfig> circuitBreakerConfig)
         {
             var cb = CreateCircuitBreakerSimplePolicy(circuitBreakerConfig.Params);
-            return await _client.SpawnAsync(cb, circuitBreakerConfig.Users);
+            return await _client.SpawnAsync(cb, circuitBreakerConfig);
         }
 
         private AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)

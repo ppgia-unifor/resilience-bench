@@ -17,8 +17,10 @@
     <None Remove="Model\" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

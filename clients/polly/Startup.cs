@@ -24,12 +24,21 @@ namespace ResiliencePatterns.Polly
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
+
+            var backendHost = Environment.GetEnvironmentVariable("BACKEND_HOST");
+            if (String.IsNullOrEmpty(backendHost))
+            {
+                backendHost = "https://httpbin.org";
+            }
+
             services.AddHttpClient("backend", c =>
             {
-                c.BaseAddress = new Uri("https://httpbin.org");
+                c.BaseAddress = new Uri(backendHost);
             });
             services.AddScoped<BackendService>();
             services.AddScoped<Client>();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

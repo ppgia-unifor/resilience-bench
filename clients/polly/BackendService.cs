@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Polly;
@@ -18,12 +17,9 @@ namespace ResiliencePatterns.Polly
 
         public HttpClient HttpClient { get; }
 
-        public async Task<ResilienceModuleMetrics> MakeRequestAsync(AsyncPolicy policy, int clientId)
+        public async Task<ResilienceModuleMetrics> MakeRequestAsync(AsyncPolicy policy, int clientId, int targetSuccessfulRequests, int maxRequestsAllowed)
         {
-            var maxRequestsAllowed = 10;
-            var targetSuccessfulRequests = 25;
             var metrics = new ResilienceModuleMetrics(clientId);
-            Random rnd = new Random();
 
             while (metrics.SuccessfulRequest < targetSuccessfulRequests && maxRequestsAllowed > metrics.TotalRequests)
             {
@@ -32,7 +28,7 @@ namespace ResiliencePatterns.Polly
 
                 var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
                 {
-                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/" + rnd.Next(2, 5) + "00"));
+                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/200"));
                     if (!result.IsSuccessStatusCode)
                     {
                         metrics.RegisterError(internalStopwatch.ElapsedMilliseconds);
