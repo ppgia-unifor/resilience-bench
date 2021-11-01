@@ -1,7 +1,0 @@
-bin/
-obj/
-out/
-TestResults/
-.vs/
-*.sln
-appsettings.Development.json
