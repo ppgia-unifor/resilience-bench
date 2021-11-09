@@ -1,15 +1,18 @@
 version: '3.4'
 
-services:
-
-  orchestrator:
+services:  
+  polly:
     build:
-      context: ./orchestrator
-    container_name: orchestrator
+      context: ./clients/polly
+    container_name: polly
+    ports:
+      - 5000:80
+    environment:
+      - BACKEND_HOST=http://envoyproxy:9211
     depends_on:
       - httpbin
       - envoyproxy
-  
+
   httpbin:
     image: kennethreitz/httpbin
     container_name: httpbin
@@ -20,10 +23,11 @@ services:
     image: envoyproxy/envoy-dev
     container_name: envoyproxy
     ports:
-      - 8080:8080
       - 9901:9901
       - 9211:9211
     volumes:
       - ./server/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./server/http_status:/srv/runtime/v1/envoy/fault/http/abort/http_status
+      - ./server/abort_percent:/srv/runtime/v1/envoy/fault/http/abort/abort_percent
 
   
