@@ -9,16 +9,16 @@ namespace ResiliencePatterns.Polly.Controllers
     [Route("[controller]")]
     public class BaselineController : Controller
     {
-        private readonly Client _client;
+        private readonly User _user;
 
-        public BaselineController(Client client)
+        public BaselineController(User user)
         {
-            _client = client;
+            _user = user;
         }
 
-        public async Task<List<ClientMetrics>> IndexAsync(Config<object> config)
+        public async Task<IEnumerable<ResilienceModuleMetrics>> IndexAsync(Config<object> config)
         {
-            return await _client.SpawnAsync(Policy.NoOpAsync(), config);
+            return await _user.SpawnAsync(Policy.NoOpAsync(), config);
         }
     }
 }

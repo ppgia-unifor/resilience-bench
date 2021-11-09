@@ -11,21 +11,21 @@ namespace ResiliencePatterns.Polly.Controllers
     [Route("[controller]")]
     public class CircuitBreakerController : Controller
     {
-        private readonly Client _client;
+        private readonly User _user;
 
-        public CircuitBreakerController(Client client)
+        public CircuitBreakerController(User user)
         {
-            _client = client;
+            _user = user;
         }
 
         [HttpPost]
-        public async Task<List<ClientMetrics>> IndexAsync(Config<CircuitBreakerConfig> circuitBreakerConfig)
+        public async Task<IEnumerable<ResilienceModuleMetrics>> IndexAsync(Config<CircuitBreakerConfig> circuitBreakerConfig)
         {
             var cb = CreateCircuitBreakerSimplePolicy(circuitBreakerConfig.Params);
-            return await _client.SpawnAsync(cb, circuitBreakerConfig);
+            return await _user.SpawnAsync(cb, circuitBreakerConfig);
         }
 
-        private AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)
+        private static AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)
         {
             return Policy
                 .Handle<Exception>()

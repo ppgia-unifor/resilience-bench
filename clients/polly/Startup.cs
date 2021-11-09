@@ -20,25 +20,19 @@ namespace ResiliencePatterns.Polly
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddJsonOptions(opt =>
+            services.AddLogging().AddControllers().AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-            var backendHost = Environment.GetEnvironmentVariable("BACKEND_HOST");
-            if (String.IsNullOrEmpty(backendHost))
-            {
-                backendHost = "https://httpbin.org";
-            }
-
+            var backendHost = Environment.GetEnvironmentVariable("BACKEND_HOST") ?? Configuration.GetValue<string>("BACKEND_HOST");
+            
             services.AddHttpClient("backend", c =>
             {
                 c.BaseAddress = new Uri(backendHost);
             });
             services.AddScoped<BackendService>();
-            services.AddScoped<Client>();
-
-            
+            services.AddScoped<User>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

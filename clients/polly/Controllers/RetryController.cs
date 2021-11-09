@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
@@ -11,28 +12,29 @@ namespace ResiliencePatterns.Polly.Controllers
     [Route("[controller]")]
     public class RetryController : Controller
     {
-        private readonly Client _client;
+        private readonly User _user;
 
-        public RetryController(Client client)
+        public RetryController(User user)
         {
-            _client = client;
+            _user = user;
         }
 
         [HttpPost]
-        public async Task<IEnumerable<ClientMetrics>> IndexAsync(Config<RetryConfig> retryConfig)
+        public async Task<IEnumerable<ResilienceModuleMetrics>> IndexAsync(Config<RetryConfig> retryConfig)
         {
             var retry = CreateRetryExponencialBackoff(retryConfig.Params);
-            return await _client.SpawnAsync(retry, retryConfig);
+            return await _user.SpawnAsync(retry, retryConfig);
         }
 
-        private AsyncPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)
+        private static AsyncPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)
         {
             return Policy
-                .Handle<Exception>()
+                .Handle<HttpRequestException>()
                 .WaitAndRetryAsync(
                     retryCount: retryConfig.Count,
-                    sleepDurationProvider: (i) =>
-                        TimeSpan.FromMilliseconds(Math.Pow(retryConfig.ExponentialBackoffPow, i) * retryConfig.SleepDuration));
+                    sleepDurationProvider: (retryNumber) =>
+                        TimeSpan.FromMilliseconds(Math.Pow(retryConfig.ExponentialBackoffPow, retryNumber) * retryConfig.SleepDuration)
+                );
         }
     }
 }

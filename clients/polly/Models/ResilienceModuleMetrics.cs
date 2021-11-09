@@ -4,42 +4,67 @@ namespace ResiliencePatterns.Polly
 {
     public class ResilienceModuleMetrics
     {
-        public ResilienceModuleMetrics(int clientId)
+        public ResilienceModuleMetrics(int userId)
         {
-            ClientId = clientId;
+            UserId = userId;
         }
 
-        [JsonIgnore]
-        public int ClientId { get; }
-        public int SuccessfulRequest { get; private set; }
+        public int UserId { get; }
+
+        /// <summary>
+        /// Total of successful requests
+        /// </summary>
+        public int SuccessfulRequests { get; private set; }
+
+        /// <summary>
+        /// Total of unsuccessful requests
+        /// </summary>
         public int UnsuccessfulRequests { get; private set; }
-        public int TotalRequests { get; private set; }
+
+        /// <summary>
+        /// A sum of successful and unsuccessful requests
+        /// </summary>
+        public int TotalRequests
+        {
+            get
+            {
+                return UnsuccessfulRequests + SuccessfulRequests;
+            }
+        }
+
+        /// <summary>
+        /// Time spent in ms to get a successful response
+        /// </summary>
         public long SuccessTime { get; private set; }
+
+        /// <summary>
+        /// Time spent in ms to get a unsuccessful response
+        /// </summary>
         public long ErrorTime { get; private set; }
-        public long TotalTime { get; private set; }
-        [JsonIgnore]
-        public bool Successful { get; private set; }
+
+        /// <summary>
+        /// Sum of success and error time
+        /// </summary>
+        public long TotalContentionTime
+        {
+            get
+            {
+                return SuccessTime + ErrorTime;
+            }
+        }
+
+        public long TotalExecutionTime { get; set; }
 
         public void RegisterSuccess(long elapsedTime)
         {
-            SuccessfulRequest++;
+            SuccessfulRequests++;
             SuccessTime += elapsedTime;
-            Successful = true;
-            IncrementTotals(elapsedTime);
         }
 
         public void RegisterError(long elapsedTime)
         {
             UnsuccessfulRequests++;
             ErrorTime += elapsedTime;
-            Successful = false;
-            IncrementTotals(elapsedTime);
-        }
-
-        private void IncrementTotals(long elapsedTime)
-        {
-            TotalTime += elapsedTime;
-            TotalRequests++;
         }
     }
 }
