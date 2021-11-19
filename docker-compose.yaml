@@ -11,7 +11,7 @@ services:
       - BACKEND_HOST=http://envoy:9211
     depends_on:
       - httpbin
-      - envoyproxy
+      - envoy
   
   resilience4j:
     build:
@@ -23,7 +23,7 @@ services:
       - BACKEND_HOST=http://envoy:9211
     depends_on:
       - httpbin
-      - envoyproxy
+      - envoy
 
   httpbin:
     image: kennethreitz/httpbin
