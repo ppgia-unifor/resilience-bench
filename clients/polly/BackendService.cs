@@ -37,7 +37,6 @@ namespace ResiliencePatterns.Polly
 
             var externalStopwatch = new Stopwatch();
             externalStopwatch.Start();
-
             while (successfulRequests < targetSuccessfulRequests && maxRequestsAllowed > totalRequests)
             {
                 var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
@@ -63,7 +62,7 @@ namespace ResiliencePatterns.Polly
                 totalRequests++;
             }
             externalStopwatch.Stop();
-            metrics.TotalExecutionTime = externalStopwatch.ElapsedMilliseconds;
+            metrics.RegisterTotals(totalRequests, successfulRequests, externalStopwatch.ElapsedMilliseconds);
             return metrics;
         }
     }

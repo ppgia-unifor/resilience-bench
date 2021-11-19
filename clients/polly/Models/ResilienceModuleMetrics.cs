@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace ResiliencePatterns.Polly
 {
@@ -10,6 +11,10 @@ namespace ResiliencePatterns.Polly
         }
 
         public int UserId { get; }
+
+        public int SuccessfulCalls { get; private set; }
+
+        public int UnsuccessfulCalls { get; private set; }
 
         /// <summary>
         /// Total of successful requests
@@ -53,7 +58,7 @@ namespace ResiliencePatterns.Polly
             }
         }
 
-        public long TotalExecutionTime { get; set; }
+        public long TotalExecutionTime { get; private set; }
 
         public void RegisterSuccess(long elapsedTime)
         {
@@ -65,6 +70,13 @@ namespace ResiliencePatterns.Polly
         {
             UnsuccessfulRequests++;
             ErrorTime += elapsedTime;
+        }
+
+        public void RegisterTotals(int totalRequests, int successfulRequests, long totalExecutionTime)
+        {
+            SuccessfulCalls = successfulRequests;
+            UnsuccessfulCalls = totalRequests - successfulRequests;
+            TotalExecutionTime = totalExecutionTime;
         }
     }
 }
