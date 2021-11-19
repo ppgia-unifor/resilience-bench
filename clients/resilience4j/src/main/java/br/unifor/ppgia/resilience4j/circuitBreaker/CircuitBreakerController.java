@@ -21,7 +21,7 @@ public class CircuitBreakerController {
     private final RestTemplate restTemplate;
     private final User user;
 
-    public CircuitBreakerController(@Value("#{environment.SERVER_HOST}") String host,
+    public CircuitBreakerController(@Value("#{environment.BACKEND_HOST}") String host,
                                     RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
         this.host = host;

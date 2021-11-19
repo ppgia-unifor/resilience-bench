@@ -20,7 +20,7 @@ public class RetryController {
     private final String host;
     private final RestTemplate restTemplate;
     private final User user;
-    public RetryController(@Value("#{environment.SERVER_HOST}") String host,
+    public RetryController(@Value("#{environment.BACKEND_HOST}") String host,
                            RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
         this.host = host;

@@ -4,13 +4,13 @@ import br.unifor.ppgia.resilience4j.circuitBreaker.CircuitBreakerRequestModel;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.vavr.CheckedFunction0;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
-import java.util.function.Supplier;
 
-import static io.github.resilience4j.circuitbreaker.CircuitBreaker.decorateSupplier;
+import static io.github.resilience4j.circuitbreaker.CircuitBreaker.decorateCheckedSupplier;
 
 public class BackendServiceWithCircuitBreaker extends BackendService {
 
@@ -26,8 +26,8 @@ public class BackendServiceWithCircuitBreaker extends BackendService {
     }
 
     @Override
-    protected Supplier<ResponseEntity<String>> decorate(Supplier<ResponseEntity<String>> supplier) {
-        return decorateSupplier(circuitBreakerPolicy, supplier);
+    protected CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> function) {
+        return decorateCheckedSupplier(circuitBreakerPolicy, function);
     }
 
     private static CircuitBreakerConfig createCircuitBreaker(CircuitBreakerRequestModel params) {

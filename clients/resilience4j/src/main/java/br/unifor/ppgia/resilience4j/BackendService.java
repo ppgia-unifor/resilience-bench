@@ -1,14 +1,14 @@
 package br.unifor.ppgia.resilience4j;
 
-import io.github.resilience4j.decorators.Decorators;
-import org.springframework.http.*;
+import io.vavr.CheckedFunction0;
+import io.vavr.control.Try;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.function.Supplier;
-
-import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpMethod.GET;
 
 public abstract class BackendService {
     private final String endpoint;
@@ -22,7 +22,7 @@ public abstract class BackendService {
         this.endpoint = host + "/status/200";
     }
 
-    protected abstract Supplier<ResponseEntity<String>> decorate(Supplier<ResponseEntity<String>> supplier);
+    protected abstract CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> supplier);
 
     public <P> ResilienceModuleMetrics doHttpRequest(long userId, Config<P> config) {
         var successfulRequests = 0;
@@ -34,7 +34,7 @@ public abstract class BackendService {
         externalStopwatch.start();
         while (successfulRequests < config.getTargetSuccessfulRequests() && config.getMaxRequestsAllowed() > totalRequests) {
 
-            Supplier<ResponseEntity<String>> supplier = () -> {
+            CheckedFunction0<ResponseEntity<String>> sendRequestFn = () -> {
                 var requestStopwatch = new StopWatch();
                 try {
                     requestStopwatch.start();
@@ -44,13 +44,12 @@ public abstract class BackendService {
                         metrics.registerSuccess(requestStopwatch.getTotalTimeMillis());
                     }
                     return response;
-                } catch (RestClientException e) {
+                } catch (Exception e) {
                     metrics.registerError(requestStopwatch.getTotalTimeMillis());
                     throw e;
                 }
             };
-
-            var result = decorate(supplier).get();
+            var result = Try.of(decorate(sendRequestFn)).recover(throwable -> ResponseEntity.status(500).build()).get();
 
             if (result.getStatusCode().is2xxSuccessful()) {
                 successfulRequests++;
