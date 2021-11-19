@@ -8,7 +8,7 @@
             "name": "polly-retry",
             "platform": "dotnet",
             "lib": "polly",
-            "url": "http://polly:5000/retry",
+            "url": "http://localhost:5000/retry",
             "config_template": {
                 "count": 3,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",
@@ -20,7 +20,7 @@
             "name": "resilience4j-retry",
             "platform": "java",
             "lib": "resilience4j",
-            "url": "http://resilience4j:8080/retry",
+            "url": "http://localhost:8080/retry",
             "config_template": {
                 "maxAttempts": 3,
                 "waitDuration": 50,

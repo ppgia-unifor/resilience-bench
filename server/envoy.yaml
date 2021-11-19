@@ -1,6 +1,6 @@
 admin:
   address:
-    socket_address: { address: 127.0.0.1, port_value: 9901 }
+    socket_address: { address: 0.0.0.0, port_value: 9901 }
     
 static_resources:
   listeners:
@@ -37,7 +37,7 @@ static_resources:
               abort:
                 http_status: 503
                 percentage:
-                  numerator: 0
+                  numerator: 75
                   denominator: HUNDRED
               delay:
                 fixed_delay: 3s
@@ -58,9 +58,3 @@ static_resources:
               socket_address:
                 address: httpbin
                 port_value: 80
-# layered_runtime:
-#   layers:
-#   - name: disk_layer_0
-#     disk_layer:
-#       symlink_root: /srv/runtime/current
-#       subdirectory: envoy
