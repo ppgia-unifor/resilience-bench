@@ -8,7 +8,19 @@ services:
     ports:
       - 5000:80
     environment:
-      - BACKEND_HOST=http://envoyproxy:9211
+      - BACKEND_HOST=http://envoy:9211
+    depends_on:
+      - httpbin
+      - envoyproxy
+  
+  resilience4j:
+    build:
+      context: ./clients/resilience4j
+    container_name: resilience4j
+    ports:
+      - 8080:8080
+    environment:
+      - BACKEND_HOST=http://envoy:9211
     depends_on:
       - httpbin
       - envoyproxy
@@ -19,7 +31,7 @@ services:
     ports:
       - 9000:80
   
-  envoyproxy:
+  envoy:
     image: envoyproxy/envoy-dev
     container_name: envoyproxy
     ports:
