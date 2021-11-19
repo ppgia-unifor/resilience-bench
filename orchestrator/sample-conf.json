@@ -1,25 +1,32 @@
 {
-    "envoy_host": "",
-    "failure_rate": [
-        25,
-        50
-    ],
-    "users": [
-        10,
-        100
-    ],
+    "envoy_host": "http://envoy:9100",
+    "failure_rate": [75],
+    "concurrentUsers": [1, 10],
     "rounds": 5,
     "patterns": [
         {
-            "name": "retry",
-            "platform": "java8",
-            "lib": "r4j",
-            "url": "http://hostx/r4j/retry",
+            "name": "polly-retry",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://polly:5000/retry",
             "config_template": {
-                "Count": 5,
-                "SleepDuration": 50,
-                "SleepDurationType": "EXPONENTIAL_BACKOFF",
-                "ExponentialBackoffPow": 1.5
+                "count": 3,
+                "sleepDurationType": "EXPONENTIAL_BACKOFF",
+                "exponentialBackoffPow": 1.5,
+                "sleepDuration": 50
+            }
+        },
+        {
+            "name": "resilience4j-retry",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://resilience4j:8080/retry",
+            "config_template": {
+                "maxAttempts": 3,
+                "waitDuration": 50,
+                "multiplier": 1.5,
+                "intervalFunction": "EXPONENTIAL_BACKOFF",
+                "initialIntervalMillis": 50
             }
         }
     ]
