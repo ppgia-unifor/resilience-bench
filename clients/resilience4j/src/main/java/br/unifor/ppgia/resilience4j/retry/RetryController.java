@@ -1,52 +1,36 @@
 package br.unifor.ppgia.resilience4j.retry;
 
 import br.unifor.ppgia.resilience4j.BackendService;
-import io.github.resilience4j.retry.RetryConfig;
-import io.github.resilience4j.retry.RetryRegistry;
-import io.vavr.control.Try;
+import br.unifor.ppgia.resilience4j.BackendServiceWithRetry;
+import br.unifor.ppgia.resilience4j.Config;
+import br.unifor.ppgia.resilience4j.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.time.Duration;
-
-import static io.github.resilience4j.core.IntervalFunction.ofExponentialBackoff;
-import static io.github.resilience4j.retry.Retry.decorateSupplier;
+import org.springframework.web.client.RestTemplate;
 
 @Controller
 @RequestMapping("/retry")
 public class RetryController {
 
-    private final BackendService backendService;
-
-    public RetryController(BackendService backendService) {
-        this.backendService = backendService;
+    private BackendService backendService;
+    private final String host;
+    private final RestTemplate restTemplate;
+    private final User user;
+    public RetryController(@Value("#{environment.SERVER_HOST}") String host,
+                           RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+        this.host = host;
+        this.user = new User();
     }
 
     @PostMapping
-    public ResponseEntity<?> index(@RequestBody RetryRequestModel body) {
-        var config = buildConfig(body);
-        var retry = RetryRegistry.of(config).retry("retry1");
-        retry.getEventPublisher()
-                .onError(event -> {
-                    System.out.println("error");
-                })
-                .onRetry(event -> {
-                    System.out.println("try again");
-                });
-        var decoratedSupplier = decorateSupplier(retry, backendService::doHttpRequest);
-        Try.ofSupplier(decoratedSupplier).get();
-        return ResponseEntity.ok().build();
-    }
-
-    private RetryConfig buildConfig(RetryRequestModel body) {
-        var initialConfig = RetryConfig.custom().maxAttempts(body.getMaxAttempts());
-        if ("FIXED".equalsIgnoreCase(body.getIntervalFunction())) {
-            return initialConfig.waitDuration(Duration.ofMillis(body.getWaitDuration())).build();
-        } else {
-            return initialConfig.intervalFunction(ofExponentialBackoff(body.getInitialIntervalMillis())).build();
-        }
+    public ResponseEntity<?> index(@RequestBody Config<RetryRequestModel> config) {
+        this.backendService = new BackendServiceWithRetry(restTemplate, host, config.getParams());
+        var metrics = user.spawnAsync(backendService, config);
+        return ResponseEntity.ok(metrics);
     }
 }
