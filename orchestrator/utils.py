@@ -1,5 +1,3 @@
-import json
-
 # recursively generates config instances from given 
 # config template and given key expansion list
 def generate_config(config_template, key_expansion_list):
@@ -43,53 +41,3 @@ def expand_config_template (config_template):
     else:
         # no template expansion needed
         return [config_template]
-
-
-# config_template = {
-#     'name': 'retry',
-#     'duration': [10, 20, 30],
-#     'platform': 'java8',
-#     'failure_threshold': [2, 3]
-# }
-
-
-config_template = {
-    "envoy_host": "http://envoy:9100",
-    "failure_rate": [0, 25, 50, 75],
-    "concurrentUsers": [1, 25, 50, 75, 100],
-    "rounds": 10,
-    "patterns": [
-        {
-            "name": "polly-retry",
-            "platform": "dotnet",
-            "lib": "polly",
-            "url": "http://polly:5000/retry",
-            "config_template": {
-                "count": 3,
-                "sleepDurationType": "EXPONENTIAL_BACKOFF",
-                "exponentialBackoffPow": 1.5,
-                "sleepDuration": [50, 75, 100, 200]
-            }
-        },
-        {
-            "name": "r4j",
-            "platform": "java",
-            "lib": "resilience4j",
-            "url": "http://localhost:8080/retry",
-            "config_template": {
-                "maxAttempts": 3,
-                "waitDuration": [50, 75, 100, 200],
-                "intervalFunction": "EXPONENTIAL_BACKOFF",
-                "initialIntervalMillis": 500,
-                "multiplier": 1.5
-            }
-        }
-    ]
-}
-# config_instances = expand_config_template(config_template)
-
-# print(len(config_instances), 'config instance(s) generated!')
-# print(json.dumps(config_instances))
-
-print(json.dumps(expand_config_template(config_template)))
-

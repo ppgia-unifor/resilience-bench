@@ -1,5 +1,8 @@
 import pandas as pd
+import json
 import requests
+
+from utils import expand_config_template
 
 def main(conf_file_path):
     conf_file = open(conf_file_path, 'r')
@@ -14,34 +17,36 @@ def main(conf_file_path):
     for failure in failure_rate:
         update_env(envoy_host, failure)
         results = []
-        for pattern in patterns:
-            for user in users:
-                for round in range(1, rounds + 1):
-                    result = do_test(pattern, user)
-                    for r in result:
-                        r['users'] = user
-                        r['round'] = round
-                        r['lib'] = pattern['lib']
-                        r['failure_rate'] = failure
-                    results += result
+        for pattern_template in patterns:
+            config_templates = expand_config_template(pattern_template['config_template'])
+            for config_template in config_templates:
+                do_test(config_template, pattern_template, 1) # warm up application
+                for user in users:
+                    for round in range(1, rounds + 1):
+                        result = do_test(config_template, pattern_template, user)
+                        for r in result:
+                            r['users'] = user
+                            r['round'] = round
+                            r['lib'] = pattern_template['lib']
+                            r['failure_rate'] = failure
+                            for config_key in config_template.keys():
+                                r[config_key] = config_template[config_key]
+                        results += result
   
     df = pd.DataFrame(results)
-    df.to_csv('./test.csv')
+    df.to_csv('./test.csv', index=False)
 
 def update_env(server_host, failure):
     pass
 
-def do_test(pattern, users):
+def do_test(config_template, pattern, users):
     payload = {
             'concurrentUsers': users,
             'maxRequestsAllowed': 1000,
             'targetSuccessfulRequests': 25,
-            'params': pattern['config_template']
+            'params': config_template
         }
     response = requests.post(pattern['url'], data=json.dumps(payload), headers={'Content-Type': 'application/json'})
     return response.json()
 
-
 main('./sample-conf.json')
-
-# [{"userId":1,"successfulRequests":25,"unsuccessfulRequests":79,"totalRequests":104,"successTime":567,"errorTime":1339,"totalContentionTime":1906,"totalExecutionTime":9737}]

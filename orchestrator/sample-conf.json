@@ -1,9 +1,16 @@
 {
     "envoy_host": "http://envoy:9100",
     "failure_rate": [50],
-    "concurrentUsers": [1, 10],
+    "concurrentUsers": [1],
     "rounds": 5,
     "patterns": [
+        {
+            "name": "polly-baseline",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://localhost:5000/baseline",
+            "config_template": {}
+        },
         {
             "name": "polly-retry",
             "platform": "dotnet",
@@ -13,7 +20,7 @@
                 "count": 3,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",
                 "exponentialBackoffPow": 1.5,
-                "sleepDuration": 50
+                "sleepDuration": [50, 75, 100, 200]
             }
         },
         {
@@ -22,12 +29,18 @@
             "lib": "resilience4j",
             "url": "http://localhost:8080/retry",
             "config_template": {
-                "maxAttempts": 3,
-                "waitDuration": 50,
+                "maxAttempts": 4,
                 "multiplier": 1.5,
                 "intervalFunction": "EXPONENTIAL_BACKOFF",
-                "initialIntervalMillis": 50
+                "initialIntervalMillis": [50, 75, 100, 200]
             }
+        },
+        {
+            "name": "resilience4j-baseline",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://localhost:8080/retry",
+            "config_template": {}
         }
     ]
 }
