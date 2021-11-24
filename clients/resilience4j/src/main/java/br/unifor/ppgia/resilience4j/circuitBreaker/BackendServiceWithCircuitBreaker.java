@@ -1,5 +1,6 @@
-package br.unifor.ppgia.resilience4j;
+package br.unifor.ppgia.resilience4j.circuitBreaker;
 
+import br.unifor.ppgia.resilience4j.BackendServiceTemplate;
 import br.unifor.ppgia.resilience4j.circuitBreaker.CircuitBreakerRequestModel;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
@@ -12,7 +13,7 @@ import java.time.Duration;
 
 import static io.github.resilience4j.circuitbreaker.CircuitBreaker.decorateCheckedSupplier;
 
-public class BackendServiceWithCircuitBreaker extends BackendService {
+public class BackendServiceWithCircuitBreaker extends BackendServiceTemplate {
 
     private final CircuitBreaker circuitBreakerPolicy;
 
@@ -26,8 +27,8 @@ public class BackendServiceWithCircuitBreaker extends BackendService {
     }
 
     @Override
-    protected CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> function) {
-        return decorateCheckedSupplier(circuitBreakerPolicy, function);
+    protected CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> checkedFunction) {
+        return decorateCheckedSupplier(circuitBreakerPolicy, checkedFunction);
     }
 
     private static CircuitBreakerConfig createCircuitBreaker(CircuitBreakerRequestModel params) {

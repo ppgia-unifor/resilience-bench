@@ -1,7 +1,6 @@
 package br.unifor.ppgia.resilience4j.circuitBreaker;
 
-import br.unifor.ppgia.resilience4j.BackendService;
-import br.unifor.ppgia.resilience4j.BackendServiceWithCircuitBreaker;
+import br.unifor.ppgia.resilience4j.BackendServiceTemplate;
 import br.unifor.ppgia.resilience4j.Config;
 import br.unifor.ppgia.resilience4j.User;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/cb")
 public class CircuitBreakerController {
 
-    private BackendService backendService;
+    private BackendServiceTemplate backendService;
     private final String host;
     private final RestTemplate restTemplate;
     private final User user;

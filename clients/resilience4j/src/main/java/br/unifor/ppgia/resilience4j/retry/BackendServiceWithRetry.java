@@ -1,5 +1,6 @@
-package br.unifor.ppgia.resilience4j;
+package br.unifor.ppgia.resilience4j.retry;
 
+import br.unifor.ppgia.resilience4j.BackendServiceTemplate;
 import br.unifor.ppgia.resilience4j.retry.RetryRequestModel;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
@@ -11,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import static io.github.resilience4j.core.IntervalFunction.ofExponentialBackoff;
 import static io.github.resilience4j.retry.Retry.decorateCheckedSupplier;
 
-public class BackendServiceWithRetry extends BackendService {
+public class BackendServiceWithRetry extends BackendServiceTemplate {
 
     private final Retry retryPolicy;
 
@@ -26,8 +27,8 @@ public class BackendServiceWithRetry extends BackendService {
     }
 
     @Override
-    protected CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> supplier) {
-        return decorateCheckedSupplier(retryPolicy, supplier);
+    protected CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> checkedFunction) {
+        return decorateCheckedSupplier(retryPolicy, checkedFunction);
     }
 
     private static RetryConfig createRetryWithExponentialBackoff(RetryRequestModel body) {

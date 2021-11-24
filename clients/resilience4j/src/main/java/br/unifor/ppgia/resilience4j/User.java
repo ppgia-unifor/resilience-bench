@@ -7,7 +7,7 @@ import static java.util.stream.Collectors.toList;
 
 public class User {
 
-    public List<ResilienceModuleMetrics> spawnAsync(BackendService backendService, Config<?> config) {
+    public List<ResilienceModuleMetrics> spawnAsync(BackendServiceTemplate backendService, Config<?> config) {
         return LongStream
                 .rangeClosed(1, config.getConcurrentUsers())
                 .boxed()

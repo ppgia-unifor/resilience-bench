@@ -26,6 +26,10 @@ public class ResilienceModuleMetrics {
         return unsuccessfulCalls;
     }
 
+    public int getTotalCalls() {
+        return getSuccessfulCalls() + getUnsuccessfulCalls();
+    }
+
     public int getSuccessfulRequests() {
         return successfulRequests;
     }
@@ -64,9 +68,9 @@ public class ResilienceModuleMetrics {
         errorTime += elapsedTime;
     }
 
-    public void registerTotals(int totalRequests, int successfulRequests, long totalExecutionTime) {
-        successfulCalls = successfulRequests;
-        unsuccessfulCalls = totalRequests - successfulRequests;
+    public void registerTotals(int totalCalls, int successfulCalls, long totalExecutionTime) {
+        this.successfulCalls = successfulCalls;
+        unsuccessfulCalls = totalCalls - this.successfulCalls;
         this.totalExecutionTime = totalExecutionTime;
     }
 }
