@@ -16,6 +16,14 @@ namespace ResiliencePatterns.Polly
 
         public int UnsuccessfulCalls { get; private set; }
 
+        public int TotalCalls 
+        {
+            get 
+            {
+                return SuccessfulCalls + UnsuccessfulCalls;
+            }
+        }
+
         /// <summary>
         /// Total of successful requests
         /// </summary>
