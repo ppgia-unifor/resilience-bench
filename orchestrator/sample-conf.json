@@ -1,8 +1,8 @@
 {
     "envoy_host": "http://envoy:9100",
     "failure_rate": [50],
-    "concurrentUsers": [1],
-    "rounds": 5,
+    "concurrentUsers": [1, 10, 25, 50, 100],
+    "rounds": 10,
     "patterns": [
         {
             "name": "polly-baseline",
@@ -39,7 +39,7 @@
             "name": "resilience4j-baseline",
             "platform": "java",
             "lib": "resilience4j",
-            "url": "http://localhost:8080/retry",
+            "url": "http://localhost:8080/baseline",
             "config_template": {}
         }
     ]

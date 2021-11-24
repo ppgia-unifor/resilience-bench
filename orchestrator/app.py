@@ -24,6 +24,8 @@ def main(conf_file_path):
                 for user in users:
                     for round in range(1, rounds + 1):
                         result = do_test(config_template, pattern_template, user)
+                        if result is None:
+                            break
                         for r in result:
                             r['users'] = user
                             r['round'] = round
@@ -47,6 +49,9 @@ def do_test(config_template, pattern, users):
             'params': config_template
         }
     response = requests.post(pattern['url'], data=json.dumps(payload), headers={'Content-Type': 'application/json'})
-    return response.json()
+    if response.status_code == 200:
+        return response.json()
+    print('an error occurred ' + response.text)
+    return None
 
 main('./sample-conf.json')
