@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/maven,macos,linux,windows,dotnetcore,intellij+all,visualstudio,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=maven,macos,linux,windows,dotnetcore,intellij+all,visualstudio,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,maven,windows,dotnetcore,visualstudio,intellij+all,visualstudiocode,vagrant
+# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,maven,windows,dotnetcore,visualstudio,intellij+all,visualstudiocode,vagrant
 
 ### DotnetCore ###
 # .NET Core build folders
@@ -167,6 +167,16 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+### Vagrant ###
+# General
+.vagrant/
+
+# Log files (if you are creating logs in debug mode, uncomment this)
+# *.log
+
+### Vagrant Patch ###
+*.box
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -182,6 +192,9 @@ buildNumber.properties
 # Ignore all local history of files
 .history
 .ionide
+
+# Support for Project snippet scope
+!.vscode/*.code-snippets
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -419,7 +432,7 @@ PublishScripts/
 *.nuget.targets
 
 # Nuget personal access tokens and Credentials
-nuget.config
+# nuget.config
 
 # Microsoft Azure Build Output
 csx/
@@ -588,4 +601,4 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/maven,macos,linux,windows,dotnetcore,intellij+all,visualstudio,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/linux,macos,maven,windows,dotnetcore,visualstudio,intellij+all,visualstudiocode,vagrant
