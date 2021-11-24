@@ -37,7 +37,7 @@ static_resources:
               abort:
                 http_status: 503
                 percentage:
-                  numerator: 75
+                  numerator: 50
                   denominator: HUNDRED
               delay:
                 fixed_delay: 3s
