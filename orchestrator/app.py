@@ -1,17 +1,18 @@
 import pandas as pd
 import json
 import requests
+import os
 
 from utils import expand_config_template
 
-def build_scenarios(conf_file_path):
-    conf_file = open(conf_file_path, 'r')
+def build_scenarios():
+    conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
     conf = json.load(conf_file)
 
     failure_rate = conf['failure_rate']
     patterns = conf['patterns']
     users = conf['concurrentUsers']
-    rounds = conf['rounds']
+    rounds = conf['rounds'] + 1
     envoy_host = conf['envoy_host']
     scenarios = []
 
@@ -20,20 +21,20 @@ def build_scenarios(conf_file_path):
             config_templates = expand_config_template(pattern_template['config_template'])
             for config_template in config_templates:
                 for user in users:
-                    for round in range(1, rounds):
+                    for idx_round in range(1, rounds):
                         scenarios.append({
                             'config_template': config_template,
                             'pattern_template': pattern_template,
                             'user': user,
-                            'round': round,
+                            'round': idx_round,
                             'failure': failure,
                             'envoy_host': envoy_host
                         })
     return scenarios
 
 
-def main(conf_file_path):
-    scenarios = build_scenarios(conf_file_path)
+def main():
+    scenarios = build_scenarios()
     results = []
     total_scenarios = len(scenarios)
     for idx, scenario in enumerate(scenarios):
@@ -49,7 +50,7 @@ def main(conf_file_path):
             break
         for r in result:
             r['users'] = user
-            r['round'] = round
+            r['round'] = idx
             r['lib'] = pattern_template['lib']
             r['failure_rate'] = failure
             for config_key in config_template.keys():
@@ -62,7 +63,7 @@ def main(conf_file_path):
 
 def export(filename, data):
     df = pd.DataFrame(data)
-    df.to_csv(filename, index=False)
+    df.to_csv(f'{os.environ.get("OUTPUT_PATH")}/{filename}', index=False)
 
 def update_env(server_host, failure):
     pass
@@ -80,4 +81,4 @@ def do_test(config_template, pattern, users):
     print('an error occurred ' + response.text)
     return None
 
-main('./sample-conf.json')
+main()

@@ -6,8 +6,8 @@ Vagrant.configure("2") do |config|
       master.vm.hostname = "master"
       master.vm.network "private_network", ip: "10.0.0.10"
       master.vm.provider "virtualbox" do |vb|
-          vb.memory = 8192
-          vb.cpus = 4
+          vb.memory = 16384
+          vb.cpus = 8
       end
       master.vm.provision "shell", path: "install-docker.sh"
       master.vm.provision "shell", inline: <<-SHELL

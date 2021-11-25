@@ -25,6 +25,19 @@ services:
       - httpbin
       - envoy
 
+  # orchestrator:
+  #   build: 
+  #     context: ./orchestrator
+  #   container_name: orchestrator
+  #   volumes:
+  #     - ./orchestrator/sample-conf.json:/opt/app/sample-conf.json
+  #   environment:
+  #     - CONFIG_FILE=/opt/app/sample-conf.json
+  #     - OUTPUT_PATH=/opt/app
+  #   depends_on:
+  #     - resilience4j
+  #     - polly
+
   httpbin:
     image: kennethreitz/httpbin
     container_name: httpbin
@@ -33,7 +46,7 @@ services:
   
   envoy:
     image: envoyproxy/envoy-dev
-    container_name: envoyproxy
+    container_name: envoy
     ports:
       - 9901:9901
       - 9211:9211
