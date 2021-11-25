@@ -35,12 +35,15 @@ def build_scenarios(conf_file_path):
 def main(conf_file_path):
     scenarios = build_scenarios(conf_file_path)
     results = []
+    total_scenarios = len(scenarios)
     for idx, scenario in enumerate(scenarios):
-        print(f'staring {idx} test')
         user = scenario['user']
         pattern_template = scenario['pattern_template']
         failure = scenario['failure']
         config_template = scenario['config_template']
+        
+        print(f'Round [{idx}/{total_scenarios}] Users {user} on {pattern_template["lib"]}')
+
         result = do_test(config_template, pattern_template, user)
         if result is None:
             break
@@ -52,8 +55,14 @@ def main(conf_file_path):
             for config_key in config_template.keys():
                 r[config_key] = config_template[config_key]
         results += result
-    df = pd.DataFrame(results)
-    df.to_csv('./test.csv', index=False)
+
+        if idx % 100 == 0:
+            export(f'{idx}.csv', results)
+    export(f'total-{idx}.csv', results)
+
+def export(filename, data):
+    df = pd.DataFrame(data)
+    df.to_csv(filename, index=False)
 
 def update_env(server_host, failure):
     pass
