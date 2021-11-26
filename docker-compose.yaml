@@ -32,11 +32,11 @@ services:
       context: ./orchestrator
     container_name: orchestrator
     volumes:
-      - ./config-baseline.json:/opt/app/conf.json
-      - ./results:/opt/app
+      - ./config-baseline.json:/opt/app/conf/conf.json
+      - ./results:/opt/app/results
     environment:
-      - CONFIG_FILE=/opt/app/sample-conf.json
-      - OUTPUT_PATH=/opt/app/
+      - CONFIG_FILE=/opt/app/conf/conf.json
+      - OUTPUT_PATH=/opt/app/results
     depends_on:
       - resilience4j
       - polly
