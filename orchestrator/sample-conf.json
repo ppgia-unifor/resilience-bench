@@ -8,14 +8,14 @@
             "name": "polly-baseline",
             "platform": "dotnet",
             "lib": "polly",
-            "url": "http://polly:5000/baseline",
+            "url": "http://polly/baseline",
             "config_template": {}
         },
         {
             "name": "polly-retry",
             "platform": "dotnet",
             "lib": "polly",
-            "url": "http://polly:5000/retry",
+            "url": "http://polly/retry",
             "config_template": {
                 "count": 3,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",

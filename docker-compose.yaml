@@ -25,18 +25,18 @@ services:
       - httpbin
       - envoy
 
-  # orchestrator:
-  #   build: 
-  #     context: ./orchestrator
-  #   container_name: orchestrator
-  #   volumes:
-  #     - ./orchestrator/sample-conf.json:/opt/app/sample-conf.json
-  #   environment:
-  #     - CONFIG_FILE=/opt/app/sample-conf.json
-  #     - OUTPUT_PATH=/opt/app
-  #   depends_on:
-  #     - resilience4j
-  #     - polly
+  orchestrator:
+    build: 
+      context: ./orchestrator
+    container_name: orchestrator
+    volumes:
+      - ./orchestrator/sample-conf.json:/opt/app/sample-conf.json
+    environment:
+      - CONFIG_FILE=/opt/app/sample-conf.json
+      - OUTPUT_PATH=/opt/app
+    depends_on:
+      - resilience4j
+      - polly
 
   httpbin:
     image: kennethreitz/httpbin
@@ -54,5 +54,7 @@ services:
       - ./server/envoy.yaml:/etc/envoy/envoy.yaml
       - ./server/http_status:/srv/runtime/v1/envoy/fault/http/abort/http_status
       - ./server/abort_percent:/srv/runtime/v1/envoy/fault/http/abort/abort_percent
+    depends_on:
+      - httpbin
 
   

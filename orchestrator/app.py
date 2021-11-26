@@ -89,8 +89,8 @@ def do_test(config_template, pattern, users):
 
     return response.status_code, result
 
-# main()
-s = build_scenarios()
-j = json.dumps(s, indent=4)
-f = open('./scenarios-1.json', 'w')
-f.write(j)
+main()
+# s = build_scenarios()
+# j = json.dumps(s, indent=4)
+# f = open('./scenarios-1.json', 'w')
+# f.write(j)
