@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -11,10 +12,13 @@ namespace ResiliencePatterns.Polly
         private readonly IHttpClientFactory _clientFactory;
         private readonly ILogger<BackendService> _logger;
 
+        private readonly string _resource;
+
         public BackendService(IHttpClientFactory clientFactory, ILogger<BackendService> logger)
         {
             _clientFactory = clientFactory;
             HttpClient = _clientFactory.CreateClient("backend");
+            _resource = Environment.GetEnvironmentVariable("RESOURCE_PATH");
             _logger = logger;
             _logger.LogInformation("http client created point to {baseAddress}", HttpClient.BaseAddress);
         }
@@ -43,7 +47,7 @@ namespace ResiliencePatterns.Polly
                 {
                     var requestStopwatch = new Stopwatch();
                     requestStopwatch.Start();
-                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/200"));
+                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
                     requestStopwatch.Stop();
 
                     if (result.IsSuccessStatusCode)
