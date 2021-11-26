@@ -9,7 +9,7 @@ services:
       - 5000:80
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/status/200
+      - RESOURCE_PATH=/image/jpeg
     depends_on:
       - httpbin
       - envoy
@@ -22,7 +22,7 @@ services:
       - 8080:8080
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/status/200
+      - RESOURCE_PATH=/image/jpeg
     depends_on:
       - httpbin
       - envoy
