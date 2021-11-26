@@ -43,7 +43,7 @@ namespace ResiliencePatterns.Polly
                 {
                     var requestStopwatch = new Stopwatch();
                     requestStopwatch.Start();
-                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/status/200"));
+                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/delay/500"));
                     requestStopwatch.Stop();
 
                     if (result.IsSuccessStatusCode)

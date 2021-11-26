@@ -20,7 +20,7 @@ public abstract class BackendServiceTemplate {
             String host
     ) {
         this.restTemplate = restTemplate;
-        this.endpoint = host + "/status/200";
+        this.endpoint = host + "/delay/500";
     }
 
     protected abstract CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> checkedFunction);
