@@ -46,6 +46,11 @@ services:
     container_name: httpbin
     ports:
       - 9000:80
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 256M
   
   envoy:
     image: envoyproxy/envoy-dev
@@ -59,5 +64,9 @@ services:
       - ./server/abort_percent:/srv/runtime/v1/envoy/fault/http/abort/abort_percent
     depends_on:
       - httpbin
-
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 256M
   
