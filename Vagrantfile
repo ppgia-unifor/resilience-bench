@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
       # prepare ubuntu
       master.vm.provision "shell", inline: <<-SHELL
         apt update -y
-        apt install -y apt-transport-https ca-certificates curl gnupg lsb-release python3-pip
+        apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
       SHELL
 
       # install docker
@@ -41,8 +41,6 @@ Vagrant.configure("2") do |config|
         docker-compose build
         docker-compose pull
         docker-compose up -d
-        cd ./orchestrator
-        pip3 install -r requirements.txt
       SHELL
       
     end
