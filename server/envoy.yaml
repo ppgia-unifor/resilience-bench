@@ -39,11 +39,6 @@ static_resources:
                 percentage:
                   numerator: 50
                   denominator: HUNDRED
-              delay:
-                fixed_delay: 3s
-                percentage:
-                  numerator: 0
-                  denominator: HUNDRED
           - name: envoy.filters.http.router
   clusters:
   - name: local_service
