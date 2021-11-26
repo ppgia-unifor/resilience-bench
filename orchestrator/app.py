@@ -42,19 +42,26 @@ def main():
         pattern_template = scenario['pattern_template']
         failure = scenario['failure']
         config_template = scenario['config_template']
+        round = scenario['round']
         
-        print(f'Round [{idx}/{total_scenarios}] Users {user} on {pattern_template["lib"]}')
+        print(f'Round [{idx}/{total_scenarios}] Users {user} Pattern {pattern_template["name"]}')
 
-        result = do_test(config_template, pattern_template, user)
-        if result is None:
-            break
-        for r in result:
-            r['users'] = user
-            r['round'] = idx
-            r['lib'] = pattern_template['lib']
-            r['failure_rate'] = failure
+        status_code, result = do_test(config_template, pattern_template, user)
+        if status_code != 200:
+            result = [{
+                'error': True,
+                'error_message': result
+            }]
+        
+        for item_result in result:
+            item_result['users'] = user
+            item_result['round'] = round
+            item_result['lib'] = pattern_template['lib']
+            item_result['name'] = pattern_template['name']
+            item_result['failure_rate'] = failure
             for config_key in config_template.keys():
-                r[config_key] = config_template[config_key]
+                item_result[config_key] = config_template[config_key]
+        
         results += result
 
         if idx % 100 == 0:
@@ -76,9 +83,14 @@ def do_test(config_template, pattern, users):
             'params': config_template
         }
     response = requests.post(pattern['url'], data=json.dumps(payload), headers={'Content-Type': 'application/json'})
+    result = response.text
     if response.status_code == 200:
-        return response.json()
-    print('an error occurred ' + response.text)
-    return None
+        result = response.json()
 
-main()
+    return response.status_code, result
+
+# main()
+s = build_scenarios()
+j = json.dumps(s, indent=4)
+f = open('./scenarios-1.json', 'w')
+f.write(j)
