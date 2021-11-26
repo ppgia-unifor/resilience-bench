@@ -19,18 +19,21 @@ public class BaselineController {
 
     private BackendServiceTemplate backendService;
     private final String host;
+    private final String resource;
     private final RestTemplate restTemplate;
     private final User user;
     public BaselineController(@Value("#{environment.HOST}") String host,
+                              @Value("#{environment.RESOURCE}") String resource,
                            RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
         this.host = host;
+        this.resource = resource;
         this.user = new User();
     }
 
     @PostMapping
     public ResponseEntity<?> index(@RequestBody Config<RetryRequestModel> config) {
-        this.backendService = new BackendServiceSimple(restTemplate, host);
+        this.backendService = new BackendServiceSimple(restTemplate, host, resource);
         var metrics = user.spawnAsync(backendService, config);
         return ResponseEntity.ok(metrics);
     }

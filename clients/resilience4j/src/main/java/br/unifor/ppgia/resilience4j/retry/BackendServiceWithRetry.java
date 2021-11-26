@@ -19,9 +19,10 @@ public class BackendServiceWithRetry extends BackendServiceTemplate {
     public BackendServiceWithRetry(
             RestTemplate restTemplate,
             String host,
+            String resource,
             RetryRequestModel retryRequestModel
     ) {
-        super(restTemplate, host);
+        super(restTemplate, host, resource);
         var retryConfig = createRetryWithExponentialBackoff(retryRequestModel);
         retryPolicy = RetryRegistry.of(retryConfig).retry("retry");
     }

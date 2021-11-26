@@ -17,10 +17,11 @@ public abstract class BackendServiceTemplate {
 
     public BackendServiceTemplate(
             RestTemplate restTemplate,
-            String host
+            String host,
+            String resource
     ) {
         this.restTemplate = restTemplate;
-        this.endpoint = host + "/status/200";
+        this.endpoint = host + resource;
     }
 
     protected abstract CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> checkedFunction);

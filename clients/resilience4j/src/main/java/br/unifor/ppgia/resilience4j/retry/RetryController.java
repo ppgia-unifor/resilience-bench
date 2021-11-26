@@ -17,18 +17,21 @@ public class RetryController {
 
     private BackendServiceTemplate backendService;
     private final String host;
+    private final String resource;
     private final RestTemplate restTemplate;
     private final User user;
     public RetryController(@Value("#{environment.HOST}") String host,
+                           @Value("#{environment.RESOURCE}") String resource,
                            RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
         this.host = host;
+        this.resource = resource;
         this.user = new User();
     }
 
     @PostMapping
     public ResponseEntity<?> index(@RequestBody Config<RetryRequestModel> config) {
-        this.backendService = new BackendServiceWithRetry(restTemplate, host, config.getParams());
+        this.backendService = new BackendServiceWithRetry(restTemplate, host, this.resource, config.getParams());
         var metrics = user.spawnAsync(backendService, config);
         return ResponseEntity.ok(metrics);
     }

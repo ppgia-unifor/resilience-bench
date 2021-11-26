@@ -20,9 +20,10 @@ public class BackendServiceWithCircuitBreaker extends BackendServiceTemplate {
     public BackendServiceWithCircuitBreaker(
             RestTemplate restTemplate,
             String host,
+            String resource,
             CircuitBreakerRequestModel circuitBreakerRequestModel
     ) {
-        super(restTemplate, host);
+        super(restTemplate, host, resource);
         circuitBreakerPolicy = CircuitBreakerRegistry.of(createCircuitBreaker(circuitBreakerRequestModel)).circuitBreaker("cb");
     }
 

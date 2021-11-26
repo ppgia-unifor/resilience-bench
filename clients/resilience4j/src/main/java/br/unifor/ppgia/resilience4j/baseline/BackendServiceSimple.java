@@ -7,8 +7,8 @@ import org.springframework.web.client.RestTemplate;
 
 public class BackendServiceSimple extends BackendServiceTemplate {
 
-    public BackendServiceSimple(RestTemplate restTemplate, String host) {
-        super(restTemplate, host);
+    public BackendServiceSimple(RestTemplate restTemplate, String host, String resource) {
+        super(restTemplate, host, resource);
     }
 
     @Override
