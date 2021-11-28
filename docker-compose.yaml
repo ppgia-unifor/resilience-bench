@@ -34,9 +34,11 @@ services:
     volumes:
       - ./config-baseline.json:/opt/app/conf/conf.json
       - ./results:/opt/app/results
+      - /home/vagrant/.aws/credentials:/home/app/.aws/credentials
     environment:
       - CONFIG_FILE=/opt/app/conf/conf.json
-      - OUTPUT_PATH=/opt/app/results
+      - AWS_BUCKET_NAME=phd-carlos-results
+      - OUTPUT_PATH=resilience-tests
     depends_on:
       - resilience4j
       - polly
