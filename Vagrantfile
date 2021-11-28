@@ -1,6 +1,7 @@
 Vagrant.configure("2") do |config|
     
-    
+    config.vm.synced_folder "~/.aws", "/home/vagrant/.aws"
+
     config.vm.define "master" do |master|
       master.vm.box = "ubuntu/focal64"
       master.vm.hostname = "master"
@@ -37,11 +38,12 @@ Vagrant.configure("2") do |config|
 
       # install applications
       master.vm.provision "shell", inline: <<-SHELL
-        cd /vagrant 
+        nohup ./git-repo-watcher/git-repo-watcher -d ${PWD} < /dev/null &
+        cd /vagrant
+        docker-compose down
         docker-compose build
         docker-compose pull
         docker-compose up -d
       SHELL
-      
     end
 end
