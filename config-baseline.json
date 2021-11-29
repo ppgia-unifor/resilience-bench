@@ -5,14 +5,14 @@
     "rounds": 10,
     "patterns": [
         {
-            "name": "polly-baseline",
+            "name": "baseline",
             "platform": "dotnet",
             "lib": "polly",
             "url": "http://polly/baseline",
             "config_template": {}
         },
         {
-            "name": "resilience4j-baseline",
+            "name": "baseline",
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/baseline",
