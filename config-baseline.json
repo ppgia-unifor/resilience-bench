@@ -1,7 +1,7 @@
 {
     "envoy_host": "http://envoy:9100",
     "failure_rate": [50],
-    "concurrentUsers": [1, 25, 50, 100],
+    "concurrentUsers": [25, 50, 100],
     "rounds": 10,
     "patterns": [
         {
