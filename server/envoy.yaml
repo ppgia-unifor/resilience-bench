@@ -30,7 +30,7 @@ static_resources:
                             prefix: /
                             runtime_fraction:
                               default_value:
-                                numerator: 75
+                                numerator: 50
                                 denominator: HUNDRED
                               runtime_key: routing.traffic_shift.resilience
                           route:
@@ -40,14 +40,6 @@ static_resources:
                           route:
                             cluster: non_routable_service
                 http_filters:
-                  - name: envoy.filters.http.fault
-                    typed_config:
-                      "@type": type.googleapis.com/envoy.extensions.filters.http.fault.v3.HTTPFault
-                      abort:
-                        http_status: 502
-                        percentage:
-                          numerator: 75
-                          denominator: HUNDRED
                   - name: envoy.filters.http.router
   clusters:
     - name: httpbin_service
