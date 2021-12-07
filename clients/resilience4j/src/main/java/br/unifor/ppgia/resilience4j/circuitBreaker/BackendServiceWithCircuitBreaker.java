@@ -1,7 +1,6 @@
 package br.unifor.ppgia.resilience4j.circuitBreaker;
 
 import br.unifor.ppgia.resilience4j.BackendServiceTemplate;
-import br.unifor.ppgia.resilience4j.circuitBreaker.CircuitBreakerRequestModel;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;

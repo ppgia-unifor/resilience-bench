@@ -1,7 +1,12 @@
 package br.unifor.ppgia.resilience4j;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ResilienceModuleMetrics {
-    private final long userId;
+    private final static Logger logger = LoggerFactory.getLogger(ResilienceModuleMetrics.class);
+
     private int successfulCalls;
     private int unsuccessfulCalls;
     private int successfulRequests;
@@ -10,12 +15,7 @@ public class ResilienceModuleMetrics {
     private long errorTime;
     private long totalExecutionTime;
 
-    public ResilienceModuleMetrics(long userId) {
-        this.userId = userId;
-    }
-
-    public long getUserId() {
-        return userId;
+    public ResilienceModuleMetrics() {
     }
 
     public int getSuccessfulCalls() {
@@ -61,11 +61,13 @@ public class ResilienceModuleMetrics {
     public void registerSuccess(long elapsedTime) {
         successfulRequests++;
         successTime += elapsedTime;
+        logger.info("Registering {} successful request in {} ms", successfulRequests, successTime);
     }
 
     public void registerError(long elapsedTime) {
         unsuccessfulRequests++;
         errorTime += elapsedTime;
+        logger.info("Registering {} unsuccessful request in {} ms", unsuccessfulRequests, errorTime);
     }
 
     public void registerTotals(int totalCalls, int successfulCalls, long totalExecutionTime) {

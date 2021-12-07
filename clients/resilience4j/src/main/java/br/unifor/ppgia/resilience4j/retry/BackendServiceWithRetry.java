@@ -1,11 +1,12 @@
 package br.unifor.ppgia.resilience4j.retry;
 
 import br.unifor.ppgia.resilience4j.BackendServiceTemplate;
-import br.unifor.ppgia.resilience4j.retry.RetryRequestModel;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.CheckedFunction0;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,6 +15,7 @@ import static io.github.resilience4j.retry.Retry.decorateCheckedSupplier;
 
 public class BackendServiceWithRetry extends BackendServiceTemplate {
 
+    private final static Logger logger = LoggerFactory.getLogger(BackendServiceWithRetry.class);
     private final Retry retryPolicy;
 
     public BackendServiceWithRetry(
@@ -25,6 +27,9 @@ public class BackendServiceWithRetry extends BackendServiceTemplate {
         super(restTemplate, host, resource);
         var retryConfig = createRetryWithExponentialBackoff(retryRequestModel);
         retryPolicy = RetryRegistry.of(retryConfig).retry("retry");
+        retryPolicy.getEventPublisher().onRetry(event -> {
+            logger.info("Retry {}", event.getNumberOfRetryAttempts());
+        });
     }
 
     @Override
@@ -33,7 +38,10 @@ public class BackendServiceWithRetry extends BackendServiceTemplate {
     }
 
     private static RetryConfig createRetryWithExponentialBackoff(RetryRequestModel body) {
-        var initialConfig = RetryConfig.custom().maxAttempts(body.getMaxAttempts());
-        return initialConfig.intervalFunction(ofExponentialBackoff(body.getInitialIntervalMillis(), body.getMultiplier())).build();
+        return RetryConfig
+                .custom()
+                .maxAttempts(body.getMaxAttempts())
+                .intervalFunction(ofExponentialBackoff(body.getInitialIntervalMillis(), body.getMultiplier()))
+                .build();
     }
 }
