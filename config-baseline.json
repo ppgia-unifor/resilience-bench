@@ -1,6 +1,6 @@
 {
-    "envoy_host": "http://envoy:9100",
-    "failure_rate": [50],
+    "envoyHost": "http://envoy:9100",
+    "failureRate": [50],
     "concurrentUsers": [25, 100],
     "rounds": 5,
     "patterns": [
@@ -9,14 +9,14 @@
             "platform": "dotnet",
             "lib": "polly",
             "url": "http://polly/baseline",
-            "config_template": {}
+            "configTemplate": {}
         },
         {
             "name": "baseline",
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/baseline",
-            "config_template": {}
+            "configTemplate": {}
         }
     ]
 }

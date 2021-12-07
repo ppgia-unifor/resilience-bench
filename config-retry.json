@@ -1,6 +1,6 @@
 {
-    "envoy_host": "http://envoy:9100",
-    "failure_rate": [50],
+    "envoyHost": "http://envoy:9100",
+    "failureRate": [50],
     "concurrentUsers": [1, 25, 50, 100],
     "rounds": 10,
     "patterns": [
@@ -9,14 +9,14 @@
             "platform": "dotnet",
             "lib": "polly",
             "url": "http://polly/baseline",
-            "config_template": {}
+            "configTemplate": {}
         },
         {
             "name": "retry",
             "platform": "dotnet",
             "lib": "polly",
             "url": "http://polly/retry",
-            "config_template": {
+            "configTemplate": {
                 "count": 5,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",
                 "exponentialBackoffPow": 1.5,
@@ -28,7 +28,7 @@
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/retry",
-            "config_template": {
+            "configTemplate": {
                 "maxAttempts": 6,
                 "multiplier": 1.5,
                 "intervalFunction": "EXPONENTIAL_BACKOFF",
@@ -40,7 +40,7 @@
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/baseline",
-            "config_template": {}
+            "configTemplate": {}
         }
     ]
 }

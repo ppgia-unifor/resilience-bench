@@ -1,0 +1,20 @@
+{
+    "envoyHost": "http://envoy:9100",
+    "failureRate": [50],
+    "concurrentUsers": [2],
+    "rounds": 2,
+    "patterns": [
+        {
+            "name": "baseline",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://localhost:8080/retry",
+            "configTemplate": {
+                "maxAttempts": 6,
+                "multiplier": 1.5,
+                "intervalFunction": "EXPONENTIAL_BACKOFF",
+                "initialIntervalMillis": [50]
+            }
+        }
+    ]
+}
