@@ -58,6 +58,7 @@ static_resources:
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
       connect_timeout: 2s
+      max_requests_per_connection: 1
       load_assignment:
         cluster_name: non_routable_service
         endpoints:
