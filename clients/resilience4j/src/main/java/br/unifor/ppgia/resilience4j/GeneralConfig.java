@@ -8,7 +8,10 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class GeneralConfig {
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+           .setConnectTimeout(Duration.ofSeconds(2))
+           .build();
+        //return builder.build();
     }
 }
