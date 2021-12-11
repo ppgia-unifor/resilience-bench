@@ -1,16 +1,9 @@
 {
     "envoyHost": "http://envoy:9100",
     "failureRate": [50],
-    "concurrentUsers": [25, 100],
+    "concurrentUsers": [1, 25, 100],
     "rounds": 5,
     "patterns": [
-        {
-            "name": "baseline",
-            "platform": "dotnet",
-            "lib": "polly",
-            "url": "http://polly/baseline",
-            "configTemplate": {}
-        },
         {
             "name": "baseline",
             "platform": "java",
