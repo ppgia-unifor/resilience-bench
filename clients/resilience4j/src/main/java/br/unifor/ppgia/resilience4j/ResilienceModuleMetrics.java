@@ -12,7 +12,9 @@ public class ResilienceModuleMetrics {
     private int successfulRequests;
     private int unsuccessfulRequests;
     private long successTime;
+    private long successTimePerRequest;
     private long errorTime;
+    private long errorTimePerRequest;
     private long totalExecutionTime;
 
     public ResilienceModuleMetrics() {
@@ -42,10 +44,18 @@ public class ResilienceModuleMetrics {
         return successTime;
     }
 
+    public long getSuccessTimePerRequest() {
+        return successTime / successfulRequests;
+    }
+
     public long getErrorTime() {
         return errorTime;
     }
 
+    public long getErrorTimePerRequest() {
+        return errorTime / unsuccessfulRequests;
+    }
+    
     public long getTotalExecutionTime() {
         return totalExecutionTime;
     }

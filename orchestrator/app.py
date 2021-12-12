@@ -1,11 +1,12 @@
 import os
 import json
 import requests
-import concurrent
+import concurrent.futures
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 import logging
 from datetime import datetime
+from pytz import timezone
 from utils import expand_config_template
 from storage import save_file
 from notifier import notify
@@ -19,7 +20,7 @@ retries = Retry(total=10,
                 status_forcelist=[ 500, 502, 503, 504 ])
 requestsSesstion.mount('http://', HTTPAdapter(max_retries=retries))
 
-test_id = datetime.now().strftime('%c')
+test_id = datetime.now().astimezone(timezone('America/Sao_Paulo')).strftime('%c')
 
 def build_scenarios():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
@@ -30,6 +31,8 @@ def build_scenarios():
     users = conf['concurrentUsers']
     rounds = conf['rounds'] + 1
     envoy_host = conf['envoyHost']
+    maxRequestsAllowed = conf['maxRequestsAllowed']
+    targetSuccessfulRequests = conf['targetSuccessfulRequests']
     scenarios = []
 
     for failure in failure_rate:
@@ -44,7 +47,9 @@ def build_scenarios():
                             'users': user,
                             'round': idx_round,
                             'failure': failure,
-                            'envoyHost': envoy_host
+                            'envoyHost': envoy_host,
+                            'maxRequestsAllowed': maxRequestsAllowed,
+                            'targetSuccessfulRequests': targetSuccessfulRequests
                         })
     logger.info(f'{len(scenarios)} scenarios generated')
     save_file(f'{test_id}/scenarios', scenarios, 'json')
@@ -75,12 +80,14 @@ def do_test(scenario, user_id):
     pattern_template = scenario['patternTemplate']
     failure = scenario['failure']
     config_template = scenario['configTemplate']
-    round = scenario['round']
+    idx_round = scenario['round']
+    maxRequestsAllowed = scenario['maxRequestsAllowed']
+    targetSuccessfulRequests = scenario['targetSuccessfulRequests']
 
     payload = json.dumps({
         'concurrentUsers': users,
-        'maxRequestsAllowed': 1000,
-        'targetSuccessfulRequests': 25,
+        'maxRequestsAllowed': maxRequestsAllowed,
+        'targetSuccessfulRequests': targetSuccessfulRequests,
         'params': config_template
     })
     response = requestsSesstion.post(
@@ -95,7 +102,7 @@ def do_test(scenario, user_id):
         result['startTime'] = start_time
         result['endTime'] = datetime.now()
         result['users'] = users
-        result['round'] = round
+        result['round'] = idx_round
         result['lib'] = pattern_template['lib']
         result['name'] = pattern_template['name']
         result['failureRate'] = failure

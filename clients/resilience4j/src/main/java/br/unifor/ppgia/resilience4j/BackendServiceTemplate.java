@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import static org.springframework.http.HttpMethod.GET;
@@ -37,7 +38,7 @@ public abstract class BackendServiceTemplate {
                 metrics.registerSuccess(requestStopwatch.getTotalTimeMillis());
             }
             return response;
-        } catch (HttpServerErrorException e) {
+        } catch (RestClientException e) {
             requestStopwatch.stop();
             metrics.registerError(requestStopwatch.getTotalTimeMillis());
             throw e;

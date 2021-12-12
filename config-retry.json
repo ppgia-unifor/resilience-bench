@@ -3,6 +3,8 @@
     "failureRate": [50],
     "concurrentUsers": [1, 25, 50, 100],
     "rounds": 10,
+    "maxRequestsAllowed": 1000,
+    "targetSuccessfulRequests": 20,
     "patterns": [
         {
             "name": "baseline",
