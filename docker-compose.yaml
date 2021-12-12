@@ -9,7 +9,8 @@ services:
       - 5000:80
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/links/1000/1000
+      - RESOURCE_PATH=/stream/200
+      - READ_TIMEOUT=2000
     depends_on:
       - httpbin
       - envoy
@@ -22,7 +23,8 @@ services:
       - 8080:8080
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/links/1000/1000
+      - RESOURCE_PATH=/stream/200
+      - READ_TIMEOUT=2000
     depends_on:
       - httpbin
       - envoy
@@ -32,7 +34,7 @@ services:
       context: ./orchestrator
     container_name: orchestrator
     volumes:
-      - ./config-r4j.json:/opt/app/conf/conf.json
+      - ./config-baseline.json:/opt/app/conf/conf.json
       - ./results:/opt/app/results
       - /home/vagrant/.aws/credentials:/home/app/.aws/credentials
     environment:

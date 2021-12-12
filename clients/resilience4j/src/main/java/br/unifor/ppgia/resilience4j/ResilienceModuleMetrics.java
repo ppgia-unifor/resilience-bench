@@ -12,9 +12,7 @@ public class ResilienceModuleMetrics {
     private int successfulRequests;
     private int unsuccessfulRequests;
     private long successTime;
-    private long successTimePerRequest;
     private long errorTime;
-    private long errorTimePerRequest;
     private long totalExecutionTime;
 
     public ResilienceModuleMetrics() {
@@ -44,16 +42,26 @@ public class ResilienceModuleMetrics {
         return successTime;
     }
 
-    public long getSuccessTimePerRequest() {
-        return successTime / successfulRequests;
+    public double getSuccessTimePerRequest() {
+        if (successfulRequests > 0) {
+                return successTime / (double) successfulRequests;
+            }
+        else {
+            return 0;
+        }
     }
 
     public long getErrorTime() {
         return errorTime;
     }
 
-    public long getErrorTimePerRequest() {
-        return errorTime / unsuccessfulRequests;
+    public double getErrorTimePerRequest() {
+        if (unsuccessfulRequests > 0) {
+                return errorTime / (double) unsuccessfulRequests;
+            }
+        else {
+            return 0;
+        }
     }
     
     public long getTotalExecutionTime() {
@@ -64,6 +72,15 @@ public class ResilienceModuleMetrics {
         return successTime + errorTime;
     }
 
+    public double getContentionRate() {
+        if (totalExecutionTime > 0) {
+                return getTotalContentionTime() / (double) totalExecutionTime;
+            }
+        else {
+            return 0;
+        }
+    }
+    
     public int getTotalRequests() {
         return successfulRequests + unsuccessfulRequests;
     }
