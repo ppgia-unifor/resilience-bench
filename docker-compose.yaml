@@ -53,8 +53,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 256M
+          cpus: '0.5'
+          memory: 128M
   
   envoy:
     image: envoyproxy/envoy-dev
