@@ -2,31 +2,16 @@ package br.unifor.ppgia.resilience4j;
 
 import io.vavr.CheckedFunction0;
 import io.vavr.control.Try;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.springframework.http.HttpMethod.GET;
 
 public abstract class BackendServiceTemplate {
-    private final static Logger logger = LoggerFactory.getLogger(ResilienceModuleMetrics.class);
     private final ResilienceModuleMetrics metrics;
-    private final String endpoint;
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
 
-    public BackendServiceTemplate(
-            RestTemplate restTemplate,
-            String host,
-            String resource
-    ) {
-        this.restTemplate = restTemplate;
-        endpoint = host + resource;
+    public BackendServiceTemplate(RestClient restClient) {
+        this.restClient = restClient;
         metrics = new ResilienceModuleMetrics();
     }
 
@@ -36,11 +21,10 @@ public abstract class BackendServiceTemplate {
         var requestStopwatch = new StopWatch();
         try {
             requestStopwatch.start();
-            var response = restTemplate.exchange(endpoint, GET, HttpEntity.EMPTY, String.class);
+            var response = restClient.get();
             requestStopwatch.stop();
             if (response.getStatusCode().is2xxSuccessful()) {
                 metrics.registerSuccess(requestStopwatch.getTotalTimeMillis());
-                logger.info("Response body size: {}", response.getBody().length());
             }
             return response;
         } catch (RestClientException e) {

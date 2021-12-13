@@ -1,12 +1,12 @@
 package br.unifor.ppgia.resilience4j.circuitBreaker;
 
 import br.unifor.ppgia.resilience4j.BackendServiceTemplate;
+import br.unifor.ppgia.resilience4j.RestClient;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.vavr.CheckedFunction0;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 
@@ -17,12 +17,10 @@ public class BackendServiceWithCircuitBreaker extends BackendServiceTemplate {
     private final CircuitBreaker circuitBreakerPolicy;
 
     public BackendServiceWithCircuitBreaker(
-            RestTemplate restTemplate,
-            String host,
-            String resource,
+            RestClient restClient,
             CircuitBreakerRequestModel circuitBreakerRequestModel
     ) {
-        super(restTemplate, host, resource);
+        super(restClient);
         circuitBreakerPolicy = CircuitBreakerRegistry.of(createCircuitBreaker(circuitBreakerRequestModel)).circuitBreaker("cb");
     }
 
