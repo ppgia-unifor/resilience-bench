@@ -23,7 +23,7 @@ services:
       - 8080:8080
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/stream/200
+      - RESOURCE_PATH=/image/jpeg
       - READ_TIMEOUT=2000
     depends_on:
       - httpbin
