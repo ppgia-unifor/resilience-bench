@@ -1,17 +1,7 @@
-﻿using System;
-using System.Text.Json.Serialization;
-
-namespace ResiliencePatterns.Polly
+﻿namespace ResiliencePatterns.Polly
 {
     public class ResilienceModuleMetrics
     {
-        public ResilienceModuleMetrics(int userId)
-        {
-            UserId = userId;
-        }
-
-        public int UserId { get; }
-
         public int SuccessfulCalls { get; private set; }
 
         public int UnsuccessfulCalls { get; private set; }

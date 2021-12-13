@@ -32,7 +32,6 @@ namespace ResiliencePatterns.Polly
                 c.BaseAddress = new Uri(backendHost);
             });
             services.AddScoped<BackendService>();
-            services.AddScoped<User>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
