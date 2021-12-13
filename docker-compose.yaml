@@ -24,7 +24,7 @@ services:
     environment:
       - BACKEND_HOST=http://envoy:9211
       - RESOURCE_PATH=/stream/200
-      - READ_TIMEOUT=2000
+      - READ_TIMEOUT=200
     depends_on:
       - httpbin
       - envoy
@@ -53,8 +53,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 128M
+          cpus: '1'
+          memory: 256M
   
   envoy:
     image: envoyproxy/envoy-dev
