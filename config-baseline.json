@@ -1,13 +1,13 @@
 {
     "envoyHost": "http://envoy:9100",
     "failureRate": [50],
-    "concurrentUsers": [10],
+    "concurrentUsers": [200],
     "rounds": 10,
     "maxRequestsAllowed": 1000,
     "targetSuccessfulRequests": 20,
     "patterns": [
         {
-            "name": "baseline",
+            "pattern": "baseline",
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/baseline",

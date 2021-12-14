@@ -7,14 +7,14 @@
     "targetSuccessfulRequests": 20,
     "patterns": [
         {
-            "name": "baseline",
+            "pattern": "baseline",
             "platform": "dotnet",
             "lib": "polly",
             "url": "http://polly/baseline",
             "configTemplate": {}
         },
         {
-            "name": "retry",
+            "pattern": "retry",
             "platform": "dotnet",
             "lib": "polly",
             "url": "http://polly/retry",
@@ -26,7 +26,7 @@
             }
         },
         {
-            "name": "retry",
+            "pattern": "retry",
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/retry",
@@ -38,7 +38,7 @@
             }
         },
         {
-            "name": "baseline",
+            "pattern": "baseline",
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/baseline",

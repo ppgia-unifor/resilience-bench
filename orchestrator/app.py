@@ -104,7 +104,7 @@ def do_test(scenario, user_id):
         result['users'] = users
         result['round'] = idx_round
         result['lib'] = pattern_template['lib']
-        result['name'] = pattern_template['name']
+        result['pattern'] = pattern_template['pattern']
         result['failureRate'] = failure
         for config_key in config_template.keys():
             result[config_key] = config_template[config_key]
