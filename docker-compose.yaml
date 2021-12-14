@@ -34,7 +34,7 @@ services:
       context: ./orchestrator
     container_name: orchestrator
     volumes:
-      - ./config-baseline.json:/opt/app/conf/conf.json
+      - ./config-r4j.json:/opt/app/conf/conf.json
       - ./results:/opt/app/results
       - /home/vagrant/.aws/credentials:/home/app/.aws/credentials
     environment:
