@@ -10,8 +10,9 @@ from pytz import timezone
 from utils import expand_config_template
 from storage import save_file
 from notifier import notify
+from envoy import update_percentage_fault, update_duration_fault
 
-logger = logging.getLogger()
+logger = logging.getLogger('app')
 logger.setLevel(logging.INFO)
 
 requestsSesstion = requests.Session()
@@ -26,16 +27,16 @@ def build_scenarios():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
     conf = json.load(conf_file)
 
-    failure_rate = conf['failureRate']
+    fault_percentages = conf['fault']['percentage']
+    fault_duration = conf['fault']['duration']
     patterns = conf['patterns']
     users = conf['concurrentUsers']
     rounds = conf['rounds'] + 1
-    envoy_host = conf['envoyHost']
-    maxRequestsAllowed = conf['maxRequestsAllowed']
-    targetSuccessfulRequests = conf['targetSuccessfulRequests']
+    max_requests_allowed = conf['maxRequestsAllowed']
+    target_successful_requests = conf['targetSuccessfulRequests']
     scenarios = []
 
-    for failure in failure_rate:
+    for fault_percentage in fault_percentages:
         for pattern_template in patterns:
             config_templates = expand_config_template(pattern_template['configTemplate'])
             for config_template in config_templates:
@@ -46,10 +47,10 @@ def build_scenarios():
                             'patternTemplate': pattern_template,
                             'users': user,
                             'round': idx_round,
-                            'failure': failure,
-                            'envoyHost': envoy_host,
-                            'maxRequestsAllowed': maxRequestsAllowed,
-                            'targetSuccessfulRequests': targetSuccessfulRequests
+                            'faultPercentage': fault_percentage,
+                            'faultDuration': fault_duration,
+                            'maxRequestsAllowed': max_requests_allowed,
+                            'targetSuccessfulRequests': target_successful_requests
                         })
     logger.info(f'{len(scenarios)} scenarios generated')
     save_file(f'{test_id}/scenarios', scenarios, 'json')
@@ -60,6 +61,8 @@ def main():
     results = []
     for scenario in scenarios:
         users = scenario['users'] + 1
+        update_percentage_fault(int(scenario['faultPercentage']))
+        update_duration_fault(int(scenario['faultDuration']))
         with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
             futures = []
             for user_id in range(1, users):
@@ -71,21 +74,19 @@ def main():
     save_file(f'{test_id}/total', results, 'csv')
     notify(f'{test_id} - teste finalizado')
 
-def update_env(server_host, failure):
-    pass
 
 def do_test(scenario, user_id):
     start_time = datetime.now()
     users = scenario['users']
     pattern_template = scenario['patternTemplate']
-    failure = scenario['failure']
+    fault_percentage = scenario['faultPercentage']
+    fault_duration = scenario['faultDuration']
     config_template = scenario['configTemplate']
     idx_round = scenario['round']
     maxRequestsAllowed = scenario['maxRequestsAllowed']
     targetSuccessfulRequests = scenario['targetSuccessfulRequests']
 
     payload = json.dumps({
-        'concurrentUsers': users,
         'maxRequestsAllowed': maxRequestsAllowed,
         'targetSuccessfulRequests': targetSuccessfulRequests,
         'params': config_template
@@ -105,7 +106,8 @@ def do_test(scenario, user_id):
         result['round'] = idx_round
         result['lib'] = pattern_template['lib']
         result['pattern'] = pattern_template['pattern']
-        result['failureRate'] = failure
+        result['faultPercentage'] = fault_percentage
+        result['faultDuration'] = fault_duration
         for config_key in config_template.keys():
             result[config_key] = config_template[config_key]
     else:

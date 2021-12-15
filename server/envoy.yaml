@@ -37,7 +37,7 @@ static_resources:
               delay:
                 fixed_delay: 5s
                 percentage:
-                  numerator: 50
+                  numerator: 0
                   denominator: HUNDRED
           - name: envoy.filters.http.router
   clusters:
@@ -53,3 +53,9 @@ static_resources:
               socket_address:
                 address: httpbin
                 port_value: 80
+layered_runtime:
+  layers:
+  - name: disk_layer_0
+    disk_layer:
+      symlink_root: /srv/runtime/current
+      subdirectory: envoy

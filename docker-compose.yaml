@@ -34,6 +34,7 @@ services:
       context: ./orchestrator
     container_name: orchestrator
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./config-r4j.json:/opt/app/conf/conf.json
       - ./results:/opt/app/results
       - /home/vagrant/.aws/credentials:/home/app/.aws/credentials
@@ -41,9 +42,12 @@ services:
       - CONFIG_FILE=/opt/app/conf/conf.json
       - AWS_BUCKET_NAME=phd-carlos-results
       - OUTPUT_PATH=resilience-tests
+      - DOCKER_HOST=/var/run/docker.sock
     depends_on:
       - resilience4j
       - polly
+      - envoy
+      - httpbin
 
   httpbin:
     image: kennethreitz/httpbin
@@ -64,8 +68,9 @@ services:
       - 9211:9211
     volumes:
       - ./server/envoy.yaml:/etc/envoy/envoy.yaml
-      - ./server/http_status:/srv/runtime/v1/envoy/fault/http/abort/http_status
-      - ./server/abort_percent:/srv/runtime/v1/envoy/fault/http/abort/abort_percent
+      - ./runtime:/srv/runtime
+      - ./server/update_duration_fault.sh:/update_duration_fault.sh
+      - ./server/update_percentage_fault.sh:/update_percentage_fault.sh
     depends_on:
       - httpbin
     deploy:
