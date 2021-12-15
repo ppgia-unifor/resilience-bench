@@ -9,7 +9,7 @@
     "targetSuccessfulRequests": 20,
     "patterns": [
         {
-            "name": "retry",
+            "pattern": "retry",
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/retry",
@@ -21,7 +21,7 @@
             }
         },
         {
-            "name": "baseline",
+            "pattern": "baseline",
             "platform": "java",
             "lib": "resilience4j",
             "url": "http://resilience4j:8080/baseline",
