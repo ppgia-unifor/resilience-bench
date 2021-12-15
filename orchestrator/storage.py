@@ -16,8 +16,10 @@ def save_file(filename, data, format):
 
     if format == 'csv':
         df.to_csv(buffer, index=False)
+        df.to_csv(f'{OUTPUT_PATH}/{filename}.{format}', index=False)
     elif format == 'json':
         df.to_json(buffer)
+        df.to_json(f'{OUTPUT_PATH}/{filename}.{format}')
     else:
         raise ValueError(f'format {format} not supported')
 
