@@ -37,7 +37,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config-r4j.json:/opt/app/conf/conf.json
       - ./results:/opt/app/results
-      - /home/vagrant/.aws/credentials:/home/app/.aws/credentials
+      - /home/vagrant/.aws/credentials:/root/.aws/credentials
     environment:
       - CONFIG_FILE=/opt/app/conf/conf.json
       - AWS_BUCKET_NAME=phd-carlos-results
