@@ -24,7 +24,7 @@ services:
     environment:
       - BACKEND_HOST=http://envoy:9211
       - RESOURCE_PATH=/stream/200
-      - READ_TIMEOUT=250
+      - READ_TIMEOUT=300
     depends_on:
       - httpbin
       - envoy
