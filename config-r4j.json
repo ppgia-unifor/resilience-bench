@@ -1,6 +1,6 @@
 {
     "fault": {
-        "percentage": [50],
+        "percentage": [25, 50],
         "duration": 5000
     },
     "concurrentUsers": [100, 200, 300],
