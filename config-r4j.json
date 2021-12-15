@@ -1,7 +1,7 @@
 {
     "envoyHost": "http://envoy:9100",
     "failureRate": [50],
-    "concurrentUsers": [50, 100, 150],
+    "concurrentUsers": [100, 200, 300],
     "rounds": 10,
     "maxRequestsAllowed": 1000,
     "targetSuccessfulRequests": 20,
