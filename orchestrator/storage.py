@@ -4,6 +4,7 @@ from os import environ
 import boto3
 from botocore.exceptions import ClientError
 import pandas as pd
+from pathlib import Path
 
 logger = logging.getLogger()
 s3 = boto3.resource('s3')
@@ -14,12 +15,13 @@ def save_file(filename, data, format):
     df = pd.DataFrame(data)
     buffer = StringIO()
 
+    local_path = resolve_local_path(filename, format)
     if format == 'csv':
         df.to_csv(buffer, index=False)
-        df.to_csv(f'{OUTPUT_PATH}/{filename}.{format}', index=False)
+        df.to_csv(local_path, index=False)
     elif format == 'json':
         df.to_json(buffer)
-        df.to_json(f'{OUTPUT_PATH}/{filename}.{format}')
+        df.to_json(local_path)
     else:
         raise ValueError(f'format {format} not supported')
 
@@ -28,3 +30,8 @@ def save_file(filename, data, format):
         logger.info('File saved in s3')
     except ClientError as e:
         logger.error('File could not be saved in s3')
+
+def resolve_local_path(filename, format):
+    path = Path(f'./{OUTPUT_PATH}/{filename}.{format}')
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return str(path.parent.absolute())
