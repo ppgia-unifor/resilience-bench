@@ -34,4 +34,4 @@ def save_file(filename, data, format):
 def resolve_local_path(filename, format):
     path = Path(f'./{OUTPUT_PATH}/{filename}.{format}')
     path.parent.mkdir(parents=True, exist_ok=True)
-    return str(path.parent.absolute())
+    return str(path.absolute())
