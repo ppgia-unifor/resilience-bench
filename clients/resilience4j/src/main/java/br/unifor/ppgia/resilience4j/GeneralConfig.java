@@ -21,7 +21,7 @@ public class GeneralConfig {
     @Value("${BACKEND_HOST:http://localhost:9211}")
     private String host;
 
-    @Value("${RESOURCE:/status/200}")
+    @Value("${RESOURCE_PATH:/status/200}")
     private String resource;
 
     @Bean
