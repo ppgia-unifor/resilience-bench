@@ -3,8 +3,8 @@
         "percentage": [25, 50],
         "duration": 5000
     },
-    "concurrentUsers": [100, 200, 300],
-    "rounds": 10,
+    "concurrentUsers": [200],
+    "rounds": 5,
     "maxRequestsAllowed": 1000,
     "targetSuccessfulRequests": 20,
     "patterns": [
@@ -17,7 +17,7 @@
                 "maxAttempts": 6,
                 "multiplier": 1.5,
                 "intervalFunction": "EXPONENTIAL_BACKOFF",
-                "initialIntervalMillis": [50, 100, 150]
+                "initialIntervalMillis": [50]
             }
         },
         {
