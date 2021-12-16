@@ -19,7 +19,7 @@ requestsSesstion = requests.Session()
 retries = Retry(total=10,
                 backoff_factor=0.1,
                 status_forcelist=[ 500, 502, 503, 504 ])
-requestsSesstion.mount('http://', HTTPAdapter(max_retries=retries))
+requestsSesstion.mount('http://', HTTPAdapter(max_retries=retries, pool_maxsize=500))
 
 test_id = datetime.now().astimezone(timezone('America/Sao_Paulo')).strftime('%c')
 
