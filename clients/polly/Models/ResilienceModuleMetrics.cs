@@ -6,9 +6,9 @@
 
         public int UnsuccessfulCalls { get; private set; }
 
-        public int TotalCalls 
+        public int TotalCalls
         {
-            get 
+            get
             {
                 return SuccessfulCalls + UnsuccessfulCalls;
             }
@@ -39,11 +39,43 @@
         /// Time spent in ms to get a successful response
         /// </summary>
         public long SuccessTime { get; private set; }
+        
+        public double SuccessTimePerRequest
+        {
+            get
+            {
+                if (SuccessfulRequests > 0)
+                {
+                    return SuccessTime / (double)SuccessfulRequests;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
 
         /// <summary>
         /// Time spent in ms to get a unsuccessful response
         /// </summary>
         public long ErrorTime { get; private set; }
+
+        public double ErrorTimePerRequest
+        {
+            get
+            {
+
+
+                if (UnsuccessfulRequests > 0)
+                {
+                    return ErrorTime / (double)UnsuccessfulRequests;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
 
         /// <summary>
         /// Sum of success and error time
