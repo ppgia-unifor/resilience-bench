@@ -4,16 +4,15 @@ import requests
 import concurrent.futures
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
-import logging
 from datetime import datetime
 from pytz import timezone
 from utils import expand_config_template
 from storage import save_file
 from notifier import notify
 from envoy import update_percentage_fault, update_duration_fault
+from logger import get_logger
 
-logger = logging.getLogger('app')
-logger.setLevel(logging.INFO)
+logger = get_logger('app')
 
 requestsSesstion = requests.Session()
 retries = Retry(total=10,

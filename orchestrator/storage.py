@@ -1,12 +1,13 @@
 from io import StringIO
-import logging
 from os import environ
 import boto3
 from botocore.exceptions import ClientError
 import pandas as pd
 from pathlib import Path
 
-logger = logging.getLogger()
+from logger import get_logger
+
+logger = get_logger('storage')
 s3 = boto3.resource('s3')
 BUCKET_NAME = environ.get('AWS_BUCKET_NAME')
 OUTPUT_PATH = environ.get('OUTPUT_PATH')
