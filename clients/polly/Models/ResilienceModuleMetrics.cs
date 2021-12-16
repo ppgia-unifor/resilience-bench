@@ -39,7 +39,7 @@
         /// Time spent in ms to get a successful response
         /// </summary>
         public long SuccessTime { get; private set; }
-        
+
         public double SuccessTimePerRequest
         {
             get
@@ -89,6 +89,14 @@
         }
 
         public long TotalExecutionTime { get; private set; }
+
+        public double Throughput
+        {
+            get
+            {
+                return TotalRequests / TotalExecutionTime;
+            }
+        }
 
         public void RegisterSuccess(long elapsedTime)
         {

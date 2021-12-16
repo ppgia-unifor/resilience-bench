@@ -63,6 +63,10 @@ public class ResilienceModuleMetrics {
             return 0;
         }
     }
+
+    public double getThroughput() {
+        return getTotalRequests() / getTotalExecutionTime();
+    }
     
     public long getTotalExecutionTime() {
         return totalExecutionTime;
