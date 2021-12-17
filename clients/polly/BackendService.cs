@@ -57,7 +57,7 @@ namespace ResiliencePatterns.Polly
                         }
                         throw new HttpRequestException();
                     }
-                    catch (HttpRequestException e)
+                    catch (Exception e)
                     {
                         requestStopwatch.Stop();
                         metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
