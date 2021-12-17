@@ -35,7 +35,7 @@ services:
     container_name: orchestrator
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./config-retry.json:/opt/app/conf/conf.json
+      - ./config-baseline.json:/opt/app/conf/conf.json
       - ./results:/opt/app/results
       - /home/vagrant/.aws/credentials:/root/.aws/credentials
     environment:
