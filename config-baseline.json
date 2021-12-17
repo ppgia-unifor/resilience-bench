@@ -1,9 +1,9 @@
 {
     "fault": {
-        "percentage": [50],
+        "percentage": [25, 75],
         "duration": 5000
     },
-    "concurrentUsers": [100],
+    "concurrentUsers": [200],
     "rounds": 10,
     "maxRequestsAllowed": 100,
     "targetSuccessfulRequests": 20,
