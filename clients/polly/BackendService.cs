@@ -46,8 +46,16 @@ namespace ResiliencePatterns.Polly
                 {
                     var requestStopwatch = new Stopwatch();
                     requestStopwatch.Start();
-                    var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
-                    requestStopwatch.Stop();
+                    HttpResponseMessage result = null;
+                    try 
+                    {
+                        result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
+                        requestStopwatch.Stop();
+                    } catch (Exception) {
+                        requestStopwatch.Stop();
+                        metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
+                        throw new HttpRequestException("Request timed out");
+                    }
 
                     if (result.IsSuccessStatusCode)
                     {
