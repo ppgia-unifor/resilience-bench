@@ -48,14 +48,16 @@ namespace ResiliencePatterns.Polly
                     requestStopwatch.Start();
                     try
                     {
-                        var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
-                        requestStopwatch.Stop();
-                        if (result.IsSuccessStatusCode)
+                        using (var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource)))
                         {
-                            metrics.RegisterSuccess(requestStopwatch.ElapsedMilliseconds);
-                            return result;
+                            requestStopwatch.Stop();
+                            if (result.IsSuccessStatusCode)
+                            {
+                                metrics.RegisterSuccess(requestStopwatch.ElapsedMilliseconds);
+                                return result;
+                            }
+                            throw new HttpRequestException();
                         }
-                        throw new HttpRequestException();
                     }
                     catch (Exception e)
                     {
