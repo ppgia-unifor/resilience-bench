@@ -9,7 +9,7 @@ services:
       - 5000:80
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/stream/200
+      - RESOURCE_PATH=/bytes/100000
       - READ_TIMEOUT=500
     depends_on:
       - httpbin
@@ -23,7 +23,7 @@ services:
       - 8080:8080
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/stream/200
+      - RESOURCE_PATH=/bytes/100000
       - READ_TIMEOUT=500
     depends_on:
       - httpbin

@@ -1,9 +1,9 @@
 {
     "fault": {
-        "percentage": [25, 50],
+        "percentage": [25, 75],
         "duration": 5000
     },
-    "concurrentUsers": [100],
+    "concurrentUsers": [100, 200],
     "rounds": 10,
     "maxRequestsAllowed": 100,
     "targetSuccessfulRequests": 20,
@@ -31,7 +31,7 @@
                 "count": 5,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",
                 "exponentialBackoffPow": 1.5,
-                "sleepDuration": [50]
+                "sleepDuration": [50, 100]
             }
         },
         {
@@ -43,7 +43,7 @@
                 "maxAttempts": 6,
                 "multiplier": 1.5,
                 "intervalFunction": "EXPONENTIAL_BACKOFF",
-                "initialIntervalMillis": [50]
+                "initialIntervalMillis": [50, 100]
             }
         }
     ]
