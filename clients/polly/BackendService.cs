@@ -34,46 +34,47 @@ namespace ResiliencePatterns.Polly
         /// <returns>A list of metrics. Each metric represents each try to do a succesful request</returns>
         public async Task<ResilienceModuleMetrics> MakeRequestAsync(AsyncPolicy policy, int targetSuccessfulRequests, int maxRequestsAllowed)
         {
-            var successfulRequests = 0;
-            var totalRequests = 0;
+            var successfulCalls = 0;
+            var totalCalls = 0;
             var metrics = new ResilienceModuleMetrics();
 
             var externalStopwatch = new Stopwatch();
             externalStopwatch.Start();
-            while (successfulRequests < targetSuccessfulRequests && maxRequestsAllowed > totalRequests)
+            while (successfulCalls < targetSuccessfulRequests && maxRequestsAllowed > totalCalls)
             {
                 var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
                 {
                     var requestStopwatch = new Stopwatch();
-                    requestStopwatch.Start();
-                    HttpResponseMessage result = null;
-                    try 
+                    try
                     {
-                        result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
+                        requestStopwatch.Start();
+                        var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
                         requestStopwatch.Stop();
-                    } catch (Exception) {
-                        requestStopwatch.Stop();
+                        if (result.IsSuccessStatusCode)
+                        {
+                            metrics.RegisterSuccess(requestStopwatch.ElapsedMilliseconds);
+                            return result;
+                        }
+                        else
+                        {
+                            throw new HttpRequestException();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        if (requestStopwatch.IsRunning) requestStopwatch.Stop();
                         metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
-                        throw new HttpRequestException("Request timed out");
+                        throw new HttpRequestException();
                     }
-
-                    if (result.IsSuccessStatusCode)
-                    {
-                        metrics.RegisterSuccess(requestStopwatch.ElapsedMilliseconds);
-                        return result;
-                    }
-                    metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
-                    throw new HttpRequestException();
                 });
-
                 if (policyResult.Outcome == OutcomeType.Successful)
                 {
-                    successfulRequests++;
+                    successfulCalls++;
                 }
-                totalRequests++;
+                totalCalls++;
             }
             externalStopwatch.Stop();
-            metrics.RegisterTotals(totalRequests, successfulRequests, externalStopwatch.ElapsedMilliseconds);
+            metrics.RegisterTotals(totalCalls, successfulCalls, externalStopwatch.ElapsedMilliseconds);
             return metrics;
         }
     }
