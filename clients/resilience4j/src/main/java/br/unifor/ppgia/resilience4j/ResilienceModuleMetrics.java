@@ -65,7 +65,12 @@ public class ResilienceModuleMetrics {
     }
 
     public double getThroughput() {
-        return getTotalRequests() / getTotalExecutionTime();
+        if (totalExecutionTime > 0) {
+                return 1000 * getTotalRequests() / (double) totalExecutionTime;
+            }
+        else {
+            return 0;
+        }       
     }
     
     public long getTotalExecutionTime() {

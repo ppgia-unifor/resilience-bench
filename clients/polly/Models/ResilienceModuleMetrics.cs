@@ -64,8 +64,6 @@
         {
             get
             {
-
-
                 if (UnsuccessfulRequests > 0)
                 {
                     return ErrorTime / (double)UnsuccessfulRequests;
@@ -88,13 +86,38 @@
             }
         }
 
+        public double ContentionRate
+        {
+            get
+            {
+                if (TotalExecutionTime > 0)
+                {
+                    return TotalContentionTime / (double)TotalExecutionTime;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
         public long TotalExecutionTime { get; private set; }
 
+        /// <summary>
+        /// Throughput in req/s 
+        /// </summary>
         public double Throughput
         {
             get
             {
-                return TotalRequests / TotalExecutionTime;
+                if (TotalExecutionTime > 0)
+                {
+                    return 1000 * TotalRequests / (double)TotalExecutionTime;
+                }
+                else
+                {
+                    return 0;
+                }
+                
             }
         }
 
