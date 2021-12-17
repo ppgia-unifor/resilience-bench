@@ -34,8 +34,8 @@ namespace ResiliencePatterns.Polly
         /// <returns>A list of metrics. Each metric represents each try to do a succesful request</returns>
         public async Task<ResilienceModuleMetrics> MakeRequestAsync(AsyncPolicy policy, int targetSuccessfulRequests, int maxRequestsAllowed)
         {
-            var successfulRequests = 0;
-            var totalRequests = 0;
+            var successfulCalls = 0;
+            var totalCalls = 0;
             var metrics = new ResilienceModuleMetrics();
 
             var externalStopwatch = new Stopwatch();
@@ -53,7 +53,6 @@ namespace ResiliencePatterns.Polly
                         if (result.IsSuccessStatusCode)
                         {
                             metrics.RegisterSuccess(requestStopwatch.ElapsedMilliseconds);
-                            successfulRequests++;
                             return result;
                         }
                         throw new HttpRequestException();
@@ -62,12 +61,17 @@ namespace ResiliencePatterns.Polly
                     {
                         requestStopwatch.Stop();
                         metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
+                        throw new HttpRequestException();
                     }
                 });
-                totalRequests++;
+                if (policyResult.Outcome == OutcomeType.Successful)
+                {
+                    successfulCalls++;
+                }
+                totalCalls++;
             }
             externalStopwatch.Stop();
-            metrics.RegisterTotals(totalRequests, successfulRequests, externalStopwatch.ElapsedMilliseconds);
+            metrics.RegisterTotals(totalCalls, successfulCalls, externalStopwatch.ElapsedMilliseconds);
             return metrics;
         }
     }

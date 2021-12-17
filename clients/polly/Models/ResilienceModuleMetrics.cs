@@ -110,10 +110,10 @@
             ErrorTime += elapsedTime;
         }
 
-        public void RegisterTotals(int totalRequests, int successfulRequests, long totalExecutionTime)
+        public void RegisterTotals(int totalCalls, int successfulCalls, long totalExecutionTime)
         {
-            SuccessfulCalls = successfulRequests;
-            UnsuccessfulCalls = totalRequests - successfulRequests;
+            SuccessfulCalls = successfulCalls;
+            UnsuccessfulCalls = totalCalls - successfulCalls;
             TotalExecutionTime = totalExecutionTime;
         }
     }
