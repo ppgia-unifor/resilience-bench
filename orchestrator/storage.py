@@ -28,9 +28,9 @@ def save_file(filename, data, format):
 
     try:
         s3.Object(BUCKET_NAME, f'{OUTPUT_PATH}/{filename}.{format}').put(Body=buffer.getvalue())
-        logger.info('File saved in s3')
+        logger.info(f'File saved in s3 at {OUTPUT_PATH}/{filename}.{format}')
     except ClientError as e:
-        logger.error('File could not be saved in s3')
+        logger.error('File could not be saved in s3', e)
 
 def resolve_local_path(filename, format):
     path = Path(f'./{OUTPUT_PATH}/{filename}.{format}')
