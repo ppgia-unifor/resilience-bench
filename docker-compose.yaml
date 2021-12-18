@@ -10,7 +10,7 @@ services:
     environment:
       - BACKEND_HOST=http://envoy:9211
       - RESOURCE_PATH=/bytes/5000
-      - READ_TIMEOUT=600
+      - READ_TIMEOUT=700
     depends_on:
       - httpbin
       - envoy
@@ -24,7 +24,7 @@ services:
     environment:
       - BACKEND_HOST=http://envoy:9211
       - RESOURCE_PATH=/bytes/5000
-      - READ_TIMEOUT=600
+      - READ_TIMEOUT=700
     depends_on:
       - httpbin
       - envoy
