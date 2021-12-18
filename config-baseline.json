@@ -1,11 +1,11 @@
 {
     "fault": {
-        "percentage": [25, 75],
+        "percentage": [25],
         "duration": 5000
     },
-    "concurrentUsers": [200],
+    "concurrentUsers": [150],
     "rounds": 10,
-    "maxRequestsAllowed": 100,
+    "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 20,
     "patterns": [
         {
