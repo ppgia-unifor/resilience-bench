@@ -36,13 +36,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config-baseline.json:/opt/app/conf/conf.json
-      - ./results:/opt/app/results
+      #- ./resilience-tests:/opt/app/resilience-tests
       - /home/vagrant/.aws/credentials:/root/.aws/credentials
     environment:
       - CONFIG_FILE=/opt/app/conf/conf.json
       - AWS_BUCKET_NAME=phd-carlos-results
-      - OUTPUT_PATH=resilience-tests
+      - AWS_OUTPUT_PATH=resilience-tests
+      # - DISK_PATH=/opt/app/resilience-tests
       - DOCKER_HOST=/var/run/docker.sock
+      - TIME_ZONE=America/Sao_Paulo
     depends_on:
       - resilience4j
       - polly

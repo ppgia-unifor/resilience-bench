@@ -1,12 +1,12 @@
 {
     "fault": {
-        "percentage": [25],
+        "percentage": [25, 50],
         "duration": 5000
     },
-    "concurrentUsers": [150],
-    "rounds": 10,
+    "concurrentUsers": [10, 20],
+    "rounds": 5,
     "maxRequestsAllowed": 500,
-    "targetSuccessfulRequests": 20,
+    "targetSuccessfulRequests": 5,
     "patterns": [
         {
             "pattern": "baseline",

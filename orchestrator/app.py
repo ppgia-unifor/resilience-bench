@@ -1,4 +1,5 @@
 import os
+from os import environ
 import json
 import requests
 import concurrent.futures
@@ -20,7 +21,14 @@ retries = Retry(total=10,
                 status_forcelist=[ 500, 502, 503, 504 ])
 requestsSesstion.mount('http://', HTTPAdapter(max_retries=retries, pool_maxsize=500))
 
-test_id = datetime.now().astimezone(timezone('America/Sao_Paulo')).strftime('%c')
+TIME_ZONE = environ.get('TIME_ZONE')
+
+if TIME_ZONE:
+    curr_time = datetime.now().astimezone(timezone(TIME_ZONE))
+else:
+    curr_time = datetime.now()
+
+test_id = curr_time.strftime('%a %b %d %Hh%Mm%Ss %Y')
 
 def build_scenarios():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
@@ -29,50 +37,67 @@ def build_scenarios():
     fault_percentages = conf['fault']['percentage']
     fault_duration = conf['fault']['duration']
     patterns = conf['patterns']
-    users = conf['concurrentUsers']
+    workloads = conf['concurrentUsers']
     rounds = conf['rounds'] + 1
     max_requests_allowed = conf['maxRequestsAllowed']
     target_successful_requests = conf['targetSuccessfulRequests']
-    scenarios = []
+    all_scenarios = []
+    scenario_groups = {}
 
     for fault_percentage in fault_percentages:
-        for pattern_template in patterns:
-            config_templates = expand_config_template(pattern_template['configTemplate'])
-            for config_template in config_templates:
-                for user in users:
+        for workload in workloads:
+            scenarios = []
+            for pattern_template in patterns:
+                config_templates = expand_config_template(pattern_template['configTemplate'])
+                for config_template in config_templates:
                     for idx_round in range(1, rounds):
                         scenarios.append({
                             'configTemplate': config_template,
                             'patternTemplate': pattern_template,
-                            'users': user,
+                            'users': workload,
                             'round': idx_round,
                             'faultPercentage': fault_percentage,
                             'faultDuration': fault_duration,
                             'maxRequestsAllowed': max_requests_allowed,
                             'targetSuccessfulRequests': target_successful_requests
                         })
-    logger.info(f'{len(scenarios)} scenarios generated')
-    save_file(f'{test_id}/scenarios', scenarios, 'json')
-    return scenarios
+            scenario_group_id = 'f'+str(fault_percentage)+'u'+str(workload)
+            scenario_groups[scenario_group_id] = scenarios
+            all_scenarios += scenarios
+
+    logger.info(f'{len(all_scenarios)} scenarios generated')
+    save_file(f'{test_id}/scenarios', all_scenarios, 'json')
+    return scenario_groups
 
 def main():
-    scenarios = build_scenarios()
-    results = []
-    for scenario in scenarios:
-        users = scenario['users'] + 1
-        update_percentage_fault(int(scenario['faultPercentage']))
-        update_duration_fault(int(scenario['faultDuration']))
-        with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
-            futures = []
-            for user_id in range(1, users):
-                futures.append(executor.submit(do_test, scenario=scenario, user_id=user_id))
-            
-            for future in concurrent.futures.as_completed(futures):
-                results.append(future.result())
-            
-    save_file(f'{test_id}/total', results, 'csv')
-    notify(f'{test_id} - teste finalizado')
+    scenario_groups = build_scenarios()
+    all_results = []
+    curr_fault_perc = ''
+    curr_fault_duration = ''
 
+    for scenario_group in scenario_groups.keys():
+        results = []
+        for scenario in scenario_groups[scenario_group]:
+            users = scenario['users'] + 1
+            if scenario['faultPercentage'] != curr_fault_perc:
+                curr_fault_perc = scenario['faultPercentage']
+                update_percentage_fault(int(curr_fault_perc))
+            if scenario['faultDuration'] != curr_fault_duration:
+                curr_fault_duration = scenario['faultDuration']
+                update_duration_fault(int(curr_fault_duration))
+            with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
+                futures = []
+                for user_id in range(1, users):
+                    futures.append(executor.submit(do_test, scenario=scenario, user_id=user_id))
+                
+                for future in concurrent.futures.as_completed(futures):
+                    results.append(future.result())
+
+        all_results += results
+        save_file(f'{test_id}/results_{scenario_group}', results, 'csv')
+            
+    save_file(f'{test_id}/results', all_results, 'csv')
+    notify(f'{test_id} - teste finalizado')
 
 def do_test(scenario, user_id):
     start_time = datetime.now()
