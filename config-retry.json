@@ -6,7 +6,7 @@
     "concurrentUsers": [50, 100, 150],
     "rounds": 10,
     "maxRequestsAllowed": 500,
-    "targetSuccessfulRequests": 20,
+    "targetSuccessfulRequests": 25,
     "patterns": [
         {
             "pattern": "baseline",
