@@ -76,15 +76,23 @@ def main():
     curr_fault_duration = ''
 
     for scenario_group in scenario_groups.keys():
+        logger.info(f'Starting scenario group {scenario_group} with {len(scenario_groups[scenario_group])} scenario(s)')
         results = []
+        scenario_group_count = 0
+
         for scenario in scenario_groups[scenario_group]:
+            scenario_group_count += 1
+            logger.info(f'Processing scenario {scenario_group_count}/{len(scenario_groups[scenario_group])}')
             users = scenario['users'] + 1
+
             if scenario['faultPercentage'] != curr_fault_perc:
                 curr_fault_perc = scenario['faultPercentage']
                 update_percentage_fault(int(curr_fault_perc))
+
             if scenario['faultDuration'] != curr_fault_duration:
                 curr_fault_duration = scenario['faultDuration']
                 update_duration_fault(int(curr_fault_duration))
+
             with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
                 futures = []
                 for user_id in range(1, users):
