@@ -30,6 +30,7 @@ namespace ResiliencePatterns.Polly.Controllers
         {
             return Policy
                 .Handle<HttpRequestException>()
+                .Or<TaskCanceledException>()
                 .CircuitBreakerAsync(
                     exceptionsAllowedBeforeBreaking: circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
                     durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking));

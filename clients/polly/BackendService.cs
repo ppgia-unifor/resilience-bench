@@ -39,13 +39,13 @@ namespace ResiliencePatterns.Polly
             var metrics = new ResilienceModuleMetrics();
 
             var externalStopwatch = new Stopwatch();
+            var requestStopwatch = new Stopwatch();
             externalStopwatch.Start();
             while (successfulCalls < targetSuccessfulRequests && maxRequestsAllowed > metrics.TotalRequests)
             {
-                var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
+                try
                 {
-                    var requestStopwatch = new Stopwatch();
-                    try
+                    var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
                     {
                         requestStopwatch.Start();
                         var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
@@ -59,15 +59,15 @@ namespace ResiliencePatterns.Polly
                         {
                             throw new HttpRequestException();
                         }
-                    }
-                    catch (Exception e) when ((e is HttpRequestException) || (e is TaskCanceledException))
-                    {
-                        // _logger.LogInformation("Exception {e}", e);
-                        if (requestStopwatch.IsRunning) requestStopwatch.Stop();
-                        metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
-                        throw new HttpRequestException();
-                    }
-                });
+                        }
+
+                    });
+                catch (Exception e) when ((e is HttpRequestException) || (e is TaskCanceledException))
+                {
+                    // _logger.LogInformation("Exception {e}", e);
+                    if (requestStopwatch.IsRunning) requestStopwatch.Stop();
+                    metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
+                }
                 if (policyResult.Outcome == OutcomeType.Successful)
                 {
                     successfulCalls++;
