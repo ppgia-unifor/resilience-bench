@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
@@ -28,7 +29,7 @@ namespace ResiliencePatterns.Polly.Controllers
         private static AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)
         {
             return Policy
-                .Handle<Exception>()
+                .Handle<HttpRequestException>()
                 .CircuitBreakerAsync(
                     exceptionsAllowedBeforeBreaking: circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
                     durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking));
