@@ -59,9 +59,8 @@ namespace ResiliencePatterns.Polly
                         {
                             throw new HttpRequestException();
                         }
-                        }
-
                     });
+                }
                 catch (Exception e) when ((e is HttpRequestException) || (e is TaskCanceledException))
                 {
                     // _logger.LogInformation("Exception {e}", e);
