@@ -98,14 +98,17 @@ def main():
                 for user_id in range(1, users):
                     futures.append(executor.submit(do_test, scenario=scenario, user_id=user_id))
                 
+                totResults = 0
                 for future in concurrent.futures.as_completed(futures):
                     results.append(future.result())
+                    totResults += 1
+                    logger.info(f'TotResults: {totResults}')
 
         all_results += results
         save_file(f'{test_id}/results_{scenario_group}', results, 'csv')
             
     save_file(f'{test_id}/results', all_results, 'csv')
-    notify(f'{test_id} - teste finalizado')
+    notify(f'{test_id} - done!')
 
 def do_test(scenario, user_id):
     start_time = datetime.now()
