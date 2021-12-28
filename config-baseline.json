@@ -1,5 +1,6 @@
 {
     "fault": {
+        "type": "abort",
         "percentage": [25, 50],
         "duration": 5000
     },

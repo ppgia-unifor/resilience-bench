@@ -10,7 +10,7 @@ from pytz import timezone
 from utils import expand_config_template
 from storage import save_file
 from notifier import notify
-from envoy import update_percentage_fault, update_duration_fault
+from envoy import Envoy
 from logger import get_logger
 
 logger = get_logger('app')
@@ -23,19 +23,18 @@ requestsSesstion.mount('http://', HTTPAdapter(max_retries=retries, pool_maxsize=
 
 TIME_ZONE = environ.get('TIME_ZONE')
 
-if TIME_ZONE:
-    curr_time = datetime.now().astimezone(timezone(TIME_ZONE))
-else:
-    curr_time = datetime.now()
+def now():
+    return datetime.now().astimezone(timezone(TIME_ZONE)) if TIME_ZONE else datetime.now()
 
-test_id = curr_time.strftime('%a %b %d %Hh%Mm%Ss %Y')
+test_id = now().strftime('%a %b %d %Hh%Mm%Ss %Y')
 
 def build_scenarios():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
     conf = json.load(conf_file)
 
+    fault_type = conf['fault']['type']
     fault_percentages = conf['fault']['percentage']
-    fault_duration = conf['fault']['duration']
+    fault_duration = conf['fault']['duration'] if fault_type == 'delay' else 0
     patterns = conf['patterns']
     workloads = conf['concurrentUsers']
     rounds = conf['rounds'] + 1
@@ -58,10 +57,11 @@ def build_scenarios():
                             'round': idx_round,
                             'faultPercentage': fault_percentage,
                             'faultDuration': fault_duration,
+                            'faultType': fault_type,
                             'maxRequestsAllowed': max_requests_allowed,
                             'targetSuccessfulRequests': target_successful_requests
                         })
-            scenario_group_id = 'f'+str(fault_percentage)+'u'+str(workload)
+            scenario_group_id = f'{fault_type}p{fault_percentage}u{workload}'
             scenario_groups[scenario_group_id] = scenarios
             all_scenarios += scenarios
 
@@ -72,8 +72,7 @@ def build_scenarios():
 def main():
     scenario_groups = build_scenarios()
     all_results = []
-    curr_fault_perc = ''
-    curr_fault_duration = ''
+    envoy = Envoy()
 
     for scenario_group in scenario_groups.keys():
         logger.info(f'Starting scenario group {scenario_group} with {len(scenario_groups[scenario_group])} scenario(s)')
@@ -85,19 +84,13 @@ def main():
             logger.info(f'Processing scenario {scenario_group_count}/{len(scenario_groups[scenario_group])}')
             users = scenario['users'] + 1
 
-            if scenario['faultPercentage'] != curr_fault_perc:
-                curr_fault_perc = scenario['faultPercentage']
-                update_percentage_fault(int(curr_fault_perc))
-
-            if scenario['faultDuration'] != curr_fault_duration:
-                curr_fault_duration = scenario['faultDuration']
-                update_duration_fault(int(curr_fault_duration))
+            envoy.setup_fault(scenario['faultType'], int(scenario['faultPercentage']), int(scenario['faultDuration']))
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
                 futures = []
                 for user_id in range(1, users):
                     futures.append(executor.submit(do_test, scenario=scenario, user_id=user_id))
-                
+
                 totResults = 0
                 for future in concurrent.futures.as_completed(futures):
                     results.append(future.result())
@@ -106,7 +99,7 @@ def main():
 
         all_results += results
         save_file(f'{test_id}/results_{scenario_group}', results, 'csv')
-            
+
     save_file(f'{test_id}/results', all_results, 'csv')
     notify(f'{test_id} - done!')
 
@@ -127,8 +120,8 @@ def do_test(scenario, user_id):
         'params': config_template
     })
     response = requestsSesstion.post(
-        pattern_template['url'], 
-        data=payload, 
+        pattern_template['url'],
+        data=payload,
         headers={'Content-Type': 'application/json'}
     )
     result = {}
@@ -149,7 +142,7 @@ def do_test(scenario, user_id):
         result['error'] = True
         result['errorMessage'] = response.text
         result['statusCode'] = response.status_code
-    
+
     return result
-    
+
 main()

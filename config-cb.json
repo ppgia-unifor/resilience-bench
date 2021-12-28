@@ -1,5 +1,6 @@
 {
     "fault": {
+        "type": "delay", 
         "percentage": [50],
         "duration": 5000
     },

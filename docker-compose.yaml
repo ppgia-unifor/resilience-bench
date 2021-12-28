@@ -71,8 +71,10 @@ services:
     volumes:
       - ./server/envoy.yaml:/etc/envoy/envoy.yaml
       - ./runtime:/srv/runtime
-      - ./server/update_duration_fault.sh:/update_duration_fault.sh
-      - ./server/update_percentage_fault.sh:/update_percentage_fault.sh
+      - ./server/disable_abort_fault.sh:/disable_abort_fault.sh
+      - ./server/enable_abort_fault.sh:/enable_abort_fault.sh
+      - ./server/disable_delay_fault.sh:/disable_delay_fault.sh
+      - ./server/enable_delay_fault.sh:/enable_delay_fault.sh
     depends_on:
       - httpbin
     deploy:
