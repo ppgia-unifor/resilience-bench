@@ -36,7 +36,10 @@ namespace ResiliencePatterns.Polly
             services.AddHttpClient("backend", c =>
             {
                 c.BaseAddress = new Uri(backendHost);
-                c.Timeout = TimeSpan.FromMilliseconds(Int32.Parse(readTimeout));
+                if (readTimeout != "0")
+                {
+                   c.Timeout = TimeSpan.FromMilliseconds(Int32.Parse(readTimeout)); 
+                }
             });
             services.AddScoped<BackendService>();
         }

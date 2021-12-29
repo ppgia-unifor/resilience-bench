@@ -29,7 +29,13 @@ public class GeneralConfig {
         logger.info("Read timeout is {}.", readTimeout);
         logger.info("Root uri is {}.", host);
         logger.info("Resource is {}.", resource);
-        return restTemplateBuilder.setReadTimeout(Duration.ofMillis(readTimeout)).rootUri(host).build();
+        if (readTimeout > 0) {
+            return restTemplateBuilder.setReadTimeout(Duration.ofMillis(readTimeout)).rootUri(host).build();
+        }
+        else {
+            return restTemplateBuilder.rootUri(host).build();
+        }
+        
     }
 
     @Bean
