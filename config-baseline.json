@@ -4,7 +4,7 @@
         "percentage": [25, 50],
         "duration": 5000
     },
-    "concurrentUsers": [150],
+    "concurrentUsers": [50],
     "rounds": 10,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 25,
