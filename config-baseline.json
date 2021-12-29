@@ -1,10 +1,10 @@
 {
     "fault": {
         "type": "abort",
-        "percentage": [25, 50, 75],
+        "percentage": [50],
         "duration": 5000
     },
-    "concurrentUsers": [50, 100, 150],
+    "concurrentUsers": [150],
     "rounds": 10,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 25,
