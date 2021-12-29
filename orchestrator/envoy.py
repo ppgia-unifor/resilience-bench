@@ -1,18 +1,23 @@
-import time
 import docker
+import time
+from os import environ
 from logger import get_logger
 
 logger = get_logger('envoy')
 
+ENVOY_FAULT_INJECTION_PATH = environ.get('ENVOY_FAULT_INJECTION_PATH')
+
+if not ENVOY_FAULT_INJECTION_PATH:
+    ENVOY_FAULT_INJECTION_PATH = '.'
 
 class Envoy:
 
     def __init__(self):
         self._container_instance = None
         self._fault_type = ''
-        self._abort_percentage = 0
-        self._delay_percentage = 0
-        self._delay_duration_ms = 0
+        self._fault_percentage = 0
+        self._fault_duration = 0
+        self._fault_status = 0
 
     def _find_envoy_container(self):
         client = docker.DockerClient(base_url='unix://var/run/docker.sock')
@@ -20,44 +25,65 @@ class Envoy:
             if container.name == 'envoy':
                 return container
         raise ValueError(
-            'Container named "envoy" not found. Create one and try again.')
+            'Container named "envoy" not found!')
 
     def _exec(self, command):
         if self._container_instance == None:
             self._container_instance = self._find_envoy_container()
-        self._container_instance.exec_run(command)
+        return self._container_instance.exec_run(command)
 
-    def setup_fault(self, fault_type, percentage, duration_ms):
-        self._fault_type = fault_type
-        if self._fault_type == 'delay':
-            self.disable_abort_fault()
-            self.enable_delay_fault(duration_ms, percentage)
-            time.sleep(0.5)
-            logger.info(
-                f'setup finished. type delay percentage {self._delay_percentage} duration ms {self._delay_duration_ms}')
-        elif self._fault_type == 'abort':
-            self.disable_delay_fault()
-            self.enable_abort_fault(percentage)
-            time.sleep(0.5)
-            logger.info(
-                f'setup finished. type abort percentage {self._abort_percentage}')
+    def setup_fault(self, fault_spec, percentage):
+        if 'type' in fault_spec:
+            self._fault_type = fault_spec['type']
+            if self._fault_type == 'delay':
+                if 'duration' in fault_spec:
+                    self.disable_abort_fault()
+                    self.enable_delay_fault(fault_spec['duration'], percentage)
+                    time.sleep(0.5)
+                else:
+                    logger.error(f'Missing duration parameter for delay fault!')           
+            elif self._fault_type == 'abort':
+                if 'status' in fault_spec:
+                    self.disable_delay_fault()
+                    self.enable_abort_fault(fault_spec['status'], percentage)
+                    time.sleep(0.5)
+                else:
+                    logger.error(f'Missing status parameter for abort fault!')  
+            else:
+                logger.error(f'Fault type {self._fault_type} is not supported!')
+        else:
+            logger.error(f'Missing fault type!')
 
     def enable_delay_fault(self, duration, percentage):
-        if percentage != self._abort_percentage or duration != self._delay_duration_ms:
-            self._delay_duration_ms = duration
-            self._delay_percentage = percentage
-            self._exec(f'bash enable_delay_fault.sh {percentage} {duration}')
+        if percentage != self._fault_percentage or duration != self._fault_duration:
+            self._fault_percentage = percentage
+            self._fault_duration = duration            
+            (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/enable_delay_fault.sh {percentage} {duration}')
+            if exit_code == 0:
+                logger.info(f'Enabled {duration} ms delay fault injection in envoy for {percentage}% of requests')
+            else:
+                logger.error(f'Failed to enable delay fault injection in envoy! {output}')
 
     def disable_delay_fault(self):
-        self._exec(f'bash disable_delay_fault.sh')
-        logger.info(f'disabling delay fault')
+        (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/disable_delay_fault.sh')
+        if exit_code == 0:
+            logger.info(f'Disabled delay fault injection in envoy')
+        else:
+            logger.error(f'Failed to disable delay fault injection in envoy! {output}')
 
-    def enable_abort_fault(self, percentage):
-        if percentage != self._abort_percentage:
-            self._abort_percentage = percentage
-            self._exec(f'bash enable_abort_fault.sh {percentage}')
-            logger.info(f'enabeling abort fault to {percentage}%')
+    def enable_abort_fault(self, status, percentage):
+        if percentage != self._fault_percentage or status != self._fault_status:
+            self._fault_percentage = percentage
+            self._fault_status = status            
+            (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/enable_abort_fault.sh {percentage} {status}')
+            if exit_code == 0:
+                logger.info(f'Enabled {status} abort fault injection in envoy for {percentage}% of requests')
+            else:
+                logger.error(f'Failed to enable abort fault injection in envoy! {output}')
 
     def disable_abort_fault(self):
-        self._exec(f'bash disable_abort_fault.sh')
-        logger.info(f'disabling abort fault')
+        (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/disable_abort_fault.sh')
+        if exit_code == 0:
+            logger.info(f'Disabled abort fault injection in envoy')
+        else:
+            logger.error(f'Failed to disable abort fault injection in envoy! {output}')

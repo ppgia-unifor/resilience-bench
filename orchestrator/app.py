@@ -32,9 +32,9 @@ def build_scenarios():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
     conf = json.load(conf_file)
 
-    fault_type = conf['fault']['type']
-    fault_percentages = conf['fault']['percentage']
-    fault_duration = conf['fault']['duration'] if fault_type == 'delay' else 0
+    fault_spec = conf['fault']
+    fault_percentages = fault_spec['percentage']
+    del fault_spec['percentage']
     patterns = conf['patterns']
     workloads = conf['concurrentUsers']
     rounds = conf['rounds'] + 1
@@ -56,12 +56,11 @@ def build_scenarios():
                             'users': workload,
                             'round': idx_round,
                             'faultPercentage': fault_percentage,
-                            'faultDuration': fault_duration,
-                            'faultType': fault_type,
+                            'faultSpec': fault_spec,
                             'maxRequestsAllowed': max_requests_allowed,
                             'targetSuccessfulRequests': target_successful_requests
                         })
-            scenario_group_id = f'{fault_type}p{fault_percentage}u{workload}'
+            scenario_group_id = 'f'+str(fault_percentage)+'u'+str(workload)
             scenario_groups[scenario_group_id] = scenarios
             all_scenarios += scenarios
 
@@ -84,31 +83,31 @@ def main():
             logger.info(f'Processing scenario {scenario_group_count}/{len(scenario_groups[scenario_group])}')
             users = scenario['users'] + 1
 
-            envoy.setup_fault(scenario['faultType'], int(scenario['faultPercentage']), int(scenario['faultDuration']))
-
+            envoy.setup_fault(scenario['faultSpec'], int(scenario['faultPercentage']))
+    
             with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
                 futures = []
                 for user_id in range(1, users):
                     futures.append(executor.submit(do_test, scenario=scenario, user_id=user_id))
-
+                
                 totResults = 0
                 for future in concurrent.futures.as_completed(futures):
                     results.append(future.result())
                     totResults += 1
-                    logger.info(f'TotResults: {totResults}')
+                    logger.info(f'Scenario results: {totResults}/{users-1}')
 
         all_results += results
         save_file(f'{test_id}/results_{scenario_group}', results, 'csv')
-
+            
     save_file(f'{test_id}/results', all_results, 'csv')
-    notify(f'{test_id} - done!')
+    notify(f'Test {test_id} done!')
 
 def do_test(scenario, user_id):
     start_time = datetime.now()
     users = scenario['users']
     pattern_template = scenario['patternTemplate']
     fault_percentage = scenario['faultPercentage']
-    fault_duration = scenario['faultDuration']
+    fault_spec = scenario['faultSpec']
     config_template = scenario['configTemplate']
     idx_round = scenario['round']
     maxRequestsAllowed = scenario['maxRequestsAllowed']
@@ -120,8 +119,8 @@ def do_test(scenario, user_id):
         'params': config_template
     })
     response = requestsSesstion.post(
-        pattern_template['url'],
-        data=payload,
+        pattern_template['url'], 
+        data=payload, 
         headers={'Content-Type': 'application/json'}
     )
     result = {}
@@ -135,14 +134,15 @@ def do_test(scenario, user_id):
         result['lib'] = pattern_template['lib']
         result['pattern'] = pattern_template['pattern']
         result['faultPercentage'] = fault_percentage
-        result['faultDuration'] = fault_duration
+        for fault_key in fault_spec.keys():
+            result['fault'+fault_key.capitalize()] = fault_spec[fault_key]        
         for config_key in config_template.keys():
             result[config_key] = config_template[config_key]
     else:
         result['error'] = True
         result['errorMessage'] = response.text
         result['statusCode'] = response.status_code
-
+    
     return result
-
+    
 main()

@@ -10,7 +10,7 @@ services:
     environment:
       - BACKEND_HOST=http://envoy:9211
       - RESOURCE_PATH=/bytes/5000
-      #- READ_TIMEOUT=700
+      - READ_TIMEOUT=700
     depends_on:
       - httpbin
       - envoy
@@ -24,7 +24,7 @@ services:
     environment:
       - BACKEND_HOST=http://envoy:9211
       - RESOURCE_PATH=/bytes/5000
-      #- READ_TIMEOUT=700
+      - READ_TIMEOUT=700
     depends_on:
       - httpbin
       - envoy
@@ -41,6 +41,7 @@ services:
       - /home/vagrant/.aws/credentials:/root/.aws/credentials
     environment:
       - CONFIG_FILE=/opt/app/conf/conf.json
+      - ENVOY_FAULT_INJECTION_PATH=/opt/app/fault-injection
       - AWS_BUCKET_NAME=phd-carlos-results
       - AWS_OUTPUT_PATH=resilience-tests
       # - DISK_PATH=/opt/app/resilience-tests
@@ -72,10 +73,7 @@ services:
     volumes:
       - ./server/envoy.yaml:/etc/envoy/envoy.yaml
       - ./runtime:/srv/runtime
-      - ./server/disable_abort_fault.sh:/disable_abort_fault.sh
-      - ./server/enable_abort_fault.sh:/enable_abort_fault.sh
-      - ./server/disable_delay_fault.sh:/disable_delay_fault.sh
-      - ./server/enable_delay_fault.sh:/enable_delay_fault.sh
+      - ./server/fault-injection:/opt/app/fault-injection
     depends_on:
       - httpbin
     deploy:
