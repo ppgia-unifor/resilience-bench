@@ -36,9 +36,6 @@ namespace ResiliencePatterns.Polly
         {
             var successfulCalls = 0;
             var totalCalls = 0;
-            var totStarts = 0;
-            var totSuccessStops = 0;
-            var totFailStops = 0;
             var metrics = new ResilienceModuleMetrics();
 
             var externalStopwatch = new Stopwatch();
@@ -53,12 +50,8 @@ namespace ResiliencePatterns.Polly
                     {
                         requestStopwatch.Reset();
                         requestStopwatch.Start();
-                        totStarts++;
-                        _logger.LogInformation("requestWatch started");
                         var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
                         requestStopwatch.Stop();
-                        totSuccessStops++;
-                        _logger.LogInformation("requestWatch stopped - no exception");
                         if (result.IsSuccessStatusCode)
                         {
                             metrics.RegisterSuccess(requestStopwatch.ElapsedMilliseconds);
@@ -75,8 +68,6 @@ namespace ResiliencePatterns.Polly
                         if (requestStopwatch.IsRunning) 
                         {
                             requestStopwatch.Stop();
-                            _logger.LogInformation("requestWatch stopped - exception");
-                            totCapturedStops++;
                         }
                         metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
                         throw;
@@ -91,7 +82,6 @@ namespace ResiliencePatterns.Polly
                 _logger.LogInformation("TotCalls: {totalCalls} TotRequests: {metrics.TotalRequests} SuccRequests: {metrics.SuccessfulRequests}", totalCalls, metrics.TotalRequests, metrics.SuccessfulRequests);
             }
             externalStopwatch.Stop();
-            _logger.LogInformation("TotStarts: {totStarts} TotSuccessStops: {totSuccessStops} TotFailStops: {totFailStops} TotStops: {totSuccessStops+totFailStops}", totStarts, totSuccessStops, totFailStops, totSuccessStops+totFailStops);
             metrics.RegisterTotals(totalCalls, successfulCalls, externalStopwatch.ElapsedMilliseconds);
             return metrics;
         }
