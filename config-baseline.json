@@ -1,11 +1,11 @@
 {
     "fault": {
         "type": "abort",
-        "percentage": [25, 50],
-        "duration": 5000
+        "percentage": [50],
+        "status": 503
     },
-    "concurrentUsers": [50],
-    "rounds": 10,
+    "concurrentUsers": [10],
+    "rounds": 5,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 25,
     "patterns": [
@@ -14,13 +14,6 @@
             "platform": "dotnet",
             "lib": "polly",
             "url": "http://polly/baseline",
-            "configTemplate": {}
-        },
-        {
-            "pattern": "baseline",
-            "platform": "java",
-            "lib": "resilience4j",
-            "url": "http://resilience4j:8080/baseline",
             "configTemplate": {}
         }
     ]
