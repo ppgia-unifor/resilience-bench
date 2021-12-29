@@ -43,13 +43,13 @@ namespace ResiliencePatterns.Polly
 
             var externalStopwatch = new Stopwatch();
             var requestStopwatch = new Stopwatch();
-            PolicyResult<System.Net.Http.HttpResponseMessage> policyResult = null;
             externalStopwatch.Start();
+
             while (successfulCalls < targetSuccessfulRequests && maxRequestsAllowed > metrics.TotalRequests)
             {
-                try
+                var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
                 {
-                    policyResult = await policy.ExecuteAndCaptureAsync(async () =>
+                    try
                     {
                         requestStopwatch.Reset();
                         requestStopwatch.Start();
@@ -58,7 +58,7 @@ namespace ResiliencePatterns.Polly
                         var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
                         requestStopwatch.Stop();
                         totSuccessStops++;
-                        _logger.LogInformation("requestWatch stopped - success");
+                        _logger.LogInformation("requestWatch stopped - no exception");
                         if (result.IsSuccessStatusCode)
                         {
                             metrics.RegisterSuccess(requestStopwatch.ElapsedMilliseconds);
@@ -67,36 +67,28 @@ namespace ResiliencePatterns.Polly
                         else
                         {
                             throw new HttpRequestException();
-                        }
-                    });
-                }
-                catch (Exception e)// when ((e is HttpRequestException) || (e is TaskCanceledException))
-                {
-                    _logger.LogInformation("Exception {e}", e);
-                    if (requestStopwatch.IsRunning) 
-                    {
-                        requestStopwatch.Stop();
-                        totFailStops++;
+                        }                        
                     }
-                    _logger.LogInformation("requestWatch stopped - exception");
-                    metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
-                }
-                //_logger.LogInformation("Policy result exception: {policyResult.FinalException}", policyResult.FinalException);
+                    catch (Exception)// when ((e is HttpRequestException) || (e is TaskCanceledException))
+                    {
+                        //_logger.LogInformation("Exception {e}", e);
+                        if (requestStopwatch.IsRunning) 
+                        {
+                            requestStopwatch.Stop();
+                            _logger.LogInformation("requestWatch stopped - exception");
+                            totCapturedStops++;
+                        }
+                        metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
+                        throw;
+                    }
+
+                });
                 if (policyResult.Outcome == OutcomeType.Successful)
                 {
                     successfulCalls++;
                 }
-                else
-                {
-                    if (requestStopwatch.IsRunning) 
-                    {
-                        requestStopwatch.Stop();
-                        totFailStops++;
-                        _logger.LogInformation("requestWatch stopped - policyResult");
-                        metrics.RegisterError(requestStopwatch.ElapsedMilliseconds);
-                    }                 
-                }
                 totalCalls++;
+                _logger.LogInformation("TotCalls: {totalCalls} TotRequests: {metrics.TotalRequests} SuccRequests: {metrics.SuccessfulRequests}", totalCalls, metrics.TotalRequests, metrics.SuccessfulRequests);
             }
             externalStopwatch.Stop();
             _logger.LogInformation("TotStarts: {totStarts} TotSuccessStops: {totSuccessStops} TotFailStops: {totFailStops} TotStops: {totSuccessStops+totFailStops}", totStarts, totSuccessStops, totFailStops, totSuccessStops+totFailStops);
