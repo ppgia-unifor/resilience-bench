@@ -1,8 +1,8 @@
 {
     "fault": {
-        "type": "abort",
+        "type": "delay",
         "percentage": [50],
-        "status": 503
+        "duration": 1000
     },
     "concurrentUsers": [10],
     "rounds": 5,
