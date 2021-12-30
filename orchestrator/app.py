@@ -1,6 +1,7 @@
 import os
 from os import environ
 import json
+import jstyleson
 import requests
 import concurrent.futures
 from urllib3.util.retry import Retry
@@ -30,7 +31,7 @@ test_id = now().strftime('%a %b %d %Hh%Mm%Ss %Y')
 
 def build_scenarios():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
-    conf = json.load(conf_file)
+    conf = jstyleson.load(conf_file)
 
     fault_spec = conf['fault']
     fault_percentages = fault_spec['percentage']
