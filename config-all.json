@@ -2,7 +2,7 @@
     "fault": {
         "type": "abort",
         "percentage": [0, 25, 50, 75],
-        "duration": 5000
+        "status": 503
     },
     "concurrentUsers": [50, 100, 150],
     "rounds": 10,
