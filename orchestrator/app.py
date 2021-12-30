@@ -24,15 +24,10 @@ requestsSesstion.mount('http://', HTTPAdapter(max_retries=retries, pool_maxsize=
 
 TIME_ZONE = environ.get('TIME_ZONE')
 
-def now():
+def get_current_time():
     return datetime.now().astimezone(timezone(TIME_ZONE)) if TIME_ZONE else datetime.now()
 
-test_id = now().strftime('%a %b %d %Hh%Mm%Ss %Y')
-
-def build_scenarios():
-    conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
-    conf = jstyleson.load(conf_file)
-
+def build_scenarios(conf, test_id):
     fault_spec = conf['fault']
     fault_percentages = fault_spec['percentage']
     del fault_spec['percentage']
@@ -70,7 +65,12 @@ def build_scenarios():
     return scenario_groups
 
 def main():
-    scenario_groups = build_scenarios()
+    conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
+    conf = jstyleson.load(conf_file)
+
+    test_id = conf['test_id'] if 'test_id' in conf else get_current_time().strftime('%a %b %d %Hh%Mm%Ss %Y')
+
+    scenario_groups = build_scenarios(conf, test_id)
     all_results = []
     envoy = Envoy()
 
