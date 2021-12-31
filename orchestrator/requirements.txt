@@ -3,4 +3,3 @@ requests
 boto3
 docker
 pytz
-jstyleson
