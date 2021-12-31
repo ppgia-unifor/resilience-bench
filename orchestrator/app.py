@@ -1,7 +1,7 @@
 import os
 from os import environ
 import json
-#import jstyleson
+import jstyleson
 import requests
 import concurrent.futures
 from urllib3.util.retry import Retry
@@ -66,8 +66,7 @@ def build_scenarios(conf, test_id):
 
 def main():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
-    #conf = jstyleson.load(conf_file)
-    conf = json.load(conf_file)
+    conf = jstyleson.load(conf_file)
 
     test_id = conf['test_id'] if 'test_id' in conf else get_current_time().strftime('%a %b %d %Hh%Mm%Ss %Y')
 
