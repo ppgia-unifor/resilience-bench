@@ -17,8 +17,9 @@ no_changes() {
 # $3 - Commit details
 change_pulled() {
     echo "Changes pulled: $*"
+    sudo docker rm -f $(sudo docker ps -a -q)
     sudo docker-compose down
-    sudo docker-compose build --no-cache
+    sudo docker-compose build
     sudo docker-compose up -d
 }
 
