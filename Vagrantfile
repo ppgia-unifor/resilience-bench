@@ -7,8 +7,8 @@ Vagrant.configure("2") do |config|
       master.vm.hostname = "master"
       master.vm.network "private_network", ip: "10.0.0.10"
       master.vm.provider "virtualbox" do |vb|
-          vb.memory = 8192
-          vb.cpus = 4
+          vb.memory = 16384
+          vb.cpus = 8
       end
       # prepare ubuntu
       master.vm.provision "shell", inline: <<-SHELL
@@ -40,9 +40,10 @@ Vagrant.configure("2") do |config|
       master.vm.provision "shell", inline: <<-SHELL
         nohup ./git-repo-watcher/git-repo-watcher -d ${PWD} < /dev/null &
         cd /vagrant
+        docker rm -f $(docker ps -a -q)
         docker-compose down
-        docker-compose build
         docker-compose pull
+        docker-compose build --no-cache
         docker-compose up -d
       SHELL
     end
