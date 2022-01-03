@@ -9,7 +9,7 @@ services:
       - 5000:80
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/bytes/5000
+      - RESOURCE_PATH=/bytes/10000
       #- READ_TIMEOUT=700
     depends_on:
       - httpbin
@@ -23,7 +23,7 @@ services:
       - 8080:8080
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/bytes/5000
+      - RESOURCE_PATH=/bytes/10000
       #- READ_TIMEOUT=700
     depends_on:
       - httpbin
@@ -35,8 +35,8 @@ services:
     container_name: orchestrator
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      #- ./config-baseline.json:/opt/app/conf/conf.json
-      - ./config-all.json:/opt/app/conf/conf.json
+      - ./config-baseline.json:/opt/app/conf/conf.json
+      #- ./config-all.json:/opt/app/conf/conf.json
       #- ./config-cb.json:/opt/app/conf/conf.json
       #- ./resilience-tests:/opt/app/resilience-tests
       - /home/vagrant/.aws/credentials:/root/.aws/credentials
