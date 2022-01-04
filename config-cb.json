@@ -1,10 +1,13 @@
 {
     "fault": {
-        "type": "abort", 
-        "percentage": [25,50],
-        "duration": 5000
+        //"type": "abort",
+        "type": "delay",
+        "percentage": [0, 25, 50, 75],
+        //"percentage": [75],
+        //"status": 503
+        "duration": 1000
     },
-    "concurrentUsers": [150],
+    "concurrentUsers": [100],
     "rounds": 10,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 25,
@@ -16,7 +19,7 @@
             "url": "http://polly/circuitbreaker",
             "configTemplate": {
                 "exceptionsAllowedBeforeBreaking": 2,
-                "durationOfBreaking": [100]
+                "durationOfBreaking": [200]
             }
         },
         {
@@ -31,7 +34,7 @@
                 "failureRateThreshold": 100,
                 "minimumNumberOfCalls": 2,
                 "permittedNumberOfCallsInHalfOpenState": 1,
-                "waitDurationInOpenState": [100]
+                "waitDurationInOpenState": [200]
             }
         }
     ]
