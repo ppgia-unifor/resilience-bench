@@ -4,7 +4,8 @@
         "percentage": [0, 25, 50, 75],
         "status": 503
     },
-    "concurrentUsers": [25, 50, 100],
+    //"concurrentUsers": [25, 50, 100],
+    "concurrentUsers": [50],
     "rounds": 5,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 25,
