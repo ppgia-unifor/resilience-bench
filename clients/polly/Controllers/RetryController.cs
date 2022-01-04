@@ -29,7 +29,8 @@ namespace ResiliencePatterns.Polly.Controllers
         private static AsyncPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)
         {
             return Policy
-                .Handle<HttpRequestException>()
+                // .Handle<HttpRequestException>()
+                .Handle<Exception>()
                 .WaitAndRetryAsync(
                     retryCount: retryConfig.Count,
                     sleepDurationProvider: (retryNumber) =>
