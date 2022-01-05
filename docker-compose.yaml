@@ -35,8 +35,8 @@ services:
     container_name: orchestrator
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      #- ./config-baseline.json:/opt/app/conf/conf.json
-      - ./config-all.json:/opt/app/conf/conf.json
+      - ./config-baseline.json:/opt/app/conf/conf.json
+      #- ./config-all.json:/opt/app/conf/conf.json
       #- ./config-cb.json:/opt/app/conf/conf.json
       #- ./config-rt.json:/opt/app/conf/conf.json
       #- ./resilience-tests:/opt/app/resilience-tests
