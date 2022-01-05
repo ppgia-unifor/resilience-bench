@@ -7,8 +7,8 @@
         //"status": 503
         "duration": 1000
     },
-    //"concurrentUsers": [25, 50, 100],
-    "concurrentUsers": [25],
+    "concurrentUsers": [75, 100],
+    //"concurrentUsers": [25],
     "rounds": 10,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 25,
@@ -22,22 +22,22 @@
                 "count": 5,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",
                 "exponentialBackoffPow": 1.5,
-                "sleepDuration": [50, 100, 150]
-                //"sleepDuration": [200]
+                //"sleepDuration": [50, 100, 150]
+                "sleepDuration": [200]
             }
-        }//,
-        // {
-        //     "pattern": "retry",
-        //     "platform": "java",
-        //     "lib": "resilience4j",
-        //     "url": "http://resilience4j:8080/retry",
-        //     "configTemplate": {
-        //         "maxAttempts": 6,
-        //         "multiplier": 1.5,
-        //         "intervalFunction": "EXPONENTIAL_BACKOFF",
-        //         "initialIntervalMillis": [50, 100, 150]
-        //         //"initialIntervalMillis": [200]
-        //     }
-        // }
+        },
+        {
+            "pattern": "retry",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://resilience4j:8080/retry",
+            "configTemplate": {
+                "maxAttempts": 6,
+                "multiplier": 1.5,
+                "intervalFunction": "EXPONENTIAL_BACKOFF",
+                //"initialIntervalMillis": [50, 100, 150]
+                "initialIntervalMillis": [200]
+            }
+        }
     ]
 }
