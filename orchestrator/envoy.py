@@ -37,16 +37,22 @@ class Envoy:
             self._fault_type = fault_spec['type']
             if self._fault_type == 'delay':
                 if 'duration' in fault_spec:
-                    self.disable_abort_fault()
-                    self.enable_delay_fault(fault_spec['duration'], percentage)
-                    time.sleep(0.5)
+                    if percentage != self._fault_percentage or fault_spec['duration'] != self._fault_duration:
+                        self.disable_abort_fault()
+                        self.enable_delay_fault(fault_spec['duration'], percentage)
+                        self._fault_percentage = percentage
+                        self._fault_duration = fault_spec['duration']  
+                        time.sleep(0.5)
                 else:
                     logger.error(f'Missing duration parameter for delay fault!')           
             elif self._fault_type == 'abort':
                 if 'status' in fault_spec:
-                    self.disable_delay_fault()
-                    self.enable_abort_fault(fault_spec['status'], percentage)
-                    time.sleep(0.5)
+                    if percentage != self._fault_percentage or fault_spec['status'] != self._fault_status:
+                        self.disable_delay_fault()
+                        self.enable_abort_fault(fault_spec['status'], percentage)
+                        self._fault_percentage = percentage
+                        self._fault_status = fault_spec['status']  
+                        time.sleep(0.5)
                 else:
                     logger.error(f'Missing status parameter for abort fault!')  
             else:
@@ -55,14 +61,11 @@ class Envoy:
             logger.error(f'Missing fault type!')
 
     def enable_delay_fault(self, duration, percentage):
-        if percentage != self._fault_percentage or duration != self._fault_duration:
-            self._fault_percentage = percentage
-            self._fault_duration = duration            
-            (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/enable_delay_fault.sh {percentage} {duration}')
-            if exit_code == 0:
-                logger.info(f'Enabled {duration} ms delay fault injection in envoy for {percentage}% of requests')
-            else:
-                logger.error(f'Failed to enable delay fault injection in envoy! {output}')
+        (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/enable_delay_fault.sh {percentage} {duration}')
+        if exit_code == 0:
+            logger.info(f'Enabled {duration} ms delay fault injection in envoy for {percentage}% of requests')
+        else:
+            logger.error(f'Failed to enable delay fault injection in envoy! {output}')
 
     def disable_delay_fault(self):
         (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/disable_delay_fault.sh')
@@ -72,14 +75,11 @@ class Envoy:
             logger.error(f'Failed to disable delay fault injection in envoy! {output}')
 
     def enable_abort_fault(self, status, percentage):
-        if percentage != self._fault_percentage or status != self._fault_status:
-            self._fault_percentage = percentage
-            self._fault_status = status            
-            (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/enable_abort_fault.sh {percentage} {status}')
-            if exit_code == 0:
-                logger.info(f'Enabled {status} abort fault injection in envoy for {percentage}% of requests')
-            else:
-                logger.error(f'Failed to enable abort fault injection in envoy! {output}')
+        (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/enable_abort_fault.sh {percentage} {status}')
+        if exit_code == 0:
+            logger.info(f'Enabled {status} abort fault injection in envoy for {percentage}% of requests')
+        else:
+            logger.error(f'Failed to enable abort fault injection in envoy! {output}')
 
     def disable_abort_fault(self):
         (exit_code, output) = self._exec(f'bash {ENVOY_FAULT_INJECTION_PATH}/disable_abort_fault.sh')
