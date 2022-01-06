@@ -29,10 +29,6 @@ namespace ResiliencePatterns.Polly
             var backendHost = Environment.GetEnvironmentVariable("BACKEND_HOST") ?? "http://localhost:9211";
             var resourcePath = Environment.GetEnvironmentVariable("RESOURCE_PATH") ?? "/status/200";
 
-            // logger.LogInformation("Read timeout is {0}.", readTimeout);
-            // logger.LogInformation("Backend host is {0}.", backendHost);
-            // logger.LogInformation("Resource is {0}.", resourcePath);
-
             services.AddHttpClient("backend", c =>
             {
                 c.BaseAddress = new Uri(backendHost);
