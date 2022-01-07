@@ -7,7 +7,7 @@
         //"status": 503
         "duration": 1000
     },
-    "concurrentUsers": [75, 100],
+    "concurrentUsers": [50, 100],
     "rounds": 10,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 25,
@@ -19,7 +19,7 @@
             "url": "http://polly/circuitbreaker",
             "configTemplate": {
                 "exceptionsAllowedBeforeBreaking": 2,
-                "durationOfBreaking": [200]
+                "durationOfBreaking": [50, 100, 200]
             }
         },
         {
@@ -34,7 +34,7 @@
                 "failureRateThreshold": 100,
                 "minimumNumberOfCalls": 2,
                 "permittedNumberOfCallsInHalfOpenState": 1,
-                "waitDurationInOpenState": [200]
+                "waitDurationInOpenState": [50, 100, 200]
             }
         }
     ]
