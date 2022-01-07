@@ -6,26 +6,26 @@
         //"status": 503
         "duration": 1000
     },
-    //"concurrentUsers": [25, 50, 100],
-    "concurrentUsers": [50],
+    "concurrentUsers": [25, 50, 100],
+    //"concurrentUsers": [50],
     "rounds": 10,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 10,
     "patterns": [
-        // {
-        //     "pattern": "baseline",
-        //     "platform": "dotnet",
-        //     "lib": "polly",
-        //     "url": "http://polly/baseline",
-        //     "configTemplate": {}
-        // },
-        // {
-        //     "pattern": "baseline",
-        //     "platform": "java",
-        //     "lib": "resilience4j",
-        //     "url": "http://resilience4j:8080/baseline",
-        //     "configTemplate": {}
-        // },
+        {
+            "pattern": "baseline",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://polly/baseline",
+            "configTemplate": {}
+        },
+        {
+            "pattern": "baseline",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://resilience4j:8080/baseline",
+            "configTemplate": {}
+        },
         {
             "pattern": "retry",
             "platform": "dotnet",
