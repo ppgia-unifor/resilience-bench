@@ -15,9 +15,9 @@ class Envoy:
     def __init__(self):
         self._container_instance = None
         self._fault_type = ''
-        self._fault_percentage = 0
-        self._fault_duration = 0
-        self._fault_status = 0
+        self._fault_percentage = None
+        self._fault_duration = None
+        self._fault_status = None
 
     def _find_envoy_container(self):
         client = docker.DockerClient(base_url='unix://var/run/docker.sock')
