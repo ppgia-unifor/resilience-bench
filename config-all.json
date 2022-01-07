@@ -1,10 +1,10 @@
 {
     "fault": {
-        "type": "abort",
-        //"type": "delay",
+        //"type": "abort",
+        "type": "delay",
         "percentage": [0, 25, 50, 75],
-        "status": 503
-        //"duration": 1000
+        //"status": 503
+        "duration": 1000
     },
     //"concurrentUsers": [25, 50, 100],
     "concurrentUsers": [50],
