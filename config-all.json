@@ -35,9 +35,8 @@
                 "count": 5,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",
                 "exponentialBackoffPow": 1.5,
-                //"sleepDuration": [50, 100, 200]
+                "sleepDuration": [50, 100, 200]
                 //"sleepDuration": [10, 20, 40]
-                "sleepDuration": [80, 100]
             }
         },
         {
@@ -49,9 +48,8 @@
                 "maxAttempts": 6,
                 "multiplier": 1.5,
                 "intervalFunction": "EXPONENTIAL_BACKOFF",
-                //"initialIntervalMillis": [50, 100, 200]
+                "initialIntervalMillis": [50, 100, 200]
                 //"initialIntervalMillis": [10, 20, 40]
-                "initialIntervalMillis": [80, 100]
             }
         },
         {
@@ -61,9 +59,8 @@
             "url": "http://polly/circuitbreaker",
             "configTemplate": {
                 "exceptionsAllowedBeforeBreaking": 2,
-                //"durationOfBreaking": [50, 100, 200]
+                "durationOfBreaking": [50, 100, 200]
                 //"durationOfBreaking": [10, 20, 40]
-                "durationOfBreaking": [80, 100]
             }
         },
         {
@@ -78,9 +75,8 @@
                 "failureRateThreshold": 100,
                 "minimumNumberOfCalls": 2,
                 "permittedNumberOfCallsInHalfOpenState": 1,
-                //"waitDurationInOpenState": [50, 100, 200]
+                "waitDurationInOpenState": [50, 100, 200]
                 //"waitDurationInOpenState": [10, 20, 40]
-                "waitDurationInOpenState": [80, 100]
             }
         }
     ]
