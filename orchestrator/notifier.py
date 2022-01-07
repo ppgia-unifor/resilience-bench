@@ -1,4 +1,0 @@
-
-
-def notify(message):
-    pass

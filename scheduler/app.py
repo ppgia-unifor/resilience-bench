@@ -10,7 +10,6 @@ from datetime import datetime
 from pytz import timezone
 from utils import expand_config_template
 from storage import save_file
-from notifier import notify
 from envoy import Envoy
 from logger import get_logger
 
@@ -101,7 +100,6 @@ def main():
         save_file(f'{test_id}/results_{scenario_group}', results, 'csv')
             
     save_file(f'{test_id}/results', all_results, 'csv')
-    notify(f'Test {test_id} done!')
 
 def do_test(scenario, user_id):
     start_time = datetime.now()

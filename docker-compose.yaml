@@ -29,10 +29,10 @@ services:
       - httpbin
       - envoy
 
-  orchestrator:
+  scheduler:
     build: 
-      context: ./orchestrator
-    container_name: orchestrator
+      context: ./scheduler
+    container_name: scheduler
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       #- ./config-baseline.json:/opt/app/conf/conf.json
