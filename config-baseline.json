@@ -6,11 +6,11 @@
         "status": 503
         //"duration": 1000
     },
-    "concurrentUsers": [50, 100],
+    "concurrentUsers": [100, 200, 400],
     //"concurrentUsers": [25],
     "rounds": 10,
     "maxRequestsAllowed": 500,
-    "targetSuccessfulRequests": 25,
+    "targetSuccessfulRequests": 10,
     "patterns": [
         {
             "pattern": "baseline",
