@@ -29,3 +29,36 @@ This benchmark runs on top of a virtual machine managed by [Vagrant](https://www
 - describe json properties
 - describe each component
 - describe docker-compose file
+
+## Adding a new programming language
+
+A client should follow a very simple contract to be integrated into this benchmark. 
+
+**Requirements**
+- should offer a baseline version of it, that is a version of the operation with no pattern wrapping it;
+
+- should calculate its own metrics;
+
+- should accept timeout configuration via env variable;
+
+- should accept host and resource via env variable;
+
+- should be containerized using Docker
+
+- The request body should accept this payload. 
+```json
+{
+    "maxRequestsAllowed": 1,
+    "targetSuccessfulRequests": 1,
+    "params": {}
+}
+```
+
+- The response boby should follow this format:
+
+```json
+{
+
+}
+```
+
