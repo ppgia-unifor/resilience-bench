@@ -19,7 +19,8 @@ public class RestClient {
 
     public ResponseEntity<String> get() {
         var response = restTemplate.getForEntity(resource, String.class);
-        logger.info("Response: body size {} status {}", response.getBody().length(), response.getStatusCode());
+        var bodyLength = response.hasBody() ? response.getBody().length() : 0;
+        logger.info("Response: body size {} status {}", bodyLength, response.getStatusCode());
         return response;
     }
 }

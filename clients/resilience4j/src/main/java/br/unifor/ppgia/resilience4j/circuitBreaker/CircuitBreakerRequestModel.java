@@ -4,7 +4,7 @@ public class CircuitBreakerRequestModel {
     private final Float failureRateThreshold;
     private final Integer slidingWindowSize;
     private final Integer minimumNumberOfCalls;
-    private final Integer waitDurationInOpenState; //waitDurationInOpenState [ms]
+    private final Integer waitDurationInOpenState; // [ms]
     private final Integer permittedNumberOfCallsInHalfOpenState;
     private final Integer slowCallRateThreshold;
     private final Integer slowCallDurationThreshold; //[ms]
