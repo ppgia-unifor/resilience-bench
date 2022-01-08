@@ -30,20 +30,54 @@ This benchmark runs on top of a virtual machine managed by [Vagrant](https://www
 - describe each component
 - describe docker-compose file
 
+fault types: abort and delay
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `type` | `string` | **Required**. accept delay or fault |
+| `percentage` | `array` | **Required**.  ... |
+| `duration` | `number` | **Required**. ... |
+| `status` | `number` | **Optional**.  |
+
+Samples:
+
+* Delay fault
+```json
+"fault": {
+    "type": "delay",
+    "percentage": [0, 25, 50, 75],
+    "duration": 1000, 
+    "status": 503 
+}
+```
+
+* Abort fault
+
+```json
+"fault": {
+    "type": "abort",
+    "percentage": [0, 25, 50, 75],
+    "duration": 1000, 
+    "status": 503 
+}
+```
 ## Adding a new programming language
 
 A client should follow a very simple contract to be integrated into this benchmark. 
 
 **Requirements**
-- should offer a baseline version of it, that is a version of the operation with no pattern wrapping it;
 
-- should calculate its own metrics;
+types: technical / conceptual
+
+- (conceptual) should offer a baseline version of it, that is a version of the operation with no pattern wrapping it;
+
+- (conceptual) should calculate its own metrics;
 
 - should accept timeout configuration via env variable;
 
 - should accept host and resource via env variable;
 
-- should be containerized using Docker
+- (technical) should be containerized using Docker. The container should be multi-stage in order to build itself without the need to install dependencies in host machine. (https://docs.docker.com/develop/develop-images/multistage-build/)[Click here] to learn about multi-stage build.
 
 - The request body should accept this payload. 
 ```json
