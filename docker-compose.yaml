@@ -69,9 +69,9 @@ services:
   envoy:
     image: envoyproxy/envoy-dev
     container_name: envoy
-    ports:
-      - 9901:9901
-      - 9211:9211
+    # ports:
+    #   - 9901:9901
+    #   - 9211:9211
     volumes:
       - ./server/envoy.yaml:/etc/envoy/envoy.yaml
       - ./runtime:/srv/runtime
@@ -84,3 +84,14 @@ services:
           cpus: '1'
           memory: 256M
   
+  target:
+    build:
+      context: server
+    volumes:
+      - ./server/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./server/supervisord.conf:/etc/supervisor/conf.d/default.conf
+      - ./runtime:/srv/runtime
+      - ./server/fault-injection:/opt/app/fault-injection
+    ports:
+      - 9901:9901
+      - 9211:9211
