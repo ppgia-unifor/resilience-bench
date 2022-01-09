@@ -9,7 +9,7 @@ services:
       - 5000:80
     environment:
       - BACKEND_HOST=http://server:9211
-      - RESOURCE_PATH=/bytes/5000
+      - RESOURCE_PATH=/bytes/10000
       #- READ_TIMEOUT=300
     depends_on:
       - server
@@ -22,7 +22,7 @@ services:
       - 8080:8080
     environment:
       - BACKEND_HOST=http://server:9211
-      - RESOURCE_PATH=/bytes/5000
+      - RESOURCE_PATH=/bytes/10000
       #- READ_TIMEOUT=300
     depends_on:
       - server
@@ -68,5 +68,5 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 64M
   
