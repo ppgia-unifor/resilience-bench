@@ -8,11 +8,11 @@ services:
     ports:
       - 5000:80
     environment:
-      - BACKEND_HOST=http://envoy:9211
+      - BACKEND_HOST=http://server:9211
       - RESOURCE_PATH=/bytes/5000
       #- READ_TIMEOUT=300
     depends_on:
-      - envoy
+      - server
   
   resilience4j:
     build:
@@ -21,11 +21,11 @@ services:
     ports:
       - 8080:8080
     environment:
-      - BACKEND_HOST=http://envoy:9211
+      - BACKEND_HOST=http://server:9211
       - RESOURCE_PATH=/bytes/5000
       #- READ_TIMEOUT=300
     depends_on:
-      - envoy
+      - server
 
   scheduler:
     build: 
@@ -50,13 +50,12 @@ services:
     depends_on:
       - resilience4j
       - polly
-      - envoy
+      - server
 
-  envoy:
-    # image: envoyproxy/envoy-dev
+  server:
     build:
       context: server
-    container_name: envoy
+    container_name: server
     ports:
       - 9901:9901
       - 9211:9211
@@ -69,5 +68,5 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 128M
   

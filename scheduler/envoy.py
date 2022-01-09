@@ -22,10 +22,10 @@ class Envoy:
     def _find_envoy_container(self):
         client = docker.DockerClient(base_url='unix://var/run/docker.sock')
         for container in client.containers.list():
-            if container.name == 'envoy':
+            if container.name == 'server':
                 return container
         raise ValueError(
-            'Container named "envoy" not found!')
+            'Container named "server" not found!')
 
     def _exec(self, command):
         if self._container_instance == None:
