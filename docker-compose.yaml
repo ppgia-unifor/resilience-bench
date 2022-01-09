@@ -68,5 +68,5 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
+          memory: 128M
   
