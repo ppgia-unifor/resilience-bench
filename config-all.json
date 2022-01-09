@@ -2,7 +2,8 @@
     "fault": {
         "type": "abort",
         //"type": "delay",
-        "percentage": [0, 25, 50, 75],
+        //"percentage": [0, 25, 50, 75],
+        "percentage": [0, 20, 40, 60, 80],
         "status": 503
         //"duration": 1000
     },
