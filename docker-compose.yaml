@@ -12,7 +12,6 @@ services:
       - RESOURCE_PATH=/bytes/50000
       #- READ_TIMEOUT=300
     depends_on:
-      - httpbin
       - envoy
   
   resilience4j:
@@ -26,7 +25,6 @@ services:
       - RESOURCE_PATH=/bytes/50000
       #- READ_TIMEOUT=300
     depends_on:
-      - httpbin
       - envoy
 
   scheduler:
@@ -53,19 +51,7 @@ services:
       - resilience4j
       - polly
       - envoy
-      - httpbin
 
-  # httpbin:
-  #   image: kennethreitz/httpbin
-  #   container_name: httpbin
-  #   ports:
-  #     - 9000:80
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: '1'
-  #         memory: 256M
-  
   envoy:
     # image: envoyproxy/envoy-dev
     build:
@@ -79,8 +65,6 @@ services:
       - ./server/supervisord.conf:/etc/supervisor/conf.d/default.conf
       - ./runtime:/srv/runtime
       - ./server/fault-injection:/opt/app/fault-injection
-    # depends_on:
-    #   - httpbin
     deploy:
       resources:
         limits:
