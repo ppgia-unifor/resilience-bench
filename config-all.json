@@ -1,14 +1,15 @@
 {
     "fault": {
-        "type": "abort",
-        //"type": "delay",
+        //"type": "abort",
+        "type": "delay",
         //"percentage": [0, 25, 50, 75],
-        "percentage": [0, 20, 40, 60, 80],
-        "status": 503
-        //"duration": 1000
+        //"percentage": [0, 20, 40, 60, 80],
+        "percentage": [40],
+        //"status": 503
+        "duration": 1000
     },
-    "concurrentUsers": [50, 100, 150],
-    //"concurrentUsers": [50],
+    //"concurrentUsers": [50, 100, 150],
+    "concurrentUsers": [100],
     "rounds": 10,
     "maxRequestsAllowed": 500,
     "targetSuccessfulRequests": 10,
@@ -36,8 +37,8 @@
                 "count": 5,
                 "sleepDurationType": "EXPONENTIAL_BACKOFF",
                 "exponentialBackoffPow": 1.5,
-                //"sleepDuration": [50, 100, 200]
-                "sleepDuration": [20, 40, 60]
+                "sleepDuration": [50, 100, 150]
+                //"sleepDuration": [20, 40, 60]
             }
         },
         {
@@ -49,8 +50,8 @@
                 "maxAttempts": 6,
                 "multiplier": 1.5,
                 "intervalFunction": "EXPONENTIAL_BACKOFF",
-                //"initialIntervalMillis": [50, 100, 200]
-                "initialIntervalMillis": [20, 40, 60]
+                "initialIntervalMillis": [50, 100, 150]
+                //"initialIntervalMillis": [20, 40, 60]
             }
         },
         {
@@ -60,8 +61,8 @@
             "url": "http://polly/circuitbreaker",
             "configTemplate": {
                 "exceptionsAllowedBeforeBreaking": 2,
-                //"durationOfBreaking": [50, 100, 200]
-                "durationOfBreaking": [20, 40, 60]
+                "durationOfBreaking": [50, 100, 150]
+                //"durationOfBreaking": [20, 40, 60]
             }
         },
         {
@@ -76,8 +77,8 @@
                 "failureRateThreshold": 100,
                 "minimumNumberOfCalls": 2,
                 "permittedNumberOfCallsInHalfOpenState": 1,
-                //"waitDurationInOpenState": [50, 100, 200]
-                "waitDurationInOpenState": [20, 40, 60]
+                "waitDurationInOpenState": [50, 100, 150]
+                //"waitDurationInOpenState": [20, 40, 60]
             }
         }
     ]

@@ -10,7 +10,7 @@ services:
     environment:
       - BACKEND_HOST=http://server:9211
       - RESOURCE_PATH=/bytes/1000
-      #- READ_TIMEOUT=300
+      - READ_TIMEOUT=400
     depends_on:
       - server
   
@@ -23,7 +23,7 @@ services:
     environment:
       - BACKEND_HOST=http://server:9211
       - RESOURCE_PATH=/bytes/1000
-      #- READ_TIMEOUT=300
+      - READ_TIMEOUT=400
     depends_on:
       - server
 
