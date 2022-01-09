@@ -9,7 +9,7 @@ services:
       - 5000:80
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/bytes/50000
+      - RESOURCE_PATH=/bytes/5000
       #- READ_TIMEOUT=300
     depends_on:
       - envoy
@@ -22,7 +22,7 @@ services:
       - 8080:8080
     environment:
       - BACKEND_HOST=http://envoy:9211
-      - RESOURCE_PATH=/bytes/50000
+      - RESOURCE_PATH=/bytes/5000
       #- READ_TIMEOUT=300
     depends_on:
       - envoy
