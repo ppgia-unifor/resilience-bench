@@ -6,7 +6,7 @@
         "status": 503
         //"duration": 1000
     },
-    "concurrentUsers": [100],
+    "concurrentUsers": [100, 200],
     //"concurrentUsers": [25],
     "rounds": 10,
     "maxRequestsAllowed": 500,
