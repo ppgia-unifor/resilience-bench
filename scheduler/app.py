@@ -67,7 +67,7 @@ def main():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
     conf = jstyleson.load(conf_file)
 
-    test_id = conf['test_id'] if 'test_id' in conf else get_current_time().strftime('%a %b %d %Hh%Mm%Ss %Y')
+    test_id = conf['testId'] if 'testId' in conf else get_current_time().strftime('%a %b %d %Hh%Mm%Ss %Y')
 
     scenario_groups = build_scenarios(conf, test_id)
     all_results = []
@@ -134,7 +134,7 @@ def do_test(scenario, user_id):
         result['pattern'] = pattern_template['pattern']
         result['faultPercentage'] = fault_percentage
         for fault_key in fault_spec.keys():
-            result['fault'+fault_key.capitalize()] = fault_spec[fault_key]        
+            result[f'fault{fault_key.capitalize()}'] = fault_spec[fault_key]        
         for config_key in config_template.keys():
             result[config_key] = config_template[config_key]
     else:
