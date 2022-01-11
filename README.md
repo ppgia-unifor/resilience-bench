@@ -17,50 +17,81 @@ A benchmark to evaluate resiliency patterns implemented in multiple programming 
 
 This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). 
 
-
 1. Download and install [Vagrant](https://www.vagrantup.com/docs/installation).
 
 2. Sets up the virtual machine by running `vagrant up` in the root folder.
 
 3. The tests will start as soon as the virtual machine ends up its provision. To configure a custom test, see the next section.
 
-## Setting up a custom test
+## Setting up a test
 
-- describe json properties
-- describe each component
-- describe docker-compose file
+A test scenario consists of a set parameters specified as a JSON file passed to the scheduler application to start a testing session.
 
-fault types: abort and delay
-
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `type` | `string` | **Required**. accept delay or fault |
-| `percentage` | `array` | **Required**.  ... |
-| `duration` | `number` | **Required**. ... |
-| `status` | `number` | **Optional**.  |
-
-Samples:
-
-* Delay fault
 ```json
-"fault": {
-    "type": "delay",
-    "percentage": [0, 25, 50, 75],
-    "duration": 1000, 
-    "status": 503 
+{
+    "testId": "string",
+    "concurrentUsers": "array",
+    "rounds": "number",
+    "maxRequestsAllowed": "number",
+    "targetSuccessfulRequests": "number",
+    "fault": {
+        "type": "abort OR delay",
+        "percentage": "array",
+        "status": "number",
+        "duration": "number"
+    },
+    "patterns": [
+        {
+            "pattern": "string",
+            "platform": "string",
+            "lib": "string",
+            "url": "string",
+            "configTemplate": { } // specific values for pattern in test
+        }
+    ]
 }
 ```
 
-* Abort fault
+### Control parameters
 
-```json
-"fault": {
-    "type": "abort",
-    "percentage": [0, 25, 50, 75],
-    "duration": 1000, 
-    "status": 503 
-}
-```
+Set of parameters to control the general features of each test.
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `testId` | `string` | no | Identifier of test. If not set, a timespam will be generated. |
+| `concurrentUsers` | `number` |  yes | Number of concurrent virtual users to invoke the HTTP server during each test. |
+| `rounds` | `number` | yes | Number of test executions per scenario. |
+| `targetSuccessfulRequests` | `number` | yes | Minimum number of successful invocations from the client to the server application. |
+| `maxRequestsAllowed` | `number` | yes | Maximum number of invocations the client application is allowed to perform overall. |
+
+The latter parameter is useful to prevent the client application from never reaching the required number of successful invocations in a reasonable window of time, which may happen under high server failure rates.
+
+
+### Fault injection
+
+Rate with which the proxy server will inject failures into the request stream the target service receives from the client application.
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `type` | `string` | yes | Type of fault. Accepted values: delay or fault. |
+| `percentage` | `array` | yes | Rate which the proxy server will inject failures into the request stream. |
+| `duration` | `number` | no | Time in miliseconds the server will delay. Required when type is delay. |
+| `status` | `number` | no | HTTP status code the server will return. Required when type is abort. |
+
+
+### Pattern
+
+Resilience strategy the client application will use to invoke the target service.
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `pattern` | `string` | yes | The name of pattern. |
+| `platform` | `string` | yes | The name of plataform. |
+| `lib` | `string` | yes | The name of library. |
+| `url` | `string` | yes | The url that process the tasks wrapped in pattern |
+| `configTemplate` | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. See section XPTO. |
+
+
 ## Adding a new programming language
 
 A client should follow a very simple contract to be integrated into this benchmark. 
