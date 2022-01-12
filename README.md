@@ -9,7 +9,7 @@ A benchmark to evaluate resiliency patterns implemented in multiple programming 
 
 * **Client** implements an HTTP client wrapped by resilience patterns. It should reach a predefined number of successful requests, and measure its performance on this task.
 
-* **Target** implements the application to be the target of the tested client. This component is a joint of [Httpbin](http://httpbin.org), representing the target service and, [Envoy](https://www.envoyproxy.io)acting as a proxy service, enabling fault injection (e.g., server errors and response delays).
+* **Target** implements the application to be the target of the tested client. This component is a joint of [Httpbin](http://httpbin.org), representing the target service and, [Envoy](https://www.envoyproxy.io) acting as a proxy service, enabling fault injection (e.g., server errors and response delays).
 
 <!-- ## Getting Started -->
 
@@ -92,11 +92,11 @@ Resilience strategy the client application will use to invoke the target service
 
 It supports two strategies to save the results dataset: remote and local. The remote strategy use Amazon S3. 
 
-#### Amazon S3 configuration
+#### Remote (Amazon S3) configuration
 
 ...
 
-#### Local strategy configuration
+#### Local configuration
 
 ...
 
@@ -118,7 +118,6 @@ It supports two strategies to save the results dataset: remote and local. The re
 ## Test results
 
 ...
-
 
 
 ## Adding a new programming language
