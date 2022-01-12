@@ -9,23 +9,20 @@ A benchmark to evaluate resiliency patterns implemented in multiple programming 
 
 * **Client** implements an HTTP client wrapped by resilience patterns. It should reach a predefined number of successful requests, and measure its performance on this task.
 
-* **Proxy** acts controlling the communication between the clients and the target service. It
+* **Target** implements the application to be the target of the tested client. This component is a joint of [Httpbin](http://httpbin.org), representing the target service and, [Envoy](https://www.envoyproxy.io)acting as a proxy service, enabling fault injection (e.g., server errors and response delays).
 
-* **Target** represents a ...
+<!-- ## Getting Started -->
 
-## Getting Started
+## Requirements
 
-This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). 
-
-1. Download and install [Vagrant](https://www.vagrantup.com/docs/installation).
-
-2. Sets up the virtual machine by running `vagrant up` in the root folder.
-
-3. The tests will start as soon as the virtual machine ends up its provision. To configure a custom test, see the next section.
+This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). The resources required by virtual machine may vary according with the test configuration. 
 
 ## Setting up a test
 
+
 A test scenario consists of a set parameters specified as a JSON file passed to the scheduler application to start a testing session.
+
+The code below represents the schema of an input file and the following tables contains the description of each property.
 
 ```json
 {
@@ -46,7 +43,7 @@ A test scenario consists of a set parameters specified as a JSON file passed to 
             "platform": "string",
             "lib": "string",
             "url": "string",
-            "configTemplate": { } // specific values for pattern in test
+            "configTemplate": { }
         }
     ]
 }
@@ -81,7 +78,7 @@ Rate with which the proxy server will inject failures into the request stream th
 
 ### Pattern
 
-Resilience strategy the client application will use to invoke the target service.
+Resilience strategy the client application will use to invoke the target service. It's an array where is possible to define several clients and their patterns. Each pattern (e.g: retry, circuit breaker and baseline) is an object of this array. To group them in the result dataset, use `lib` and `platform` properties. 
 
 | Parameter | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
@@ -90,6 +87,28 @@ Resilience strategy the client application will use to invoke the target service
 | `lib` | `string` | yes | The name of library. |
 | `url` | `string` | yes | The url that process the tasks wrapped in pattern |
 | `configTemplate` | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. See section XPTO. |
+
+
+## Storage configuration
+
+...
+## Enviroiment configuration
+
+... docker-compose ...
+
+
+## Running tests
+
+1. Download and install [Vagrant](https://www.vagrantup.com/docs/installation).
+
+2. Sets up the virtual machine by running `vagrant up` in the root folder.
+
+3. The tests will start as soon as the virtual machine ends up its provision. To configure a custom test, see the next section.
+
+## Test results
+
+...
+
 
 
 ## Adding a new programming language
