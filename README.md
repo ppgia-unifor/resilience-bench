@@ -19,7 +19,6 @@ This benchmark runs on top of a virtual machine managed by [Vagrant](https://www
 
 ## Setting up a test
 
-
 A test scenario consists of a set parameters specified as a JSON file passed to the scheduler application to start a testing session.
 
 The code below represents the schema of an input file and the following tables contains the description of each property.
@@ -49,7 +48,7 @@ The code below represents the schema of an input file and the following tables c
 }
 ```
 
-### Control parameters
+#### Control parameters
 
 Set of parameters to control the general features of each test.
 
@@ -64,7 +63,7 @@ Set of parameters to control the general features of each test.
 The latter parameter is useful to prevent the client application from never reaching the required number of successful invocations in a reasonable window of time, which may happen under high server failure rates.
 
 
-### Fault injection
+#### Fault injection
 
 Rate with which the proxy server will inject failures into the request stream the target service receives from the client application.
 
@@ -76,7 +75,7 @@ Rate with which the proxy server will inject failures into the request stream th
 | `status` | `number` | no | HTTP status code the server will return. Required when type is abort. |
 
 
-### Pattern
+#### Pattern
 
 Resilience strategy the client application will use to invoke the target service. It's an array where is possible to define several clients and their patterns. Each pattern (e.g: retry, circuit breaker and baseline) is an object of this array. To group them in the result dataset, use `lib` and `platform` properties. 
 
@@ -91,10 +90,21 @@ Resilience strategy the client application will use to invoke the target service
 
 ## Storage configuration
 
+It supports two strategies to save the results dataset: remote and local. The remote strategy use Amazon S3. 
+
+#### Amazon S3 configuration
+
 ...
-## Enviroiment configuration
+
+#### Local strategy configuration
+
+...
+
+## Environment configuration
 
 ... docker-compose ...
+
+... vagrantfile ...
 
 
 ## Running tests
