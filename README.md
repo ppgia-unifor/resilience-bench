@@ -31,7 +31,7 @@ The code below represents the schema of an input file and the following tables c
     "maxRequestsAllowed": "number",
     "targetSuccessfulRequests": "number",
     "fault": {
-        "type": "abort OR delay",
+        "type": "abort|delay",
         "percentage": "array",
         "status": "number",
         "duration": "number"
