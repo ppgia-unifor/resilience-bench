@@ -15,7 +15,7 @@ A benchmark to evaluate resiliency patterns implemented in multiple programming 
 
 ## Requirements
 
-This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). The resources required by virtual machine may vary according with the test configuration. 
+This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). The resources (cpu and memory) required by virtual machine may vary according with the test configuration. The official installation steps are available [here](https://www.vagrantup.com/docs/installation).
 
 ## Setting up a test
 
@@ -94,7 +94,9 @@ It supports two strategies to save the results dataset: remote and local. The re
 
 #### Remote (Amazon S3) configuration
 
-...
+1. Configure the AWS credentials file on host machine by follow the steps available [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
+2. Open `docker-compose.yaml` file and find the definition of `scheduler` container, in the `environment` section set values to `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH`. The first is the bucket name and the last one is the path inside the bucket that files will be created.
+3. Make sure the variable `DISK_PATH` does not exists.
 
 #### Local configuration
 
