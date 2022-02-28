@@ -129,7 +129,7 @@ It supports two strategies to save the results dataset: remote and local. The re
 
 A client should follow a very simple contract to be integrated into this benchmark. 
 
-**Requirements**
+<!-- **Requirements**
 
 types: technical / conceptual
 
@@ -159,4 +159,4 @@ types: technical / conceptual
 
 }
 ```
-
+ -->
