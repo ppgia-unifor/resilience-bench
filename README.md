@@ -9,16 +9,15 @@ A benchmark to evaluate resiliency patterns implemented in multiple programming 
 
 * **Client** implements an HTTP client wrapped by resilience patterns. It should reach a predefined number of successful requests, and measure its performance on this task.
 
-* **Target** implements the application to be the target of the tested client. This component is a joint of [Httpbin](http://httpbin.org), representing the target service and, [Envoy](https://www.envoyproxy.io)acting as a proxy service, enabling fault injection (e.g., server errors and response delays).
+* **Target** implements the application to be the target of the tested client. This component is a joint of [Httpbin](http://httpbin.org), representing the target service and, [Envoy](https://www.envoyproxy.io) acting as a proxy service, enabling fault injection (e.g., server errors and response delays).
 
 <!-- ## Getting Started -->
 
 ## Requirements
 
-This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). The resources required by virtual machine may vary according with the test configuration. 
+This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). The resources (cpu and memory) required by virtual machine may vary according with the test configuration. The official installation steps are available [here](https://www.vagrantup.com/docs/installation).
 
 ## Setting up a test
-
 
 A test scenario consists of a set parameters specified as a JSON file passed to the scheduler application to start a testing session.
 
@@ -32,7 +31,7 @@ The code below represents the schema of an input file and the following tables c
     "maxRequestsAllowed": "number",
     "targetSuccessfulRequests": "number",
     "fault": {
-        "type": "abort OR delay",
+        "type": "abort|delay",
         "percentage": "array",
         "status": "number",
         "duration": "number"
@@ -49,7 +48,7 @@ The code below represents the schema of an input file and the following tables c
 }
 ```
 
-### Control parameters
+#### Control parameters
 
 Set of parameters to control the general features of each test.
 
@@ -64,7 +63,7 @@ Set of parameters to control the general features of each test.
 The latter parameter is useful to prevent the client application from never reaching the required number of successful invocations in a reasonable window of time, which may happen under high server failure rates.
 
 
-### Fault injection
+#### Fault injection
 
 Rate with which the proxy server will inject failures into the request stream the target service receives from the client application.
 
@@ -76,7 +75,7 @@ Rate with which the proxy server will inject failures into the request stream th
 | `status` | `number` | no | HTTP status code the server will return. Required when type is abort. |
 
 
-### Pattern
+#### Pattern
 
 Resilience strategy the client application will use to invoke the target service. It's an array where is possible to define several clients and their patterns. Each pattern (e.g: retry, circuit breaker and baseline) is an object of this array. To group them in the result dataset, use `lib` and `platform` properties. 
 
@@ -91,10 +90,26 @@ Resilience strategy the client application will use to invoke the target service
 
 ## Storage configuration
 
-...
-## Enviroiment configuration
+It supports two strategies to save the results dataset: remote and local. The remote strategy use Amazon S3. Open `docker-compose.yaml` file and find the definition of `scheduler` container, in the `environment`
+
+#### Remote (Amazon S3) configuration
+
+1. Configure the AWS credentials file on host machine by follow the steps available [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
+2. Set the bucket name to `AWS_BUCKET_NAME` variable.
+3. Set the path inside the bucket to `AWS_OUTPUT_PATH` variable.
+4. Make sure the variable `DISK_PATH` do not exist.
+
+#### Local configuration
+
+1. Make sure `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` do not exist.
+2. Set `DISK_PATH` to a path inside the container
+3. 
+
+## Environment configuration
 
 ... docker-compose ...
+
+... vagrantfile ...
 
 
 ## Running tests
@@ -108,7 +123,6 @@ Resilience strategy the client application will use to invoke the target service
 ## Test results
 
 ...
-
 
 
 ## Adding a new programming language
