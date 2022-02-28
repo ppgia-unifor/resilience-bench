@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 
-
 @Configuration
 public class GeneralConfig {
     private final static Logger logger = LoggerFactory.getLogger(GeneralConfig.class);
@@ -35,7 +34,6 @@ public class GeneralConfig {
         else {
             return restTemplateBuilder.rootUri(host).build();
         }
-        
     }
 
     @Bean

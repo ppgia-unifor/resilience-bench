@@ -1,5 +1,6 @@
-# recursively generates config instances from given 
-# config template and given key expansion list
+"""
+recursively generates config instances from given config_template and given key_expansion_list
+"""
 def generate_config(config_template, key_expansion_list):
     config_list = []
 
@@ -22,9 +23,10 @@ def generate_config(config_template, key_expansion_list):
     
     return config_list
 
-# expand given config_template by replacing all list values with 
-# their individual elements combination  
-def expand_config_template (config_template):
+"""
+expand given config_template by replacing all list values with their individual elements combination  
+"""
+def expand_config_template(config_template):
     key_expansion_list = []
 
     # find all template keys that need to be expanded 
