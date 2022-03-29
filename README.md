@@ -1,6 +1,9 @@
 # Resiliency Parterns Benchmark
 A benchmark to evaluate resiliency patterns implemented in multiple programming languages.
 
+# SBRC 2022 submission dataset
+The experimental dataset used in the SBRC 2022 submission is available [here](sbrc2022-data/).
+
 ## Architecture
 
 ![Architecture](docs/arch.png)
