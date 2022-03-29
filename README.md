@@ -1,5 +1,5 @@
 # SBRC 2022 Submission Dataset
-The experimental dataset used in the SBRC 2022 submission is available in the "sbrc2022-data" [folder](sbrc2022-data/).
+The experimental dataset used in the SBRC 2022 submission is available in the ["sbrc2022-data" folder](sbrc2022-data/).
 
 # Resiliency Parterns Benchmark
 A benchmark to evaluate resiliency patterns implemented in multiple programming languages.
