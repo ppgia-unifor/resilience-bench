@@ -1,7 +1,7 @@
 # SBRC 2022 Dataset
 The experimental dataset used in the SBRC 2022 submission is available in the [dataset.csv](dataset.csv) file.
 
-This file is structured with the following set of attributes (or csv columns), with the first six attributes corresponding to test parameters, and the remaining attributes corresponding to performance metrics collected during each test.
+This file is structured with the set of attributes (or csv columns) described below. The first six attributes correspond to test parameters, while the remaining attributes correspond to performance metrics collected during each test.
 
 ### Test parameters
 * `pattern` resilience pattern used to invoke the target service (possible values are "Baseline", "Retry", and "CircuitBreaker").
