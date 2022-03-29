@@ -5,9 +5,9 @@ This file is structured with the set of attributes (or csv columns) described be
 
 ### Test parameters
 * `pattern` resilience pattern used to invoke the target service (possible values are "Baseline", "Retry", and "CircuitBreaker").
-* `succ_rate` the target service's success rate (possible values are 0.0, 0.25, and 0.50).
+* `succ_rate` the target service's success rate specified as a percentage of the total number of invocations the target service receives (possible values are 50%, 75%, and 100%).
 * `timeout` timeout parameter used to configure the Retry and Circui Breaker patterns (possible values are 0ms, 50ms, 75ms, 100ms and 200ms).
-* `framework` resilience framework/language used (possible values are "Java", with the Resilience4j library, and "DotNet", with the Polly library). 
+* `framework` language/resilience library used to implemente the client application (possible values are "Java", which uses the [Resilience4j](https://github.com/resilience4j/resilience4j) library, and "DotNet", which uses the [Polly](https://github.com/App-vNext/Polly) library). 
 * `test` unique identifier for each resilience test.
 * `clients` number of clients concurrently invoking the target service in each test (possible values are 1, 25, 50, and 100).
 ### Metrics
