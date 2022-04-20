@@ -6,7 +6,7 @@ A benchmark to evaluate resiliency patterns implemented in multiple programming 
 
 ## Architecture
 
-![Architecture](docs/arch.png)
+![Architecture](docs/arch-2.jpeg)
 
 * **Scheduler** sets up the scenarios and initiates the processing by spawning threads to request configured clients. When threads end up, it aggregates the metrics and generates tests results.
 
