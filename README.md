@@ -18,7 +18,10 @@ A benchmark to evaluate resiliency patterns implemented in multiple programming 
 
 ## Requirements
 
-This benchmark runs on top of a virtual machine managed by [Vagrant](https://www.vagrantup.com). The resources (cpu and memory) required by virtual machine may vary according with the test configuration. The official installation steps are available [here](https://www.vagrantup.com/docs/installation).
+The benchmark is a set of containers orchestrated by a Docker Compose description file. 
+
+- Docker
+- Docker Compose
 
 ## Setting up a test
 
@@ -88,7 +91,7 @@ Resilience strategy the client application will use to invoke the target service
 | `platform` | `string` | yes | The name of plataform. |
 | `lib` | `string` | yes | The name of library. |
 | `url` | `string` | yes | The url that process the tasks wrapped in pattern |
-| `configTemplate` | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. See section XPTO. |
+| `configTemplate` | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. |
 
 
 ## Storage configuration
@@ -104,9 +107,9 @@ It supports two strategies to save the results dataset: remote and local. The re
 
 #### Local configuration
 
-1. Make sure `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` do not exist.
-2. Set `DISK_PATH` to a path inside the container
-3. 
+1. Make sure `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` do not exist;
+2. Set `DISK_PATH` to a path inside the container;
+3. Mount a volume binding `DISK_PATH` and a path in the host;
 
 ## Environment configuration
 
