@@ -103,7 +103,7 @@ Resilience strategy the client application will use to invoke the target service
             <th>Description</th>
         </tr>
     </thead>
-    <tbody>        
+    <tbody>
         <tr>
             <td>totalCalls</td>
             <td>number</td>
@@ -217,7 +217,6 @@ Resilience strategy the client application will use to invoke the target service
             <td></td>
             <td></td>
         </tr>
-
     </tbody>
 </table>
 | successfulRequests | number | number of successful request of the target service by the client application, including the retries | 
