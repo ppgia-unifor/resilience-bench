@@ -219,9 +219,6 @@ Resilience strategy the client application will use to invoke the target service
         </tr>
     </tbody>
 </table>
-| successfulRequests | number | number of successful request of the target service by the client application, including the retries | 
-| unsuccessfulRequests | number | number of unsuccessful request of the target service by the client application, including the retries | 
-| totalRequests | number | . | 
 
 
 ## Storage configuration
