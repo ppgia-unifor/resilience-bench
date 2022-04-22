@@ -95,34 +95,134 @@ Resilience strategy the client application will use to invoke the target service
 
 ## Result dataset
 
+<table>
+    <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>        
+        <tr>
+            <td>totalCalls</td>
+            <td>number</td>
+            <td>number of total invocations of the target service by the client application</td>
+        </tr>
+        <tr>
+            <td>successfulCalls</td>
+            <td>number</td>
+            <td rowspan=2>segmented number of successful and unsuccessful invocations of the target service by the client application</td>
+        </tr>
+        <tr>
+            <td>unsuccessfulCalls</td>
+            <td>number</td>
+        </tr>
+        <tr>
+            <td>totalRequests</td>
+            <td>number</td>
+            <td>number of total requests of the target service by the client application, including the retries</td>
+        </tr>
+        <tr>
+            <td>successfulRequests</td>
+            <td>number</td>
+            <td rowspan=2>segmented number of successful and unsuccessful requests of the target service by the client application, including the retries</td>
+        </tr>
+        <tr>
+            <td>unsuccessfulRequests</td>
+            <td><code>number</code></td>
+        </tr>
+        <tr>
+            <td>successTime</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>successTimePerRequest</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>errorTime</td>
+            <td></td>
+            <td></td>
+        </tr>
+         <tr>
+            <td>errorTimePerRequest</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>totalContentionTime</td>
+            <td></td>
+            <td>total execution time spent waiting for either a successful or an unsuccessful response from the target service.</td>
+        </tr>
+        <tr>
+            <td>contentionRate</td>
+            <td></td>
+            <td>fraction of the client application's total execution time spent waiting for either a successful or an unsuccessful response from the target service.</td>
+        </tr>
+        <tr>
+            <td>throughput</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>userId</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>startTime</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>endTime</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>users</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>round</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>lib</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>pattern</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>faultPercentage</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>faultType</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>faultStatus</td>
+            <td></td>
+            <td></td>
+        </tr>
 
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| successfulCalls | number | number of successful invocations of the target service by the client application | 
-| unsuccessfulCalls | number | number of unsuccessful invocations of the target service by the client application | 
-| totalCalls | number | number of total invocations of the target service by the client application | 
-| successfulRequests | number | . | 
-| unsuccessfulRequests | number | . | 
+    </tbody>
+</table>
+| successfulRequests | number | number of successful request of the target service by the client application, including the retries | 
+| unsuccessfulRequests | number | number of unsuccessful request of the target service by the client application, including the retries | 
 | totalRequests | number | . | 
-| successTime | number | . | 
-| successTimePerRequest | number | . | 
-| errorTime | number | . | 
-| errorTimePerRequest | number | . | 
-| totalContentionTime | number | . | 
-| contentionRate | number | . | 
-| totalExecutionTime | number | . | 
-| throughput | number | . | 
-| userId | number | . | 
-| startTime | number | . | 
-| endTime | number | . | 
-| users | number | . | 
-| round | number | . | 
-| lib | number | . | 
-| pattern | number | . | 
-| faultPercentage | number | . | 
-| faultType | number | . | 
-| faultStatus | number | . |
-
 
 
 ## Storage configuration
