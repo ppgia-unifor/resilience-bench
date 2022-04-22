@@ -23,7 +23,7 @@ The benchmark is a set of containers orchestrated by a Docker Compose descriptio
 - Docker
 - Docker Compose
 
-## Setting up a test
+## Scenarios (input file)
 
 A test scenario consists of a set parameters specified as a JSON file passed to the scheduler application to start a testing session.
 
@@ -93,7 +93,7 @@ Resilience strategy the client application will use to invoke the target service
 | `url` | `string` | yes | The url that process the tasks wrapped in pattern |
 | `configTemplate` | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. |
 
-## Result dataset
+## Results (output file)
 
 <table>
     <thead>
