@@ -75,15 +75,15 @@ Rate with which the proxy server will inject failures into the request stream th
 
 | Parameter | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
-| `type` | `string` | yes | Type of fault. Accepted values: delay or fault. |
+| `type` | `string` | yes | Type of fault. Accepted values: *delay* or *fault*. |
 | `percentage` | `array` | yes | Rate which the proxy server will inject failures into the request stream. |
-| `duration` | `number` | no | Time in miliseconds the server will delay. Required when type is delay. |
-| `status` | `number` | no | HTTP status code the server will return. Required when type is abort. |
+| `duration` | `number` | no | Time in miliseconds the server will delay. Required when type is *delay*. |
+| `status` | `number` | no | HTTP status code the server will return. Required when type is *abort*. |
 
 
 #### Pattern
 
-Resilience strategy the client application will use to invoke the target service. It's an array where is possible to define several clients and their patterns. Each pattern (e.g: retry, circuit breaker and baseline) is an object of this array. To group them in the result dataset, use `lib` and `platform` properties. 
+Resilience strategy the client application will use to invoke the target service. It's an array where is possible to define several clients and their patterns. Each pattern (e.g: retry or circuit breaker) is one object in this array. To group them in the result dataset, use `lib` and `platform` properties. 
 
 | Parameter | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
@@ -92,6 +92,37 @@ Resilience strategy the client application will use to invoke the target service
 | `lib` | `string` | yes | The name of library. |
 | `url` | `string` | yes | The url that process the tasks wrapped in pattern |
 | `configTemplate` | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. |
+
+## Result dataset
+
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| successfulCalls | number | number of successful invocations of the target service by the client application | 
+| unsuccessfulCalls | number | number of unsuccessful invocations of the target service by the client application | 
+| totalCalls | number | number of total invocations of the target service by the client application | 
+| successfulRequests | number | . | 
+| unsuccessfulRequests | number | . | 
+| totalRequests | number | . | 
+| successTime | number | . | 
+| successTimePerRequest | number | . | 
+| errorTime | number | . | 
+| errorTimePerRequest | number | . | 
+| totalContentionTime | number | . | 
+| contentionRate | number | . | 
+| totalExecutionTime | number | . | 
+| throughput | number | . | 
+| userId | number | . | 
+| startTime | number | . | 
+| endTime | number | . | 
+| users | number | . | 
+| round | number | . | 
+| lib | number | . | 
+| pattern | number | . | 
+| faultPercentage | number | . | 
+| faultType | number | . | 
+| faultStatus | number | . |
+
 
 
 ## Storage configuration
