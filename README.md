@@ -1,5 +1,6 @@
-# Resiliency Pattern Benchmark
-A benchmark to evaluate resiliency patterns implemented in multiple programming languages.
+# ResilienceBench: A Resiliency Pattern Benchmark
+
+ResilienceBench is a language-agnostic environment to support microservice developers in experimentally evaluating the performance impact of resilience patterns.
 
 # Documentation
 
