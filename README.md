@@ -35,14 +35,14 @@ Docker 20.10+ and Docker Compose 1.29+ are required to run this benchmark.
 ### Installation
 
 ```sh
-$ git clone git@github.com:ppgia-unifor/resiliency-pattern-benchmark.git
-$ cd resiliency-pattern-benchmark
+git clone git@github.com:ppgia-unifor/resiliency-pattern-benchmark.git
+cd resiliency-pattern-benchmark
 ```
 
 Now let's build the components.
 
 ```sh
-$ docker-compose build
+docker-compose build
 ```
 
 The command above will pull third-party images and build the images of the native components of the benchmark.
@@ -50,50 +50,30 @@ The command above will pull third-party images and build the images of the nativ
 
 ### Configuration
 
-Choose one sample from samples folder and clone it.
+Start by choosing one sample from samples folder and clone it.
 
 ```sh
-$ cp ./samples/config-all-delay.json ./config-all-delay.json
+cp ./samples/config-all-delay.json ./config-all-delay.json
 ```
 
-Prepare the input file according the table XY 
+Edit the created file according the table [scenarios](#scenarios-input-file).
 
-Edit the section `volumes` in the service `scheduler` in the file `docker-compose.yaml` to mount the file created above.
+To use the new file, edit the section `volumes` in the service `scheduler` in the file `docker-compose.yaml` to mount the file created above.
 
 ```yaml
 volumes:
   - ./config-all-delay.json:/opt/app/conf/conf.json
 ```
 
-
+Finally, let's configure the results file location. It can be saved locally or in the cloud, see the section [Storage](#storage-configuration) to more details.
 
 ### Running in your environment
 
-
-<!-- 
-
-
-
-You now have the source files copied into your local directory, lets edit the input file.
-
-Choose one sample in the sample folder and clone it
-
-
-Next, we need to make sure we get all the required docker images, including the third-party images and the images of the benchmark.
+Since you have the input file configured and access to the output folder, just start the containers via `docker-compose`.
 
 ```sh
-docker-compose pull
+docker-compose up
 ```
-
- -->
-
-<!-- - download repository
-
-- edit configuration file
-
-- show clients and 
-
-- configurar aws  -->
 
 ## Scenarios (input file)
 
@@ -166,6 +146,8 @@ Resilience strategy the client application will use to invoke the target service
 
 
 ## Results (output file)
+
+Description ...
 
 <table>
     <thead>
@@ -299,19 +281,38 @@ It supports two strategies to save the results dataset: remote and local. The re
 #### Remote (Amazon S3) configuration
 
 1. Configure the AWS credentials file on host machine by follow the steps available [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-2. Set the bucket name to `AWS_BUCKET_NAME` variable.
-3. Set the path inside the bucket to `AWS_OUTPUT_PATH` variable.
-4. Make sure the variable `DISK_PATH` do not exist.
+2. Mount the credentials file to the container by editing the section `volume` in service `scheduler` in the file `docker-compose.yaml`
+
+    ```yaml
+    volumes:
+      - /home/vagrant/.aws/credentials:/root/.aws/credentials
+    ```
+
+3. Set the bucket name to `AWS_BUCKET_NAME` variable.
+4. Set the path inside the bucket to `AWS_OUTPUT_PATH` variable.
+5. Make sure the variable `DISK_PATH` do not exist.
+
+
 
 #### Local configuration
 
 1. Make sure `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` do not exist;
 2. Set `DISK_PATH` to a path inside the container;
 3. Mount a volume binding `DISK_PATH` and a path in the host;
+    
+    ```yaml
+    environment:
+      - DISK_PATH=/opt/app/resilience-tests
+    volumes:
+      - ./results:/opt/app/resilience-tests
+    ```
+
+
 
 ## Publications
 
-**SBRC 2022**
+Costa, T. M. et al. (2022). **Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker.** In XL Simpósio Brasileiro de Redes de
+Computadores e Sistemas Distribuídos (SBRC). Aceito para publicação.
 
-The experimental dataset used in the SBRC 2022 submission is available in the folder [sbrc2022-data](sbrc2022-data/).
+- The experimental dataset used is available in the folder [sbrc2022-data](sbrc2022-data/).
 

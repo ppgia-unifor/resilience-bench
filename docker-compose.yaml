@@ -10,7 +10,6 @@ services:
     environment:
       - BACKEND_HOST=http://server:9211
       - RESOURCE_PATH=/bytes/1000
-      #- READ_TIMEOUT=400
     depends_on:
       - server
   
@@ -23,7 +22,6 @@ services:
     environment:
       - BACKEND_HOST=http://server:9211
       - RESOURCE_PATH=/bytes/1000
-      #- READ_TIMEOUT=400
     depends_on:
       - server
 
@@ -33,18 +31,12 @@ services:
     container_name: scheduler
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      #- ./config-baseline.json:/opt/app/conf/conf.json
-      #- ./config-all.json:/opt/app/conf/conf.json
-      #- ./config-cb.json:/opt/app/conf/conf.json
-      - ./config-rt.json:/opt/app/conf/conf.json
-      #- ./resilience-tests:/opt/app/resilience-tests
-      - /home/vagrant/.aws/credentials:/root/.aws/credentials
+      - ./samples/config-all-delay.json:/opt/app/conf/conf.json
+      - ./results:/opt/app/resilience-tests
     environment:
+      - DISK_PATH=/opt/app/resilience-tests
       - CONFIG_FILE=/opt/app/conf/conf.json
       - ENVOY_FAULT_INJECTION_PATH=/opt/app/fault-injection
-      - AWS_BUCKET_NAME=phd-carlos-results
-      - AWS_OUTPUT_PATH=resilience-tests
-      # - DISK_PATH=/opt/app/resilience-tests
       - DOCKER_HOST=/var/run/docker.sock
       - TIME_ZONE=America/Sao_Paulo
     depends_on:
