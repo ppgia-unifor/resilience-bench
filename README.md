@@ -1,6 +1,6 @@
-# ResilienceBench: A Resiliency Pattern Benchmark
+# ResilienceBench
 
-ResilienceBench is a language-agnostic environment to support microservice developers in experimentally evaluating the performance impact of resilience patterns.
+ResilienceBench is a language-agnostic benchmark environment to support the experimental evaluation of microservice resiliency patterns, such as [Retry](https://docs.microsoft.com/en-us/azure/architecture/patterns/retry) and [Circuti Breaker](https://docs.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker), implemented by popular open source resilience libraries, such as C\#'s [Polly](https://github.com/App-vNext/Polly) and Java's [Resiliency4](https://github.com/resilience4j/resilience4j).
 
 # Documentation
 
@@ -18,7 +18,7 @@ ResilienceBench is a language-agnostic environment to support microservice devel
 
 ## Architecture
 
-![Architecture](docs/arch-2.jpeg)
+![Architecture](docs/resliencebench-arch.png)
 
 **Scheduler** sets up the scenarios and initiates the processing by spawning threads to request configured clients. When threads end up, it aggregates the metrics and generates tests results.
 
