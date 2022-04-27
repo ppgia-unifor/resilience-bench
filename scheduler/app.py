@@ -42,11 +42,11 @@ def build_scenarios(conf, test_id):
         for workload in workloads:
             scenarios = []
             for pattern_template in patterns:
-                config_templates = expand_config_template(pattern_template['configTemplate'])
-                for config_template in config_templates:
+                pattern_configs = expand_config_template(pattern_template['patternConfig'])
+                for pattern_config in pattern_configs:
                     for idx_round in range(1, rounds):
                         scenarios.append({
-                            'configTemplate': config_template,
+                            'patternConfig': pattern_config,
                             'patternTemplate': pattern_template,
                             'users': workload,
                             'round': idx_round,
@@ -107,7 +107,7 @@ def do_test(scenario, user_id):
     pattern_template = scenario['patternTemplate']
     fault_percentage = scenario['faultPercentage']
     fault_spec = scenario['faultSpec']
-    config_template = scenario['configTemplate']
+    pattern_config = scenario['patternConfig']
     idx_round = scenario['round']
     maxRequestsAllowed = scenario['maxRequestsAllowed']
     targetSuccessfulRequests = scenario['targetSuccessfulRequests']
@@ -115,7 +115,7 @@ def do_test(scenario, user_id):
     payload = json.dumps({
         'maxRequestsAllowed': maxRequestsAllowed,
         'targetSuccessfulRequests': targetSuccessfulRequests,
-        'params': config_template
+        'params': pattern_config
     })
     response = requestsSesstion.post(
         pattern_template['url'], 
@@ -135,8 +135,8 @@ def do_test(scenario, user_id):
         result['faultPercentage'] = fault_percentage
         for fault_key in fault_spec.keys():
             result[f'fault{fault_key.capitalize()}'] = fault_spec[fault_key]        
-        for config_key in config_template.keys():
-            result[config_key] = config_template[config_key]
+        for config_key in pattern_config.keys():
+            result[config_key] = pattern_config[config_key]
     else:
         result['error'] = True
         result['errorMessage'] = response.text

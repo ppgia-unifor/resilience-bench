@@ -22,7 +22,7 @@
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/retry",
-      "configTemplate": {
+      "patternConfig": {
         "count": [
           1,
           3,
@@ -52,7 +52,7 @@
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j:8080/retry",
-      "configTemplate": {
+      "patternConfig": {
         "maxAttempts": [
           2,
           4,

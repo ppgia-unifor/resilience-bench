@@ -22,7 +22,7 @@
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
-      "configTemplate": {
+      "patternConfig": {
         "exceptionsAllowedBeforeBreaking": 2,
         "durationOfBreaking": [
           50,
@@ -36,7 +36,7 @@
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j:8080/cb",
-      "configTemplate": {
+      "patternConfig": {
         "slowCallRateThreshold": 100,
         "slowCallDurationThreshold": 1000,
         "slidingWindowSize": 2,
