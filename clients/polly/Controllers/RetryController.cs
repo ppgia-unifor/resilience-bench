@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
@@ -29,7 +28,6 @@ namespace ResiliencePatterns.Polly.Controllers
         private static AsyncPolicy CreateRetryExponencialBackoff(RetryConfig retryConfig)
         {
             return Policy
-                // .Handle<HttpRequestException>()
                 .Handle<Exception>()
                 .WaitAndRetryAsync(
                     retryCount: retryConfig.Count,
