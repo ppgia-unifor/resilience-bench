@@ -28,7 +28,7 @@
       "pattern": "baseline",
       "platform": "java",
       "lib": "resilience4j",
-      "url": "http://resilience4j:8080/baseline",
+      "url": "http://resilience4j/baseline",
       "patternConfig": {}
     }
   ]

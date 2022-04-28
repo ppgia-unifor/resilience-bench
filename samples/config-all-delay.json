@@ -30,7 +30,7 @@
       "pattern": "baseline",
       "platform": "java",
       "lib": "resilience4j",
-      "url": "http://resilience4j:8080/baseline",
+      "url": "http://resilience4j/baseline",
       "patternConfig": {}
     },
     {
@@ -40,7 +40,6 @@
       "url": "http://polly/retry",
       "patternConfig": {
         "count": 5,
-        "sleepDurationType": "EXPONENTIAL_BACKOFF",
         "exponentialBackoffPow": 1.5,
         "sleepDuration": [
           50,
@@ -53,11 +52,10 @@
       "pattern": "retry",
       "platform": "java",
       "lib": "resilience4j",
-      "url": "http://resilience4j:8080/retry",
+      "url": "http://resilience4j/retry",
       "patternConfig": {
         "maxAttempts": 6,
         "multiplier": 1.5,
-        "intervalFunction": "EXPONENTIAL_BACKOFF",
         "initialIntervalMillis": [
           50,
           100,
@@ -83,7 +81,7 @@
       "pattern": "circuit_breaker",
       "platform": "java",
       "lib": "resilience4j",
-      "url": "http://resilience4j:8080/cb",
+      "url": "http://resilience4j/cb",
       "patternConfig": {
         "slowCallRateThreshold": 100,
         "slowCallDurationThreshold": 1000,

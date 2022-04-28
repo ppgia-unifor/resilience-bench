@@ -35,7 +35,7 @@
       "pattern": "circuit_breaker",
       "platform": "java",
       "lib": "resilience4j",
-      "url": "http://resilience4j:8080/cb",
+      "url": "http://resilience4j/cb",
       "patternConfig": {
         "slowCallRateThreshold": 100,
         "slowCallDurationThreshold": 1000,

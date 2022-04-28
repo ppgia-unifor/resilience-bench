@@ -30,7 +30,6 @@
           7,
           9
         ],
-        "sleepDurationType": "EXPONENTIAL_BACKOFF",
         "exponentialBackoffPow": [
           1.2,
           1.4,
@@ -51,7 +50,7 @@
       "pattern": "retry",
       "platform": "java",
       "lib": "resilience4j",
-      "url": "http://resilience4j:8080/retry",
+      "url": "http://resilience4j/retry",
       "patternConfig": {
         "maxAttempts": [
           2,
@@ -67,7 +66,6 @@
           1.8,
           2.0
         ],
-        "intervalFunction": "EXPONENTIAL_BACKOFF",
         "initialIntervalMillis": [
           20,
           40,
