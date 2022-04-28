@@ -87,7 +87,7 @@ Resilience strategy the client application will use to invoke the target service
 | platform | `string` | yes | The name of plataform. |
 | lib | `string` | yes | The name of library. |
 | url | `string` | yes | The url that process the tasks wrapped in pattern |
-| configTemplate | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. |
+| patternConfig | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. |
 
 
 [Architecture](#architecture)
