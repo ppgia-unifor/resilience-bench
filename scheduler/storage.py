@@ -20,7 +20,6 @@ def copy_file(source, destination):
             s3_client.upload_file(source, BUCKET_NAME, f'{OUTPUT_PATH}/{destination}')
             logger.info(f'File {OUTPUT_PATH}/{destination} saved to s3')
         elif DISK_PATH:
-            print(source, f'{DISK_PATH}/{destination}')
             shutil.copyfile(source, resolve_local_path(f'{DISK_PATH}/{destination}'))
             logger.info(f'File {DISK_PATH}/{destination} saved to disk')
         else:
