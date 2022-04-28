@@ -4,6 +4,7 @@ import boto3
 from botocore.exceptions import ClientError
 import pandas as pd
 from pathlib import Path
+import shutil
 
 from logger import get_logger
 
@@ -12,7 +13,24 @@ BUCKET_NAME = environ.get('AWS_BUCKET_NAME')
 OUTPUT_PATH = environ.get('AWS_OUTPUT_PATH')
 DISK_PATH = environ.get('DISK_PATH')
 
-def save_file(filename, data, format):
+def copy_file(source, destination):
+    try:
+        if BUCKET_NAME:
+            s3_client = boto3.client('s3')
+            s3_client.upload_file(source, BUCKET_NAME, f'{OUTPUT_PATH}/{destination}')
+            logger.info(f'File {OUTPUT_PATH}/{destination} saved to s3')
+        elif DISK_PATH:
+            print(source, f'{DISK_PATH}/{destination}')
+            shutil.copyfile(source, resolve_local_path(f'{DISK_PATH}/{destination}'))
+            logger.info(f'File {DISK_PATH}/{destination} saved to disk')
+        else:
+            logger.error(f'No destination bucket or file path provided to save {destination}.')      
+    except ClientError as e:        
+        logger.error(f'File {OUTPUT_PATH}/{destination} could not be saved to s3', e)
+    except OSError as e:
+        logger.error(f'File {DISK_PATH}/{destination} could not be saved to disk', e)    
+
+def save_to_file(filename, data, format):
     df = pd.DataFrame(data)
     buffer = StringIO()
 
@@ -34,7 +52,7 @@ def save_file(filename, data, format):
                 file.write(buffer.getvalue())
             logger.info(f'File {DISK_PATH}/{filename}.{format} saved to disk')
         else:
-            logger.error(f'No destination bucket or file path provided to save {filename}.{format}!')      
+            logger.error(f'No destination bucket or file path provided to save {filename}.{format}.')      
     except ClientError as e:        
         logger.error(f'File {OUTPUT_PATH}/{filename}.{format} could not be saved to s3', e)
     except OSError as e:

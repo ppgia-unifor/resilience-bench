@@ -9,7 +9,7 @@ from requests.adapters import HTTPAdapter
 from datetime import datetime
 from pytz import timezone
 from utils import expand_config_template
-from storage import save_file
+from storage import save_to_file, copy_file
 from envoy import Envoy
 from logger import get_logger
 
@@ -61,14 +61,15 @@ def build_scenarios(conf, test_id):
 
     total_scenarios = len(fault_percentages) * len(concurrent_users) * len(all_scenarios)
     logger.info(f'{total_scenarios} scenarios generated')
-    save_file(f'{test_id}/scenarios', all_scenarios, 'json')
+    save_to_file(f'{test_id}/scenarios', all_scenarios, 'json')
     return scenario_groups
 
 def main():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
     conf = jstyleson.load(conf_file)
-
+    
     test_id = conf['testId'] if 'testId' in conf else get_current_time().strftime('%a %b %d %Hh%Mm%Ss %Y')
+    copy_file(os.environ.get('CONFIG_FILE'), f'{test_id}/scenarios-original.json')
 
     scenario_groups = build_scenarios(conf, test_id)
     all_results = []
@@ -100,9 +101,9 @@ def main():
                     logger.info(f'group[{scenario_group}] collecting user results {index_result}/{users-1}')
 
         all_results += results
-        save_file(f'{test_id}/results_{scenario_group}', results, 'csv')
+        save_to_file(f'{test_id}/results_{scenario_group}', results, 'csv')
             
-    save_file(f'{test_id}/results', all_results, 'csv')
+    save_to_file(f'{test_id}/results', all_results, 'csv')
 
 def do_test(scenario, user_id):
     start_time = datetime.now()
