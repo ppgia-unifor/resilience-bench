@@ -31,35 +31,36 @@ def build_scenarios(conf, test_id):
     fault_percentages = fault_spec['percentage']
     del fault_spec['percentage']
     patterns = conf['patterns']
-    workloads = conf['concurrentUsers']
+    concurrent_users = conf['concurrentUsers']
     rounds = conf['rounds'] + 1
     max_requests_allowed = conf['maxRequestsAllowed']
     target_successful_requests = conf['targetSuccessfulRequests']
     all_scenarios = []
     scenario_groups = {}
 
-    for fault_percentage in fault_percentages:
-        for workload in workloads:
+    for fault_percentage in fault_percentages: # 3
+        for concurrent_user in concurrent_users: # 3
             scenarios = []
-            for pattern_template in patterns:
-                pattern_configs = expand_config_template(pattern_template['patternConfig'])
+            for pattern_template in patterns: # 2
+                pattern_configs = expand_config_template(pattern_template['patternConfig']) # 3
                 for pattern_config in pattern_configs:
-                    for idx_round in range(1, rounds):
+                    for idx_round in range(1, rounds): # 10
                         scenarios.append({
                             'patternConfig': pattern_config,
                             'patternTemplate': pattern_template,
-                            'users': workload,
+                            'users': concurrent_user,
                             'round': idx_round,
                             'faultPercentage': fault_percentage,
                             'faultSpec': fault_spec,
                             'maxRequestsAllowed': max_requests_allowed,
                             'targetSuccessfulRequests': target_successful_requests
                         })
-            scenario_group_id = 'f'+str(fault_percentage)+'u'+str(workload)
+            scenario_group_id = 'f'+str(fault_percentage)+'u'+str(concurrent_user)
             scenario_groups[scenario_group_id] = scenarios
             all_scenarios += scenarios
 
-    logger.info(f'{len(all_scenarios)} scenarios generated')
+    total_scenarios = len(fault_percentages) * len(concurrent_users) * len(all_scenarios)
+    logger.info(f'{total_scenarios} scenarios generated')
     save_file(f'{test_id}/scenarios', all_scenarios, 'json')
     return scenario_groups
 
@@ -74,13 +75,15 @@ def main():
     envoy = Envoy()
 
     for scenario_group in scenario_groups.keys():
-        logger.info(f'Starting scenario group {scenario_group} with {len(scenario_groups[scenario_group])} scenario(s)')
+        total_group_scenarios = len(scenario_groups[scenario_group])
+        logger.info(f'group[{scenario_group}] starting processing {total_group_scenarios} scenarios')
         results = []
         scenario_group_count = 0
 
         for scenario in scenario_groups[scenario_group]:
             scenario_group_count += 1
-            logger.info(f'Processing scenario {scenario_group_count}/{len(scenario_groups[scenario_group])}')
+            
+            logger.info(f'group[{scenario_group}] processing scenario {scenario_group_count}/{total_group_scenarios}')
             users = scenario['users'] + 1
 
             envoy.setup_fault(scenario['faultSpec'], int(scenario['faultPercentage']))
@@ -90,11 +93,11 @@ def main():
                 for user_id in range(1, users):
                     futures.append(executor.submit(do_test, scenario=scenario, user_id=user_id))
                 
-                totResults = 0
+                index_result = 0
                 for future in concurrent.futures.as_completed(futures):
                     results.append(future.result())
-                    totResults += 1
-                    logger.info(f'Scenario results: {totResults}/{users-1}')
+                    index_result += 1
+                    logger.info(f'group[{scenario_group}] collecting user results {index_result}/{users-1}')
 
         all_results += results
         save_file(f'{test_id}/results_{scenario_group}', results, 'csv')
