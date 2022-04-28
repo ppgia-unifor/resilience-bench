@@ -1,9 +1,0 @@
-{
-	"failureThreshold": 50,
-	"slidingWindowSize": 100,
-	"minimumNumberOfCalls": 100,
-	"durationOfBreaking": 60000,
-	"permittedNumberOfCallsInHalfOpenState": 10,
-	"slowCallRateThreshold": 100,
-	"slowCallDurationThreshold": 60000
-}
