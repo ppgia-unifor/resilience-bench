@@ -1,4 +1,4 @@
-# ResilienceBench
+# ResilienceBench: A Resiliency Pattern Benchmark
 
 ResilienceBench is a language-agnostic benchmark environment to support the experimental evaluation of microservice resiliency patterns, such as [Retry](https://docs.microsoft.com/en-us/azure/architecture/patterns/retry) and [Circuit Breaker](https://docs.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker), implemented by popular open source resilience libraries, such as C\#'s [Polly](https://github.com/App-vNext/Polly) and Java's [Resiliency4](https://github.com/resilience4j/resilience4j).
 
@@ -6,7 +6,9 @@ ResilienceBench is a language-agnostic benchmark environment to support the expe
 
 The ResilienceBench architecture contains four main components: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the figure below. 
 
-![Architecture](docs/resiliencebench-arch-trans-color.png)
+<br/><br/>
+<img src="docs/resiliencebench-arch-trans-color.png" width=900>
+<br/><br/>
 
 The scheduler (i) parses and executes the set of resilience test scenarios specified by the ResilienceBench user in a [JSON input file](#scenarios-input-file); (ii) invokes the client service with the test parameters for each scenario; and (iii) collects the test results received from the client service and returns them to the user in a [CSV output file](#results-output-file).  
 
@@ -109,50 +111,85 @@ Resilience strategy the client application will use to invoke the target service
 **Target** implements the application to be the target of the tested client. This component is a joint of [Httpbin](http://httpbin.org), representing the target service and, [Envoy](https://www.envoyproxy.io) acting as a proxy service, enabling fault injection (e.g., server errors and response delays).
 
 
-## Getting started
+## Installation and usage instructions
 
 ### Requirements
 
-Docker 20.10+ and Docker Compose 1.29+ are required to run this benchmark.
+Docker 20.10+ and Docker Compose 1.29+.
 
-### Installation
+### Clone and build
+
+First, clone the benchmarl repository.
 
 ```sh
 git clone git@github.com:ppgia-unifor/resiliency-pattern-benchmark.git
 cd resiliency-pattern-benchmark
 ```
 
-Now let's build the components.
+Then, build the benchmark components.
 
 ```sh
 docker-compose build
 ```
 
-The command above will pull third-party images and build the images of the native components of the benchmark.
+The command above will pull third-party images and build the images of the benchmark's native components.
 
+### Configure and execute
 
-### Configuration
-
-Start by choosing one sample from samples folder and clone it.
+Start by copying one of the sample test scenario specifications (e.g., config-retry.json) provided in the [samples](/samples) folder.
 
 ```sh
-cp ./samples/config-all-delay.json ./config-all-delay.json
+cp ./samples/config-retry.json ./config-my-scenario.json
 ```
 
-Edit the created file according the table [scenarios](#scenarios-input-file).
+Change the new scenario specification's control and resilience parameters as needed (see the test scenario's [parameters description](#scenarios-input-file)).
 
-To use the new file, edit the section `volumes` in the service `scheduler` in the file `docker-compose.yaml` to mount the file created above.
+Edit the left-hand-side of the `volumes` atribute of the `scheduler` service in the benchmark's `docker-compose.yaml` file to refer to the new scenario specification.
 
 ```yaml
 volumes:
-  - ./config-all-delay.json:/opt/app/conf/conf.json
+  - ./config-my-scenario.json:/opt/app/conf/conf.json
 ```
 
-Finally, let's configure the results file location. It can be saved locally or in the cloud, see the section [Storage](#storage-configuration) to more details.
+Specify where the test results should be stored. 
 
-### Running in your environment
+Two storage options are currently supported: in the local file system or in the AWS cloud. Both options can be configured by defining appropriate environment variables in the `environment` attribute of the `scheduler` service in the benchmark's  `docker-compose.yaml` file.
 
-Since you have the input file configured and access to the output folder, just start the containers via `docker-compose`.
+
+It supports two strategies to save the results dataset: remote and local. The remote strategy use Amazon S3. Open `docker-compose.yaml` file and find the definition of `scheduler` container, in the `environment`
+
+#### Remote (Amazon S3) configuration
+
+1. Configure the AWS credentials file on host machine by follow the steps available [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
+2. Mount the credentials file to the container by editing the section `volume` in service `scheduler` in the file `docker-compose.yaml`
+
+    ```yaml
+    volumes:
+      - /home/vagrant/.aws/credentials:/root/.aws/credentials
+    ```
+
+3. Set the bucket name to `AWS_BUCKET_NAME` variable.
+4. Set the path inside the bucket to `AWS_OUTPUT_PATH` variable.
+5. Make sure the variable `DISK_PATH` do not exist.
+
+
+
+#### Local configuration
+
+1. Make sure `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` do not exist;
+2. Set `DISK_PATH` to a path inside the container;
+3. Mount a volume binding `DISK_PATH` and a path in the host;
+    
+    ```yaml
+    environment:
+      - DISK_PATH=/opt/app/resilience-tests
+    volumes:
+      - ./results:/opt/app/resilience-tests
+    ```
+
+
+Finally, execute the test scenarios by calling Docker Compose up.
+
 
 ```sh
 docker-compose up
@@ -289,38 +326,7 @@ Description ...
 </table>
 
 
-## Storage configuration
 
-It supports two strategies to save the results dataset: remote and local. The remote strategy use Amazon S3. Open `docker-compose.yaml` file and find the definition of `scheduler` container, in the `environment`
-
-#### Remote (Amazon S3) configuration
-
-1. Configure the AWS credentials file on host machine by follow the steps available [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-2. Mount the credentials file to the container by editing the section `volume` in service `scheduler` in the file `docker-compose.yaml`
-
-    ```yaml
-    volumes:
-      - /home/vagrant/.aws/credentials:/root/.aws/credentials
-    ```
-
-3. Set the bucket name to `AWS_BUCKET_NAME` variable.
-4. Set the path inside the bucket to `AWS_OUTPUT_PATH` variable.
-5. Make sure the variable `DISK_PATH` do not exist.
-
-
-
-#### Local configuration
-
-1. Make sure `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` do not exist;
-2. Set `DISK_PATH` to a path inside the container;
-3. Mount a volume binding `DISK_PATH` and a path in the host;
-    
-    ```yaml
-    environment:
-      - DISK_PATH=/opt/app/resilience-tests
-    volumes:
-      - ./results:/opt/app/resilience-tests
-    ```
 
 
 
