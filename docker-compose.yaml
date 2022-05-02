@@ -52,9 +52,3 @@ services:
       - ./server/supervisord.conf:/etc/supervisor/conf.d/default.conf
       - ./runtime:/srv/runtime
       - ./server/fault-injection:/opt/app/fault-injection
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-  
