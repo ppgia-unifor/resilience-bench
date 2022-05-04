@@ -337,3 +337,5 @@ Computadores e Sistemas Distribuídos (SBRC). Aceito para publicação.
 
 - The experimental dataset used is available in the folder [sbrc2022-data](sbrc2022-data/).
 
+
+[Video for SBRC'22 for Tools Session Submission](https://www.youtube.com/watch?v=mOVduraUAno)
