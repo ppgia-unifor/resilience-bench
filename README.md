@@ -2,163 +2,80 @@
 
 ResilienceBench is a language-agnostic benchmark environment to support the experimental evaluation of microservice resiliency patterns, such as [Retry](https://docs.microsoft.com/en-us/azure/architecture/patterns/retry) and [Circuit Breaker](https://docs.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker), implemented by popular open source resilience libraries, such as C\#'s [Polly](https://github.com/App-vNext/Polly) and Java's [Resiliency4](https://github.com/resilience4j/resilience4j).
 
+Jump to:
 
-## Architecture
+* [Documentation](/docs)
 
-The ResilienceBench architecture contains four main components: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the figure below. 
+* [Installation](#installation)
 
-<br/><br/>
-<img src="docs/resiliencebench-arch-trans-color.png" width=900>
-<br/><br/>
+* [Demo video](#demo-video)
 
-The scheduler (i) parses and executes the set of resilience test scenarios specified by the ResilienceBench user in a [JSON input file](#scenarios-input-file); (ii) invokes the client service with the test parameters for each scenario; and (iii) collects the test results received from the client service and returns them to the user in a [CSV output file](#results-output-file).  
+* [Publications](#publications)
 
-The client service (i) invokes the target service using a given resilience pattern (e.g., Retry), as specified in the test scenario being executed; (ii) collects and calculates a set of performance and resilience metrics (e.g., mean response timefrom the result of each target service invocation; and (iii) returns the collected performance metrics to the scheduler.
-
-The proxy service transparently injects a given type of failure (e.g., abort or delay failures) into the target service invocation flow, according to a given failure rate.
-
-Finally, the target service simply processess and responds to the client service's requests.
-
-## Test scenarios (input file)
-
-ResilienceBench test scenarios consist of a set of test parameters specified as a JSON file. The JSON code below shows an example of a test scenario:
-
-```json
-{
-    "testId": "MyTest",
-    "concurrentUsers": [25],
-    "rounds": 10,
-    "maxRequestsAllowed": 100,
-    "targetSuccessfulRequests": 25,
-    "fault": {
-        "type": "abort",
-        "percentage": [50],
-        "status": 503
-    },
-    "patterns": [
-        {
-            "pattern": "retry",
-            "platform": "java",
-            "lib": "resilience4j",
-            "url": "http://resilience4j/retry",
-            "patternConfig": {
-                "maxAttempts": 6,
-                "multiplier": 1.5,
-                "intervalFunction": "EXPONENTIAL_BACKOFF",
-                "initialIntervalMillis": [100]
-            }
-        }
-    ]
-}
-```
-The test scenario parameters are grouped into two categories: **control parameters**, and **resilience parameters**.
-
-### Control parameters
-
-These are parameters used to control the test scenarios execution. 
-
-| Parameter | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| testId | `string` | no | The test identifier. If not defined, a test identifier will be automatically generated containing the date and time of the test execution. The test identifier is used as the name of the CSV file to be generated containing the test results. |
-| concurrentUsers | `array of numbers` |  yes | Array containing the numbers of instances of the client service that will concurrently invoke the target service during each scenario execution. Each element of the array represents a different test scenario. |
-| rounds | `number` | yes | Number of executions of each scenario. |
-| targetSuccessfulRequests | `number` | yes | Expected number of successful invocations of the target service by the client service. |
-| maxRequestsAllowed | `number` | yes | Maximum number of (either successful or unsuccessful) invocations of the target service by the client service. |
-| fault | `faultSpec` | yes | Specification of the failure type to be injected by the proxy service into the target service invocation flow. See the faultSpec scheme below |
-
-The latter parameter is useful to prevent the client application from never reaching the required number of successful invocations in a reasonable window of time, which may happen under high server failure rates.
-
-#### FaultSpec scheme
-
-| Parameter | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| type | `string` | yes | Type of failure to be injected. Currently supported types: *delay* and *abort*. |
-| percentage | `array of numbers` | yes | Array containing the percentages of failures to be injected by the proxy service into the target service invocation flow. Each element of the array represents a different test scenario. 
-| duration | `number` | no | Duration (in miliseconds) of the delay failures to injected by the proxy service. Required when type is *delay*. |
-| status | `number` | no | HTTP status code to be returned by the proxy service to the client service upon each failed invocation. Required when type is *abort*. |
-
-
-### Resilience parameters
-
-Resilience strategy the client application will use to invoke the target service. It's an array where is possible to define several clients and their patterns. Each pattern (e.g: retry or circuit breaker) is one object in this array. To group them in the result dataset, use `lib` and `platform` properties. 
-
-| Parameter | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| pattern | `string` | yes | The name of pattern. |
-| platform | `string` | yes | The name of plataform. |
-| lib | `string` | yes | The name of library. |
-| url | `string` | yes | The url that process the tasks wrapped in pattern |
-| patternConfig | `object` | yes | The library's pattern configuration. It's a dynamic object and the value will be processed and passed to the `url`. |
-
-
-## Installation and usage instructions
+## Installation
 
 ### Requirements
 
 Docker 20.10+ and Docker Compose 1.29+.
 
-### Clone and build
+### Setup
 
-First, clone the benchmarl repository.
+First, clone the ResilienceBench project repository from [GitHub](https://github.com/ppgia-unifor/resiliency-pattern-benchmark).
 
 ```sh
 git clone git@github.com:ppgia-unifor/resiliency-pattern-benchmark.git
 cd resiliency-pattern-benchmark
 ```
 
-Then, build the benchmark components.
+Then, build the ResilienceBench Docker images by calling Docker Compose `build`.
 
 ```sh
 docker-compose build
 ```
 
-The command above will pull third-party images and build the images of the benchmark's native components.
+### Configuration
 
-### Configure and execute
-
-Start by copying one of the sample test scenario specifications (e.g., config-retry.json) provided in the [samples](/samples) folder.
+Start by copying one of the sample test configuration files (e.g., `config-retry.json`) provided in the [samples](/samples) folder and rename it (e.g., `my-test.json`).
 
 ```sh
-cp ./samples/config-retry.json ./config-my-scenario.json
+cp ./samples/config-retry.json ./my-config.json
 ```
 
-Change the new scenario specification's control and resilience parameters as needed (see the test scenario's [parameters description](#scenarios-input-file)).
+Change the control and resilience parameters of the new configuration file as needed (see the parameters description in the [documentation folder](/docs/README.md#test-scenarios)).
 
-Edit the left-hand-side of the `volumes` atribute of the `scheduler` service in the benchmark's `docker-compose.yaml` file to refer to the new scenario specification.
+Edit the left-hand-side of the `volumes` attribute of the `scheduler` service in ResilienceBench's `docker-compose.yaml` file to refer to the new configuration file.
 
 ```yaml
 volumes:
-  - ./config-my-scenario.json:/opt/app/conf/conf.json
+  - ./my-config.json:/opt/app/conf/conf.json
 ```
 
 Specify where the test results should be stored. 
 
-Two storage options are currently supported: in the local file system or in the AWS cloud. Both options can be configured by defining appropriate environment variables in the `environment` attribute of the `scheduler` service in the benchmark's  `docker-compose.yaml` file.
+Two storage options are currently supported: in the AWS S3 cloud storage service, or in the local file system. Both options can be configured by defining appropriate environment variables in the `environment` section of the `scheduler` service in the `docker-compose.yaml` file.
 
+#### AWS S3
 
-It supports two strategies to save the results dataset: remote and local. The remote strategy use Amazon S3. Open `docker-compose.yaml` file and find the definition of `scheduler` container, in the `environment`
-
-#### Remote (Amazon S3) configuration
-
-1. Configure the AWS credentials file on host machine by follow the steps available [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-2. Mount the credentials file to the container by editing the section `volume` in service `scheduler` in the file `docker-compose.yaml`
+1. Create the AWS credentials file and store it in the host machine by following the steps described [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
+2. Edit the `volume` section of the `scheduler` service in the `docker-compose.yaml` file to refer to the AWS credentials file.
 
     ```yaml
     volumes:
       - /home/vagrant/.aws/credentials:/root/.aws/credentials
     ```
 
-3. Set the bucket name to `AWS_BUCKET_NAME` variable.
-4. Set the path inside the bucket to `AWS_OUTPUT_PATH` variable.
-5. Make sure the variable `DISK_PATH` do not exist.
+3. Specify the name (e.g., `my-bucket`) and path (e.g., `results-folder`) of the AWS S3 bucket where the tests results will be stored by defining the `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` variables in the `enviroment` section of the the `scheduler` service.
 
+    ```yaml
+    environment:
+      - AWS_BUCKET_NAME=my-bucket
+      - AWS_OUTPUT_PATH=results-folder
 
+#### Local file system
 
-#### Local configuration
-
-1. Make sure `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` do not exist;
-2. Set `DISK_PATH` to a path inside the container;
-3. Mount a volume binding `DISK_PATH` and a path in the host;
+1. Make sure the `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` variables are not defined.
+2. Specify the path to a local folder inside the `scheduler` service container where the tests results will be stored (e.g., `/opt/app/resilience-tests`) by defining the `DISK_PATH` variable in the `enviroment` section of the `scheduler` service.
+3. Edit the `volumes` section of the `scheduler` service to map the selected local folder inside the `scheduler` service container to a local folder in the host machine (e.g., `./results`).
     
     ```yaml
     environment:
@@ -167,149 +84,20 @@ It supports two strategies to save the results dataset: remote and local. The re
       - ./results:/opt/app/resilience-tests
     ```
 
+### Execution
 
-Finally, execute the test scenarios by calling Docker Compose up.
-
+Finally, execute the test scenarios specified in the input configuration file by calling Docker Compose `up`.
 
 ```sh
 docker-compose up
 ```
 
+After all test scenarios have been executed, the test results will be stored as a set of CSV files in the location chosen by the user. See the [documentation](/docs/README.md#test-results) for a description of the CSV files schema and contents. 
 
+## Demo video
 
-## Results (output file)
-
-<table>
-    <thead>
-        <tr>
-            <th>Parameter</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>totalCalls</td>
-            <td><code>number</code></td>
-            <td>number of total invocations of the target service by the client application</td>
-        </tr>
-        <tr>
-            <td>successfulCalls</td>
-            <td><code>number</code></td>
-            <td rowspan=2>segmented number of successful and unsuccessful invocations of the target service by the client application</td>
-        </tr>
-        <tr>
-            <td>unsuccessfulCalls</td>
-            <td><code>number</code></td>
-        </tr>
-        <tr>
-            <td>totalRequests</td>
-            <td><code>number</code></td>
-            <td>number of total requests of the target service by the client application, including the retries</td>
-        </tr>
-        <tr>
-            <td>successfulRequests</td>
-            <td><code>number</code></td>
-            <td rowspan=2>segmented number of successful and unsuccessful requests of the target service by the client application, including the retries</td>
-        </tr>
-        <tr>
-            <td>unsuccessfulRequests</td>
-            <td><code>number</code></td>
-        </tr>
-        <tr>
-            <td>successTime</td>
-            <td><code>number</code></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>successTimePerRequest</td>
-            <td><code>number</code></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>errorTime</td>
-            <td><code>number</code></td>
-            <td></td>
-        </tr>
-         <tr>
-            <td>errorTimePerRequest</td>
-            <td><code>number</code></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>totalContentionTime</td>
-            <td><code>number</code></td>
-            <td>Total execution time spent waiting for either a successful or an unsuccessful response from the target service</td>
-        </tr>
-        <tr>
-            <td>contentionRate</td>
-            <td><code>number</code></td>
-            <td>Fraction of the client application's total execution time spent waiting for either a successful or an unsuccessful response from the target service</td>
-        </tr>
-        <tr>
-            <td>throughput</td>
-            <td><code>number</code></td>
-            <td>Requests per seconds sent to target service by client service</td>
-        </tr>
-        <tr>
-            <td>userId</td>
-            <td><code>number</code></td>
-            <td>Unique identifier of the virtual user</td>
-        </tr>
-        <tr>
-            <td>startTime</td>
-            <td><code>timestamp</code></td>
-            <td rowspan=2>Time when the client service start/end sending requests to target service</td>
-        </tr>
-        <tr>
-            <td>endTime</td>
-            <td><code>timestamp</code></td>
-        </tr>
-        <tr>
-            <td>users</td>
-            <td><code>number</code></td>
-            <td>Virtual users simulated in this round</td>
-        </tr>
-        <tr>
-            <td>round</td>
-            <td><code>number</code></td>
-            <td>Current round of the test</td>
-        </tr>
-        <tr>
-            <td>lib</td>
-            <td><code>string</code></td>
-            <td>The library name</td>
-        </tr>
-        <tr>
-            <td>pattern</td>
-            <td><code>string</code></td>
-            <td>The pattern name</td>
-        </tr>
-        <tr>
-            <td>faultPercentage</td>
-            <td><code>number</code></td>
-            <td>Rate of failure which was injected into the request stream</td>
-        </tr>
-        <tr>
-            <td>faultType</td>
-            <td><code>string</code></td>
-            <td>Type of failure which was injected into the request stream</td>
-        </tr>
-        <tr>
-            <td>faultStatus</td>
-            <td><code>number</code></td>
-            <td>HTTP status code sent when the request failed</td>
-        </tr>
-    </tbody>
-</table>
-
+[<img src="docs/img/video-thumbnail.jpg" width=500>](https://www.youtube.com/watch?v=X7nzlK86eAo "ResilienceBench Demo Video")
 
 ## Publications
 
-Costa, T. M. et al. (2022). **Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker.** In XL Simpósio Brasileiro de Redes de
-Computadores e Sistemas Distribuídos (SBRC). Aceito para publicação.
-
-- The experimental dataset used is available in the folder [sbrc2022-data](sbrc2022-data/).
-
-
-[Video for SBRC'22 for Tools Session Submission](https://www.youtube.com/watch?v=mOVduraUAno)
+Costa, T. M., Vasconcelos, D. M., Aderaldo, C. M., and Mendonça, N. C. (2022). **Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker.** In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). Accepted for publication. The experimental dataset used in the work described in this paper is available in the folder [data/sbrc2022](data/sbrc2022/).
