@@ -1,6 +1,16 @@
-## Run-time Architecture
+# ResilienceBench Documentation
 
-ResilienceBench runt-time architecture includes four main services: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the diagram below. 
+Jump to:
+
+* [Architectural overview](#architectural-overview)
+
+* [Configuring test scenarios](#test-scenarios)
+
+* [Understanding the test results](#test-results)
+
+## Architectural overview
+
+ResilienceBench architecture includes four main services: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the diagram below. 
 
 <br/><br/>
 <img src="./img/resiliencebench-arch-trans.png" width=900>
