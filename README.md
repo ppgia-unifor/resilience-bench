@@ -10,6 +10,8 @@ Jump to:
 
 * [Publications](#publications)
 
+* [Credits](#credits)
+
 ## Installation instructions
 
 ### Requirements
@@ -99,3 +101,7 @@ After all test scenarios have been executed, the test results will be stored as 
 ## Publications
 
 Costa, T. M., Vasconcelos, D. M., Aderaldo, C. M., and Mendonça, N. C. (2022). [Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker](publications/sbrc2022-final.pdf). In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). The experimental dataset used in the work described in this paper is available in the [/data](data/sbrc2022/) folder.
+
+## Credits
+
+ResilienceBench is being developed by [Carlos M. Aderaldo](https://github.com/cmendesce) and [Nabor C. Mendonça](https://github.com/nabormendonca), from the Post-Graduate Program in Applied Informaticas (PPGIA), University of Fortaleza (UNIFOR), Fortaleza, CE, Brazil.
