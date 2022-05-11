@@ -3,7 +3,7 @@
 ResilienceBench runt-time architecture includes four main services: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the diagram below. 
 
 <br/><br/>
-<img src="resiliencebench-arch-trans-color.png" width=900>
+<img src="./img/resiliencebench-arch-trans.png" width=900>
 <br/><br/>
 
 The scheduler (i) parses and executes the set of resilience test scenarios specified by the ResilienceBench user in a [JSON input file](#test-scenarios); (ii) invokes the client service with the test parameters for each scenario; and (iii) collects the test results received from the client service and returns them to the user as set of [CSV files](#test-results).  
