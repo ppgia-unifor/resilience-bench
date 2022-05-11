@@ -1,5 +1,5 @@
 # SBRC 2022 Dataset
-The experimental dataset used in the SBRC 2022 submission is available in the [dataset.csv](dataset.csv) file.
+The experimental dataset used in the SBRC 2022 paper is available in the [dataset.csv](dataset.csv) file.
 
 This file is structured with the set of attributes (or csv columns) described below. The first six attributes correspond to test parameters, while the remaining attributes correspond to performance metrics collected during each test.
 
