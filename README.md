@@ -43,7 +43,7 @@ Start by copying one of the sample test configuration files (e.g., 'config-retry
 cp ./samples/config-retry.json ./my-config.json
 ```
 
-Change the control and resilience parameters of the new configuration file as needed (see the parameters description in the [documentation folder](/docs/README.md#test-scenarios)).
+Change the control and resilience parameters of the new configuration file as needed (see the parameters description in the [documentation](/docs/README.md#test-scenarios)).
 
 Edit the left-hand-side of the 'volumes' attribute of the scheduler service in ResilienceBench's 'docker-compose.yaml' file to refer to the new configuration file.
 
@@ -77,11 +77,15 @@ Two storage options are currently supported: in the AWS S3 cloud storage service
 
 1. Make sure the `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` variables are not defined.
 2. Specify the path to a local folder inside the scheduler service container where the tests results will be stored (e.g., '/opt/app/resilience-tests') by defining the `DISK_PATH` variable in the 'eviroment' section of the scheduler service.
-3. Edit the 'volumes' section of the scheduler service to map the selected local folder inside the scheduler service container to a local folder in the host machine (e.g., './results').
-    
+
     ```yaml
     environment:
       - DISK_PATH=/opt/app/resilience-tests
+    ```
+    
+3. Edit the 'volumes' section of the scheduler service to map the selected local folder inside the scheduler service container to a local folder in the host machine (e.g., './results').
+    
+    ```yaml
     volumes:
       - ./results:/opt/app/resilience-tests
     ```
@@ -94,7 +98,7 @@ Finally, execute the test scenarios specified in the input configuration file by
 docker-compose up
 ```
 
-After all test scenarios have been executed, the test results will be stored as a set of CSV files in the location chosen by the user. See the [documentation](/docs/README.md#test-results) for a description of the CSV files schema and contents. 
+After all test scenarios have been executed, the test results will be stored as a set of CSV files in the location chosen by the user. See the [documentation](/docs/README.md#test-results) for a description of the CSV files structure and contents. 
 
 ## Demo video
 
@@ -102,7 +106,7 @@ After all test scenarios have been executed, the test results will be stored as 
 
 ## Publications
 
-Costa, T. M., Vasconcelos, D. M., Aderaldo, C. M., and Mendonça, N. C. (2022). [Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker](publications/sbrc2022-final.pdf). In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). The experimental dataset used in the work described in this paper is available in the [/data/sbrc2022](data/sbrc2022/) folder.
+Costa, T. M., Vasconcelos, D. M., Aderaldo, C. M., and Mendonça, N. C. (2022). [Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker](publications/sbrc2022-final.pdf). In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). The experimental dataset used in this paper is available in the [/data/sbrc2022](data/sbrc2022/) folder.
 
 ## Credits
 
