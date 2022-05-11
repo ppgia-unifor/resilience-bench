@@ -13,14 +13,14 @@ Jump to:
 The ResilienceBench architecture comprises four main services: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the diagram below. 
 
 <br/><br/>
-<img src="./img/resiliencebench-arch-trans.png" width=900>
+<img src="./img/resiliencebench-arch-trans-color.png" width=900>
 <br/><br/>
 
 The scheduler (i) parses and executes the set of resilience test scenarios specified by the ResilienceBench user in a [JSON input file](#test-scenarios); (ii) invokes the client service with the test parameters for each scenario; and (iii) collects the test results received from the client service and returns them to the user as set of [CSV files](#test-results). The scheduler is implemented in Python, being the only native service of ResilienceBench.
 
 The client service (i) invokes the target service using a given resilience pattern (e.g., Retry), as specified in the test scenario being executed; (ii) collects and calculates a set of performance and resilience metrics (e.g., mean response timefrom the result of each target service invocation; and (iii) returns the collected performance metrics to the scheduler. The client service can be implemented in any language supporting the use of resiliency patterns during the invocation of remote services. Currently, ResilienceBench includes two versions of the client service: one implemented in C\#, using the [Polly](https://github.com/App-vNext/Polly) resilience library, and the other implemented in Java, using the [Resilience4j](https://github.com/resilience4j/resilience4j) resilience library. Both versions support the use of the [Retry](https://docs.microsoft.com/en-us/azure/architecture/patterns/retry) and [Circuit Breaker](https://docs.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker) patterns, in their basic configurations.
 
-The proxy service transparently injects a given type of failure (e.g., abort or delay failures) into the target service invocation flow, according to a given failure rate. Any intermediary HTTP service capable of injecting faults into an HTTP invocation stream cab be used as the proxy service. Currently, ResilienceBench uses [Envoy](https://www.envoyproxy.io/) as its proxy service.
+The proxy service transparently injects a given type of failure (e.g., abort or delay failures) into the target service invocation flow, according to a given failure rate. Any intermediary HTTP service capable of injecting faults into an HTTP invocation stream can be used as the proxy service. Currently, ResilienceBench uses [Envoy](https://www.envoyproxy.io/) as its proxy service.
 
 Finally, the target service simply processess and responds to the client service's requests. Any service that responds to HTTP requests can be used as the target service. Currently, ResilienceBench uses [httpbin](https://github.com/postmanlabs/httpbin) as its target service.
 
@@ -28,40 +28,44 @@ At run time, the scheduler and the client service are deployed into two separate
 
 ## Test scenarios
 
-ResilienceBench test scenarios are specified as a JSON file containing a number of **control** and **resilience** parameters. The JSON code below shows an example of a test scenario:
+A ResilienceBench test scenario consists of a test session in which the client service continuously invokes the target service, using a given resilience strategy, until a given number of successful invocations, or a given number of total (either successful or unsuccessful) invocations, is reached. During the test session, the target service may fail according to a given failure rate, which may cause the client service to immediately re-invoke the target service, wait for while before re-invoking the target service, or simply abort the invocation, depending on the resilience strategy used. Therefore, the resilience strategy used by the client service will directly affect its behavior upon failures of the target service, which, in turn, may have a direct impact on its performance metrics, such as total execution time and contention rate (see the [test results documentation](#test-results) for the full list of performance metrics currently supported by ResilienceBench).
+
+ResilienceBench test scenarios are specified as a JSON file containing a number of **control** and **resilience** parameters. The JSON code below shows an example of a test scenario specification:
 
 ```json
-{
-    "testId": "MyTest",
-    "concurrentUsers": [25],
-    "rounds": 10,
-    "maxRequestsAllowed": 100,
-    "targetSuccessfulRequests": 25,
-    "fault": {
-        "type": "abort",
-        "percentage": [50],
-        "status": 503
-    },
-    "patterns": [
-        {
-            "pattern": "retry",
-            "platform": "java",
-            "lib": "resilience4j",
-            "url": "http://resilience4j/retry",
-            "patternConfig": {
-                "maxAttempts": 6,
-                "multiplier": 1.5,
-                "intervalFunction": "EXPONENTIAL_BACKOFF",
-                "initialIntervalMillis": [100]
-            }
-        }
-    ]
-}
+   1  {
+   2      "testId": "MyTest",
+   3      "concurrentUsers": [25, 50, 100],
+   4      "rounds": 10,
+   5      "maxRequestsAllowed": 100,
+   6      "targetSuccessfulRequests": 25,
+   7      "fault": {
+   8          "type": "abort",
+   9          "percentage": [25, 50, 75],
+  10          "status": 503
+  11      },
+  12      "patterns": [
+  13          {
+  14              "pattern": "retry",
+  15              "platform": "java",
+  16              "lib": "resilience4j",
+  17              "url": "http://resilience4j/retry",
+  18              "patternConfig": {
+  19                  "maxAttempts": 6,
+  20                  "multiplier": 1.5,
+  21                  "intervalFunction": "EXPONENTIAL_BACKOFF",
+  22                  "initialIntervalMillis": [100, 200]
+  23              }
+  24          }
+  25      ]
+  26  }
 ```
+
+In this example, lines 2-11 contain the control parameters, while lines 12-25 contain the resilience parameters. Note how some parameters are defined as an array of values, e.g., `concurrentUsers` (line 3). At scenario execution time, these values will be expanded by the scheduler to generate multiple scenario specifications containing each individual value of the array. In the example above, the scheduler will generate three different scenario specifications based on the three values provided for the `concurrentUsers` parameter, with the `concurrentUsers` parameter of each specification containing the values 25, 50, and 100, respectively. A similar expansion will occur with the values of the array-like parameters in line 9 (`percentage` attribute of the `fault` parameter, also with three values) and line 22 (`initialIntervalMilli` attribute of the `patternConfig` parameter, with two values). Overall, the scheduler will generate and execute 18 (3 × 3 × 2) distinct test scenarios from the above JSON file. 
 
 ### Control parameters
 
-These parameters control the test scenarios execution. 
+These parameters are used to control the test scenarios execution. 
 
 | Parameter | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
@@ -86,7 +90,7 @@ The latter parameter is useful to prevent the client application from never reac
 
 ### Resilience parameters
 
-These parameters define and configure the resilience strategy the client application will use to invoke the target service. 
+These parameters are used to configure the client service and the resilience strategy it will use to invoke the target service. 
 
 | Parameter | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
