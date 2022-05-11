@@ -10,19 +10,21 @@ Jump to:
 
 ## Architectural overview
 
-ResilienceBench architecture includes four main services: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the diagram below. 
+The ResilienceBench architecture comprises four main services: a **scheduler**, a **client service**, a **proxy service**, and a **target service**, which interact at run time as depicted in the diagram below. 
 
 <br/><br/>
 <img src="./img/resiliencebench-arch-trans.png" width=900>
 <br/><br/>
 
-The scheduler (i) parses and executes the set of resilience test scenarios specified by the ResilienceBench user in a [JSON input file](#test-scenarios); (ii) invokes the client service with the test parameters for each scenario; and (iii) collects the test results received from the client service and returns them to the user as set of [CSV files](#test-results).  
+The scheduler (i) parses and executes the set of resilience test scenarios specified by the ResilienceBench user in a [JSON input file](#test-scenarios); (ii) invokes the client service with the test parameters for each scenario; and (iii) collects the test results received from the client service and returns them to the user as set of [CSV files](#test-results). The scheduler is implemented in Python, being the only native service of ResilienceBench.
 
-The client service (i) invokes the target service using a given resilience pattern (e.g., Retry), as specified in the test scenario being executed; (ii) collects and calculates a set of performance and resilience metrics (e.g., mean response timefrom the result of each target service invocation; and (iii) returns the collected performance metrics to the scheduler.
+The client service (i) invokes the target service using a given resilience pattern (e.g., Retry), as specified in the test scenario being executed; (ii) collects and calculates a set of performance and resilience metrics (e.g., mean response timefrom the result of each target service invocation; and (iii) returns the collected performance metrics to the scheduler. The client service can be implemented in any language supporting the use of resiliency patterns during the invocation of remote services. Currently, ResilienceBench includes two versions of the client service: one implemented in C\#, using the [Polly](https://github.com/App-vNext/Polly) resilience library, and the other implemented in Java, using the [Resilience4j](https://github.com/resilience4j/resilience4j) resilience library. Both versions support the use of the [Retry](https://docs.microsoft.com/en-us/azure/architecture/patterns/retry) and [Circuit Breaker](https://docs.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker) patterns, in their basic configurations.
 
-The proxy service transparently injects a given type of failure (e.g., abort or delay failures) into the target service invocation flow, according to a given failure rate.
+The proxy service transparently injects a given type of failure (e.g., abort or delay failures) into the target service invocation flow, according to a given failure rate. Any intermediary HTTP service capable of injecting faults into an HTTP invocation stream cab be used as the proxy service. Currently, ResilienceBench uses [Envoy](https://www.envoyproxy.io/) as its proxy service.
 
-Finally, the target service simply processess and responds to the client service's requests.
+Finally, the target service simply processess and responds to the client service's requests. Any service that responds to HTTP requests can be used as the target service. Currently, ResilienceBench uses [httpbin](https://github.com/postmanlabs/httpbin) as its target service.
+
+At run time, the scheduler and the client service are deployed into two separate Docker containers, while the proxy service and the target service are deployed jointly, in a single containter (see the architecture diagram above). ResilienceBench uses [Vagrant](https://www.vagrantup.com/intro) to configure and create the environment's host machine, and [Docker Compose](https://docs.docker.com/compose/) to build, configure, and execute the environment's service containers.
 
 ## Test scenarios
 
