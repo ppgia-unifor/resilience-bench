@@ -91,7 +91,7 @@ After all test scenarios have been executed, the test results are stored as a se
 <table>
     <thead>
         <tr>
-            <th>Column (metric)</th>
+            <th>Metric</th>
             <th>Type</th>
             <th>Description</th>
         </tr>
@@ -185,7 +185,7 @@ Each CSV file also contains an additional set columns corresponding to the contr
 <table>
     <thead>
         <tr>
-            <th>Column (parameter)</th>
+            <th>Parameter</th>
             <th>Type</th>
             <th>Description</th>
         </tr>
@@ -233,5 +233,7 @@ Each CSV file also contains an additional set columns corresponding to the contr
         </tr>
     </tbody>
 </table>
+
+In addition to the parameters described above, each CSV file also contains the resilience parameters used to configure the particular resiliency pattern used by the client service. These parameters may vary according to resiliency pattern and the resilience library used, or may be ommitted if no resilency pattern was used. 
 
 By including both the collected metrics and the control and resilience parameters used during the tests, each result CSV file is self-contained and can be independently analyzed and visualized using any appropriate tool.  
