@@ -2,9 +2,6 @@
 
 ResilienceBench is a language-agnostic benchmark environment to support the experimental evaluation of microservice resiliency patterns, such as [Retry](https://docs.microsoft.com/en-us/azure/architecture/patterns/retry) and [Circuit Breaker](https://docs.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker), using open source resilience libraries, such as C\#'s [Polly](https://github.com/App-vNext/Polly) and Java's [Resiliency4](https://github.com/resilience4j/resilience4j). 
 
-</br>
-<img src="/docs/img/resiliencebench-arch-trans-color.png" width=700>
-
 Jump to:
 
 * [Documentation](/docs)
@@ -32,7 +29,7 @@ git clone git@github.com:ppgia-unifor/resiliency-pattern-benchmark.git
 cd resiliency-pattern-benchmark
 ```
 
-Then, build the ResilienceBench Docker images by calling Docker Compose 'build'.
+Then, build the ResilienceBench Docker images by calling Docker Compose `build`.
 
 ```sh
 docker-compose build
@@ -40,7 +37,7 @@ docker-compose build
 
 ### Configuration
 
-Start by copying one of the sample test configuration files (e.g., 'config-retry.json') provided in the [samples](/samples) folder and rename it (e.g., 'my-config.json').
+Start by copying one of the sample test configuration files (e.g., `config-retry.json`) provided in the [samples](/samples) folder and rename it (e.g., `my-config.json`).
 
 ```sh
 cp ./samples/config-retry.json ./my-config.json
@@ -48,7 +45,7 @@ cp ./samples/config-retry.json ./my-config.json
 
 Change the control and resilience parameters of the new configuration file as needed (see the parameters description in the [documentation](/docs/README.md#test-scenarios)).
 
-Edit the left-hand-side of the 'volumes' attribute of the scheduler service in ResilienceBench's 'docker-compose.yaml' file to refer to the new configuration file.
+Edit the left-hand-side of the `volumes` attribute of the scheduler service in ResilienceBench's [`docker-compose.yaml`](./docker-compose.yaml) file to refer to the new configuration file.
 
 ```yaml
 volumes:
@@ -57,7 +54,7 @@ volumes:
 
 Specify where the test results should be stored. 
 
-Two storage options are currently supported: in the AWS S3 cloud storage service, or in the local file system. Both options can be configured by defining appropriate environment variables in the 'environment' section of the scheduler service in the [docker-compose.yaml](./docker-compose.yaml) file.
+Two storage options are currently supported: in the AWS S3 cloud storage service, or in the local file system. Both options can be configured by defining appropriate environment variables in the `environment` section of the scheduler service in the [`docker-compose.yaml`](./docker-compose.yaml) file.
 
 #### AWS S3
 
@@ -69,7 +66,7 @@ Two storage options are currently supported: in the AWS S3 cloud storage service
       - /home/vagrant/.aws/credentials:/root/.aws/credentials
     ```
 
-3. Specify the name (e.g., 'my-bucket') and path (e.g., 'results-folder') of the AWS S3 bucket where the tests results will be stored by defining the `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` variables in the 'enviroment' section of the the scheduler service.
+3. Specify the name (e.g., `my-bucket`) and path (e.g., `results-folder`) of the AWS S3 bucket where the tests results will be stored by defining the `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` variables in the `enviroment` section of the the scheduler service.
 
     ```yaml
     environment:
@@ -79,14 +76,14 @@ Two storage options are currently supported: in the AWS S3 cloud storage service
 #### Local file system
 
 1. Make sure the `AWS_BUCKET_NAME` and `AWS_OUTPUT_PATH` variables are not defined.
-2. Specify the path to a local folder inside the scheduler service container where the tests results will be stored (e.g., '/opt/app/resilience-tests') by defining the `DISK_PATH` variable in the 'eviroment' section of the scheduler service.
+2. Specify the path to a local folder inside the scheduler service container where the tests results will be stored (e.g., `/opt/app/resilience-tests`) by defining the `DISK_PATH` variable in the `evironment` section of the scheduler service.
 
     ```yaml
     environment:
       - DISK_PATH=/opt/app/resilience-tests
     ```
     
-3. Edit the 'volumes' section of the scheduler service to map the selected local folder inside the scheduler service container to a local folder in the host machine (e.g., './results').
+3. Edit the `volumes` section of the scheduler service to map the selected local folder inside the scheduler service container to a local folder in the host machine (e.g., `./results`).
     
     ```yaml
     volumes:
@@ -95,9 +92,9 @@ Two storage options are currently supported: in the AWS S3 cloud storage service
 
 ### Execution
 
-Finally, execute the test scenarios specified in the input configuration file by calling Docker Compose 'up'.
+Finally, execute the test scenarios specified in the input configuration file by calling Docker Compose `up`.
 
-```sh
+```bash
 docker-compose up
 ```
 
