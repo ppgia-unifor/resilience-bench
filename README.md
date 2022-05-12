@@ -102,6 +102,8 @@ After all test scenarios have been executed, the test results will be stored as 
 
 ## Demo video
 
+This short (2m:20s) video provides a quick overview of the steps necessary to install, configure, and run resilience tests with ResilienceBench. 
+
 [<img src="docs/img/video-thumbnail.jpg" width=500>](https://www.youtube.com/watch?v=X7nzlK86eAo "ResilienceBench Demo Video")
 
 ## Publications
