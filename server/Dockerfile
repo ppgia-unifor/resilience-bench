@@ -1,4 +1,4 @@
-FROM envoyproxy/envoy-dev
+FROM envoyproxy/envoy-dev:25cc9ea48ba18930e1235dfb6a6a236d59c8b08a
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
