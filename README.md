@@ -110,6 +110,9 @@ This short (2m:20s) video provides a quick overview of the steps necessary to in
 
 Costa, T. M., Vasconcelos, D. M., Aderaldo, C. M., and Mendonça, N. C. (2022). [Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker](publications/sbrc2022-final.pdf). In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). The experimental dataset used in this paper is available in the [/data/sbrc2022](data/sbrc2022/) folder.
 
+Aderaldo, C. M., and Mendonça, N. C. (2022). [ResilienceBench: Um ambiente para avaliação experimental de padrões de resiliência para microsserviços ](). In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). 
+
+
 ## Credits
 
 ResilienceBench is being developed by [Carlos M. Aderaldo](https://github.com/cmendesce) and [Nabor C. Mendonça](https://github.com/nabormendonca), from University of Fortaleza (UNIFOR), Brazil, in collaboration with [Javier Cámara](https://javier-camara.github.io/), from University of Málaga, Spain, and [David Garlan](http://www.cs.cmu.edu/~garlan/), from Carnegie Mellon University (CMU), USA.
