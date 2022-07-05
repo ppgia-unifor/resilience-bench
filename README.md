@@ -116,3 +116,4 @@ Aderaldo, C. M., and Mendonça, N. C. (2022). [ResilienceBench: Um ambiente para
 ## Credits
 
 ResilienceBench is being developed by [Carlos M. Aderaldo](https://github.com/cmendesce) and [Nabor C. Mendonça](https://github.com/nabormendonca), from University of Fortaleza (UNIFOR), Brazil, in collaboration with [Javier Cámara](https://javier-camara.github.io/), from University of Málaga, Spain, and [David Garlan](http://www.cs.cmu.edu/~garlan/), from Carnegie Mellon University (CMU), USA.
+
