@@ -1,0 +1,75 @@
+{
+    "fault": {
+        "type": "abort",
+        "percentage": [0, 20, 40, 60, 80],
+        "status": 503
+    },
+    "concurrentUsers": [50, 100, 150],
+    "rounds": 10,
+    "maxRequestsAllowed": 500,
+    "targetSuccessfulRequests": 10,
+    "patterns": [{
+            "pattern": "baseline",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://polly/baseline",
+            "configTemplate": {}
+        },
+        {
+            "pattern": "baseline",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://resilience4j:8080/baseline",
+            "configTemplate": {}
+        },
+        {
+            "pattern": "retry",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://polly/retry",
+            "configTemplate": {
+                "count": 5,
+                "sleepDurationType": "EXPONENTIAL_BACKOFF",
+                "exponentialBackoffPow": 1.5,
+                "sleepDuration": [20, 40, 60]
+            }
+        },
+        {
+            "pattern": "retry",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://resilience4j:8080/retry",
+            "configTemplate": {
+                "maxAttempts": 6,
+                "multiplier": 1.5,
+                "intervalFunction": "EXPONENTIAL_BACKOFF",
+                "initialIntervalMillis": [20, 40, 60]
+            }
+        },
+        {
+            "pattern": "circuit_breaker",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://polly/circuitbreaker",
+            "configTemplate": {
+                "exceptionsAllowedBeforeBreaking": 2,
+                "durationOfBreaking": [20, 40, 60]
+            }
+        },
+        {
+            "pattern": "circuit_breaker",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://resilience4j:8080/cb",
+            "configTemplate": {
+                "slowCallRateThreshold": 100,
+                "slowCallDurationThreshold": 1000,
+                "slidingWindowSize": 2,
+                "failureRateThreshold": 100,
+                "minimumNumberOfCalls": 2,
+                "permittedNumberOfCallsInHalfOpenState": 1,
+                "waitDurationInOpenState": [20, 40, 60]
+            }
+        }
+    ]
+}
