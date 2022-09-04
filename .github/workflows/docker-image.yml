@@ -13,5 +13,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build ./server --file ./server/Dockerfile --tag resilience-bench
--server:${GITHUB_SHA}
+      run: docker build ./server --file ./server/Dockerfile --tag resilience-bench-server:${GITHUB_SHA}
