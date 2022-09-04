@@ -13,12 +13,16 @@ jobs:
         include:
           - dockerfile: ./server/Dockerfile
             image: ghcr.io/ppgia-unifor/resilience-bench-server
+            context: ./server
           - dockerfile: ./scheduler/Dockerfile
             image: ghcr.io/ppgia-unifor/resilience-bench-scheduler
+            context: ./scheduler
           - dockerfile: ./clients/polly/Dockerfile
             image: ghcr.io/ppgia-unifor/resilience-bench-polly-client
+            context: ./clients/polly
           - dockerfile: ./clients/resilience4j/Dockerfile
             image: ghcr.io/ppgia-unifor/resilience-bench-r4j-client
+            context: ./clients/resilience4j
     permissions:
       contents: read
       packages: write
@@ -43,7 +47,7 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: .
+          context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
