@@ -6,7 +6,7 @@ Jump to:
 
 * [Documentation](/docs)
 
-* [Installation instructions](installation.md)
+* [Installation instructions](docs/installation.md)
 
 * [Demo video](#demo-video)
 
