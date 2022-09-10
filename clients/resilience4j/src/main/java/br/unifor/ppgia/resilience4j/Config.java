@@ -4,6 +4,7 @@ public class Config<P> {
 
     private int maxRequestsAllowed;
     private int targetSuccessfulRequests;
+    private String targetUrl;
     private P params;
 
     public int getMaxRequestsAllowed() {
@@ -28,5 +29,13 @@ public class Config<P> {
 
     public void setParams(P params) {
         this.params = params;
+    }
+
+    public String getTargetUrl() {
+        return targetUrl;
+    }
+
+    public void setTargetUrl(String targetUrl) {
+        this.targetUrl = targetUrl;
     }
 }

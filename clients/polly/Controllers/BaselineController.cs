@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
+using ResiliencePatterns.Polly.Models;
 
 namespace ResiliencePatterns.Polly.Controllers
 {
@@ -17,7 +18,7 @@ namespace ResiliencePatterns.Polly.Controllers
 
         public async Task<ResilienceModuleMetrics> IndexAsync(Config<object> config)
         {
-            return await _backendService.MakeRequestAsync(Policy.NoOpAsync(), config.TargetSuccessfulRequests, config.MaxRequestsAllowed);
+            return await _backendService.MakeRequestAsync(Policy.NoOpAsync(), config);
         }
     }
 }

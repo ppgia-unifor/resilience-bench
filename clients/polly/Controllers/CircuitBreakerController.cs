@@ -22,7 +22,7 @@ namespace ResiliencePatterns.Polly.Controllers
         public async Task<ResilienceModuleMetrics> IndexAsync(Config<CircuitBreakerConfig> config)
         {
             var cb = CreateCircuitBreakerSimplePolicy(config.Params);
-            var metrics = await _backendService.MakeRequestAsync(cb, config.TargetSuccessfulRequests, config.MaxRequestsAllowed);
+            var metrics = await _backendService.MakeRequestAsync(cb, config);
             return metrics;
         }
 

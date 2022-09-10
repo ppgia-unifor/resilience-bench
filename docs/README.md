@@ -39,29 +39,30 @@ ResilienceBench test scenarios are specified as a JSON file containing a number 
    4      "rounds": 10,
    5      "maxRequestsAllowed": 100,
    6      "targetSuccessfulRequests": 25,
-   7      "fault": {
-   8          "type": "abort",
-   9          "percentage": [25, 50, 75],
-  10          "status": 503
-  11      },
-  12      "patterns": [
-  13          {
-  14              "pattern": "retry",
-  15              "platform": "java",
-  16              "lib": "resilience4j",
-  17              "url": "http://resilience4j/retry",
-  18              "patternConfig": {
-  19                  "maxAttempts": 6,
-  20                  "multiplier": 1.5,
-  21                  "intervalFunction": "EXPONENTIAL_BACKOFF",
-  22                  "initialIntervalMillis": [100, 200]
-  23              }
-  24          }
-  25      ]
-  26  }
+   7      "targetUrl": "http://server:9211/bytes/1000",
+   8      "fault": {
+   9          "type": "abort",
+  10          "percentage": [25, 50, 75],
+  11          "status": 503
+  12      },
+  13      "patterns": [
+  14          {
+  15              "pattern": "retry",
+  16              "platform": "java",
+  17              "lib": "resilience4j",
+  18              "url": "http://resilience4j/retry",
+  19              "patternConfig": {
+  20                  "maxAttempts": 6,
+  21                  "multiplier": 1.5,
+  22                  "intervalFunction": "EXPONENTIAL_BACKOFF",
+  23                  "initialIntervalMillis": [100, 200]
+  24              }
+  25          }
+  26      ]
+  27  }
 ```
 
-In this example, lines 2-11 contain the control parameters, while lines 12-25 contain the resilience parameters. Note how some parameters are defined as an array of values, e.g., `concurrentUsers` (line 3). At scenario execution time, these values will be expanded by the scheduler to generate multiple scenario specifications containing each individual value of the array. In the example above, the scheduler will generate three different scenario specifications based on the three values provided for the `concurrentUsers` parameter, with the `concurrentUsers` parameter of each specification containing the values 25, 50, and 100, respectively. A similar expansion will occur with the values of the array-like parameters in line 9 (`percentage` attribute of the `fault` parameter, also with three values) and line 22 (`initialIntervalMilli` attribute of the `patternConfig` parameter, with two values). Overall, the scheduler will generate and execute 18 (3 × 3 × 2) distinct test scenarios from the above JSON file. 
+In this example, lines 2-12 contain the control parameters, while lines 13-26 contain the resilience parameters. Note how some parameters are defined as an array of values, e.g., `concurrentUsers` (line 3). At scenario execution time, these values will be expanded by the scheduler to generate multiple scenario specifications containing each individual value of the array. In the example above, the scheduler will generate three different scenario specifications based on the three values provided for the `concurrentUsers` parameter, with the `concurrentUsers` parameter of each specification containing the values 25, 50, and 100, respectively. A similar expansion will occur with the values of the array-like parameters in line 10 (`percentage` attribute of the `fault` parameter, also with three values) and line 23 (`initialIntervalMilli` attribute of the `patternConfig` parameter, with two values). Overall, the scheduler will generate and execute 18 (3 × 3 × 2) distinct test scenarios from the above JSON file. 
 
 ### Control parameters
 
@@ -74,6 +75,7 @@ These parameters are used to control the test scenarios execution.
 | rounds | `number` | yes | Number of executions of each scenario. |
 | targetSuccessfulRequests | `number` | yes | Expected number of successful invocations of the target service by the client service. |
 | maxRequestsAllowed | `number` | yes | Maximum number of (either successful or unsuccessful) invocations of the target service by the client service. |
+| targetUrl | `string` | yes | The target service URL. |
 | fault | `faultSpec` | yes | Specification of the failure type to be injected by the proxy service into the target service invocation flow. See the faultSpec scheme below |
 
 The latter parameter is useful to prevent the client application from never reaching the required number of successful invocations in a reasonable window of time, which may happen under high server failure rates.

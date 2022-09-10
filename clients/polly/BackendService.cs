@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polly;
+using ResiliencePatterns.Polly.Models;
 
 namespace ResiliencePatterns.Polly
 {
@@ -12,13 +13,10 @@ namespace ResiliencePatterns.Polly
         private readonly IHttpClientFactory _clientFactory;
         private readonly ILogger<BackendService> _logger;
 
-        private readonly string _resource;
-
         public BackendService(IHttpClientFactory clientFactory, ILogger<BackendService> logger)
         {
             _clientFactory = clientFactory;
             HttpClient = _clientFactory.CreateClient("backend");
-            _resource = Environment.GetEnvironmentVariable("RESOURCE_PATH");
             _logger = logger;
             _logger.LogInformation("http client created point to {baseAddress}", HttpClient.BaseAddress);
         }
@@ -28,11 +26,8 @@ namespace ResiliencePatterns.Polly
         /// <summary>
         /// Makes sequential requests to the backend service 
         /// </summary>
-        /// <param name="policy">Police to wrap the http call to the backend service</param>
-        /// <param name="targetSuccessfulRequests">Amount of successful request that it should does</param>
-        /// <param name="maxRequestsAllowed">Ceiling of requests to try to reach the number specified in {targetSuccessfulRequests}</param>
         /// <returns>A list of metrics. Each metric represents each try to do a succesful request</returns>
-        public async Task<ResilienceModuleMetrics> MakeRequestAsync(AsyncPolicy policy, int targetSuccessfulRequests, int maxRequestsAllowed)
+        public async Task<ResilienceModuleMetrics> MakeRequestAsync<T>(AsyncPolicy policy, Config<T> config) where T : class
         {
             var successfulCalls = 0;
             var totalCalls = 0;
@@ -42,7 +37,7 @@ namespace ResiliencePatterns.Polly
             var requestStopwatch = new Stopwatch();
             externalStopwatch.Start();
 
-            while (successfulCalls < targetSuccessfulRequests && maxRequestsAllowed > metrics.TotalRequests)
+            while (successfulCalls < config.TargetSuccessfulRequests && config.MaxRequestsAllowed > metrics.TotalRequests)
             {
                 var policyResult = await policy.ExecuteAndCaptureAsync(async () =>
                 {
@@ -50,7 +45,7 @@ namespace ResiliencePatterns.Polly
                     {
                         requestStopwatch.Reset();
                         requestStopwatch.Start();
-                        var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _resource));
+                        var result = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, config.TargetUrl));
                         requestStopwatch.Stop();
                         if (result.IsSuccessStatusCode)
                         {
@@ -62,9 +57,8 @@ namespace ResiliencePatterns.Polly
                             throw new HttpRequestException();
                         }                        
                     }
-                    catch (Exception)// when ((e is HttpRequestException) || (e is TaskCanceledException))
+                    catch (Exception)
                     {
-                        //_logger.LogInformation("Exception {e}", e);
                         if (requestStopwatch.IsRunning) 
                         {
                             requestStopwatch.Stop();
@@ -79,7 +73,7 @@ namespace ResiliencePatterns.Polly
                     successfulCalls++;
                 }
                 totalCalls++;
-                _logger.LogInformation("TotCalls: {totalCalls} TotRequests: {metrics.TotalRequests} SuccRequests: {metrics.SuccessfulRequests}", totalCalls, metrics.TotalRequests, metrics.SuccessfulRequests);
+                _logger.LogInformation("TotalCalls: {totalCalls} TotalRequests: {metrics.TotalRequests} SuccessfulRequests: {metrics.SuccessfulRequests}", totalCalls, metrics.TotalRequests, metrics.SuccessfulRequests);
             }
             externalStopwatch.Stop();
             metrics.RegisterTotals(totalCalls, successfulCalls, externalStopwatch.ElapsedMilliseconds);

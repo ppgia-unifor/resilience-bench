@@ -5,9 +5,6 @@ services:
     build:
       context: ./clients/polly
     container_name: polly
-    environment:
-      - BACKEND_HOST=http://server:9211
-      - RESOURCE_PATH=/bytes/1000
     depends_on:
       - server
   
@@ -15,9 +12,6 @@ services:
     build:
       context: ./clients/resilience4j
     container_name: resilience4j
-    environment:
-      - BACKEND_HOST=http://server:9211
-      - RESOURCE_PATH=/bytes/1000
     depends_on:
       - server
 

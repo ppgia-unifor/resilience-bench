@@ -10,15 +10,13 @@ public class RestClient {
     private final static Logger logger = LoggerFactory.getLogger(RestClient.class);
 
     private final RestTemplate restTemplate;
-    private final String resource;
 
-    public RestClient(RestTemplate restTemplate, String resource) {
+    public RestClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.resource = resource;
     }
 
-    public ResponseEntity<String> get() {
-        var response = restTemplate.getForEntity(resource, String.class);
+    public ResponseEntity<String> get(String targetUrl) {
+        var response = restTemplate.getForEntity(targetUrl, String.class);
         var bodyLength = response.hasBody() ? response.getBody().length() : 0;
         logger.info("Response: body size {} status {}", bodyLength, response.getStatusCode());
         return response;

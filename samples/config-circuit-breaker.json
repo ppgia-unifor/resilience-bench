@@ -13,6 +13,7 @@
     50,
     100
   ],
+  "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
   "maxRequestsAllowed": 500,
   "targetSuccessfulRequests": 25,

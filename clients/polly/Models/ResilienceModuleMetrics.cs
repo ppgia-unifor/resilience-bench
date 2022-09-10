@@ -1,4 +1,4 @@
-﻿namespace ResiliencePatterns.Polly
+﻿namespace ResiliencePatterns.Polly.Models
 {
     public class ResilienceModuleMetrics
     {

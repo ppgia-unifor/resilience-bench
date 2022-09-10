@@ -27,11 +27,9 @@ namespace ResiliencePatterns.Polly
 
             var readTimeout = Environment.GetEnvironmentVariable("READ_TIMEOUT") ?? "0";
             var backendHost = Environment.GetEnvironmentVariable("BACKEND_HOST") ?? "http://localhost:9211";
-            var resourcePath = Environment.GetEnvironmentVariable("RESOURCE_PATH") ?? "/status/200";
 
             services.AddHttpClient("backend", c =>
             {
-                c.BaseAddress = new Uri(backendHost);
                 if (readTimeout != "0")
                 {
                    c.Timeout = TimeSpan.FromMilliseconds(Int32.Parse(readTimeout)); 

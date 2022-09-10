@@ -2,7 +2,6 @@ package br.unifor.ppgia.resilience4j.baseline;
 
 import br.unifor.ppgia.resilience4j.Config;
 import br.unifor.ppgia.resilience4j.RestClient;
-import br.unifor.ppgia.resilience4j.retry.RetryRequestModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +19,7 @@ public class BaselineController {
     }
 
     @PostMapping
-    public ResponseEntity<?> index(@RequestBody Config<RetryRequestModel> config) {
+    public ResponseEntity<?> index(@RequestBody Config config) {
         var backendService = new BackendServiceSimple(restClient);
         var metrics = backendService.doHttpRequest(config);
         return ResponseEntity.ok(metrics);

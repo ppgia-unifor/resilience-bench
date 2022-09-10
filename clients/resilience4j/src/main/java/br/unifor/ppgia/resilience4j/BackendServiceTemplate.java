@@ -17,11 +17,11 @@ public abstract class BackendServiceTemplate {
 
     protected abstract CheckedFunction0<ResponseEntity<String>> decorate(CheckedFunction0<ResponseEntity<String>> checkedFunction);
 
-    private ResponseEntity<String> sendRequest() {
+    private ResponseEntity<String> sendRequest(String targetUrl) {
         var requestStopwatch = new StopWatch();
         try {
             requestStopwatch.start();
-            var response = restClient.get();
+            var response = restClient.get(targetUrl);
             requestStopwatch.stop();
             if (response.getStatusCode().is2xxSuccessful()) {
                 metrics.registerSuccess(requestStopwatch.getTotalTimeMillis());
@@ -40,7 +40,7 @@ public abstract class BackendServiceTemplate {
         var externalStopwatch = new StopWatch();
         externalStopwatch.start();
         while (successfulCalls < config.getTargetSuccessfulRequests() && config.getMaxRequestsAllowed() > metrics.getTotalRequests()) {
-            var supplier = decorate(this::sendRequest);
+            var supplier = decorate(() -> this.sendRequest(config.getTargetUrl()));
             var result = Try.of(supplier).recover(throwable -> ResponseEntity.status(503).build()).get();
             if (result.getStatusCode().is2xxSuccessful()) {
                 successfulCalls++;
