@@ -39,7 +39,7 @@ public abstract class BackendServiceTemplate {
         var totalCalls = 0;
         var externalStopwatch = new StopWatch();
         externalStopwatch.start();
-        while (successfulCalls < config.getTargetSuccessfulRequests() && config.getMaxRequestsAllowed() > metrics.getTotalRequests()) {
+        while (successfulCalls < config.getSuccessfulRequests() && config.getMaxRequests() > metrics.getTotalRequests()) {
             var supplier = decorate(() -> this.sendRequest(config.getTargetUrl()));
             var result = Try.of(supplier).recover(throwable -> ResponseEntity.status(503).build()).get();
             if (result.getStatusCode().is2xxSuccessful()) {

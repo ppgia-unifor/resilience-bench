@@ -10,32 +10,32 @@
     ],
     "duration": 1000
   },
-  "concurrentUsers": [
+  "users": [
     50,
     100,
     150
   ],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
-  "maxRequestsAllowed": 500,
-  "targetSuccessfulRequests": 10,
-  "patterns": [
+  "maxRequests": 500,
+  "succRequests": 10,
+  "clientSpecs": [
     {
-      "pattern": "baseline",
+      "strategy": "baseline",
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/baseline",
       "patternConfig": {}
     },
     {
-      "pattern": "baseline",
+      "strategy": "baseline",
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j/baseline",
       "patternConfig": {}
     },
     {
-      "pattern": "retry",
+      "strategy": "retry",
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/retry",
@@ -50,7 +50,7 @@
       }
     },
     {
-      "pattern": "retry",
+      "strategy": "retry",
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j/retry",
@@ -65,7 +65,7 @@
       }
     },
     {
-      "pattern": "circuit_breaker",
+      "strategy": "circuit_breaker",
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
@@ -79,7 +79,7 @@
       }
     },
     {
-      "pattern": "circuit_breaker",
+      "strategy": "circuit_breaker",
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j/cb",

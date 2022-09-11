@@ -9,24 +9,24 @@
     ],
     "status": 503
   },
-  "concurrentUsers": [
+  "users": [
     100,
     200
   ],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
-  "maxRequestsAllowed": 500,
-  "targetSuccessfulRequests": 10,
-  "patterns": [
+  "maxRequests": 500,
+  "succRequests": 10,
+  "clientSpecs": [
     {
-      "pattern": "baseline",
+      "strategy": "baseline",
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/baseline",
       "patternConfig": {}
     },
     {
-      "pattern": "baseline",
+      "strategy": "baseline",
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j/baseline",

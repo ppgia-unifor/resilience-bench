@@ -35,19 +35,19 @@ ResilienceBench test scenarios are specified as a JSON file containing a number 
 ```json
    1  {
    2      "testId": "MyTest",
-   3      "concurrentUsers": [25, 50, 100],
+   3      "users": [25, 50, 100],
    4      "rounds": 10,
-   5      "maxRequestsAllowed": 100,
-   6      "targetSuccessfulRequests": 25,
+   5      "maxRequests": 100,
+   6      "succRequests": 25,
    7      "targetUrl": "http://server:9211/bytes/1000",
    8      "fault": {
    9          "type": "abort",
   10          "percentage": [25, 50, 75],
   11          "status": 503
   12      },
-  13      "patterns": [
+  13      "clientSpecs": [
   14          {
-  15              "pattern": "retry",
+  15              "strategy": "retry",
   16              "platform": "java",
   17              "lib": "resilience4j",
   18              "url": "http://resilience4j/retry",
@@ -71,10 +71,10 @@ These parameters are used to control the test scenarios execution.
 | Parameter | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
 | testId | `string` | no | The test identifier. If not defined, a test identifier will be automatically generated containing the date and time of the test execution. The test identifier is used as the name of the CSV file to be generated containing the test results. |
-| concurrentUsers | `array of numbers` |  yes | Array containing the numbers of instances of the client service that will concurrently invoke the target service during each scenario execution. Each element of the array represents a different test scenario. |
+| users | `array of numbers` |  yes | Array containing the numbers of instances of the client service that will concurrently invoke the target service during each scenario execution. Each element of the array represents a different test scenario. |
 | rounds | `number` | yes | Number of executions of each scenario. |
-| targetSuccessfulRequests | `number` | yes | Expected number of successful invocations of the target service by the client service. |
-| maxRequestsAllowed | `number` | yes | Maximum number of (either successful or unsuccessful) invocations of the target service by the client service. |
+| succRequests | `number` | yes | Expected number of successful invocations of the target service by the client service. |
+| maxRequests | `number` | yes | Maximum number of (either successful or unsuccessful) invocations of the target service by the client service. |
 | targetUrl | `string` | yes | The target service URL. |
 | fault | `faultSpec` | yes | Specification of the failure type to be injected by the proxy service into the target service invocation flow. See the faultSpec scheme below |
 
@@ -96,7 +96,7 @@ These parameters are used to configure the client service and the resilience str
 
 | Parameter | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
-| pattern | `string` | yes | The name of the resilience strategy to be used by the cliente service. Currently supported strategies: *retry* (Retry pattern), *circuit_breaker* (Circuit Breaker pattern), and *baseline* (no resilience pattern).|
+| strategy | `string` | yes | The name of the resilience strategy to be used by the cliente service. Currently supported strategies: *retry* (Retry pattern), *circuit_breaker* (Circuit Breaker pattern), and *baseline* (no resilience pattern).|
 | platform | `string` | yes | The name of the language/plataform where the client service was implemented. Currently supported platforms: *dotnet* (.NET), and *java* (Java).|
 | lib | `string` | yes | The name of the resilience library used by the client service. Currently supported libraries: *polly* ([Polly](https://github.com/App-vNext/Polly), in the .NET platform), and *resilience4j* ([Resiliency4](https://github.com/resilience4j/resilience4j), in the Java platform).|
 | url | `string` | yes | The url where the client service is deployed. |
@@ -230,7 +230,7 @@ Each CSV file also contains an additional set columns corresponding to the contr
             <td>Name of the resilience library used by the client service</td>
         </tr>
         <tr>
-            <td>pattern</td>
+            <td>strategy</td>
             <td><code>string</code></td>
             <td>Name of the resilience strategy used by the client service</td>
         </tr>

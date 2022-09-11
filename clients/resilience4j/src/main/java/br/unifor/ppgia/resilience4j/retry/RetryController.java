@@ -20,7 +20,7 @@ public class RetryController {
 
     @PostMapping
     public ResponseEntity<?> index(@RequestBody Config<RetryRequestModel> config) {
-        var backendService = new BackendServiceWithRetry(restClient, config.getParams());
+        var backendService = new BackendServiceWithRetry(restClient, config.getPatternParams());
         var metrics = backendService.doHttpRequest(config);
         return ResponseEntity.ok(metrics);
     }

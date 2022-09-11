@@ -2,33 +2,33 @@ package br.unifor.ppgia.resilience4j;
 
 public class Config<P> {
 
-    private int maxRequestsAllowed;
-    private int targetSuccessfulRequests;
+    private int maxRequests;
+    private int successfulRequests;
     private String targetUrl;
-    private P params;
+    private P patternParams;
 
-    public int getMaxRequestsAllowed() {
-        return maxRequestsAllowed;
+    public int getMaxRequests() {
+        return maxRequests;
     }
 
-    public void setMaxRequestsAllowed(int maxRequestsAllowed) {
-        this.maxRequestsAllowed = maxRequestsAllowed;
+    public void setMaxRequests(int maxRequests) {
+        this.maxRequests = maxRequests;
     }
 
-    public int getTargetSuccessfulRequests() {
-        return targetSuccessfulRequests;
+    public int getSuccessfulRequests() {
+        return successfulRequests;
     }
 
-    public void setTargetSuccessfulRequests(int targetSuccessfulRequests) {
-        this.targetSuccessfulRequests = targetSuccessfulRequests;
+    public void setSuccessfulRequests(int successfulRequests) {
+        this.successfulRequests = successfulRequests;
     }
 
-    public P getParams() {
-        return params;
+    public P getPatternParams() {
+        return patternParams;
     }
 
-    public void setParams(P params) {
-        this.params = params;
+    public void setPatternParams(P patternParams) {
+        this.patternParams = patternParams;
     }
 
     public String getTargetUrl() {

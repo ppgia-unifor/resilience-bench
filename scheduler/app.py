@@ -30,36 +30,37 @@ def build_scenarios(conf, test_id):
     fault_spec = conf['fault']
     fault_percentages = fault_spec['percentage']
     del fault_spec['percentage']
-    patterns = conf['patterns']
-    concurrent_users = conf['concurrentUsers']
+    patterns = conf['clientSpecs']
+    users = conf['users']
     rounds = conf['rounds'] + 1
-    max_requests_allowed = conf['maxRequestsAllowed']
-    target_successful_requests = conf['targetSuccessfulRequests']
+    max_requests = conf['maxRequests']
+    successful_requests = conf['succRequests']
     all_scenarios = []
     scenario_groups = {}
+    
 
-    for fault_percentage in fault_percentages: # 3
-        for concurrent_user in concurrent_users: # 3
+    for fault_percentage in fault_percentages:
+        for user in users:
             scenarios = []
-            for pattern_template in patterns: # 2
-                pattern_configs = expand_config_template(pattern_template['patternConfig']) # 3
+            for pattern_template in patterns:
+                pattern_configs = expand_config_template(pattern_template['patternConfig'])
                 for pattern_config in pattern_configs:
-                    for idx_round in range(1, rounds): # 10
+                    for idx_round in range(1, rounds):
                         scenarios.append({
                             'patternConfig': pattern_config,
                             'patternTemplate': pattern_template,
-                            'users': concurrent_user,
+                            'users': user,
                             'round': idx_round,
                             'faultPercentage': fault_percentage,
                             'faultSpec': fault_spec,
-                            'maxRequestsAllowed': max_requests_allowed,
-                            'targetSuccessfulRequests': target_successful_requests
+                            'maxRequests': max_requests,
+                            'successfulRequests': successful_requests
                         })
-            scenario_group_id = 'f'+str(fault_percentage)+'u'+str(concurrent_user)
+            scenario_group_id = 'f'+str(fault_percentage)+'u'+str(user)
             scenario_groups[scenario_group_id] = scenarios
             all_scenarios += scenarios
 
-    total_scenarios = len(fault_percentages) * len(concurrent_users) * len(all_scenarios)
+    total_scenarios = len(fault_percentages) * len(users) * len(all_scenarios)
     logger.info(f'{total_scenarios} scenarios generated')
     save_to_file(f'{test_id}/scenarios', all_scenarios, 'json')
     return scenario_groups
@@ -113,13 +114,13 @@ def do_test(scenario, user_id):
     fault_spec = scenario['faultSpec']
     pattern_config = scenario['patternConfig']
     idx_round = scenario['round']
-    maxRequestsAllowed = scenario['maxRequestsAllowed']
-    targetSuccessfulRequests = scenario['targetSuccessfulRequests']
+    max_requests = scenario['maxRequests']
+    successful_requests = scenario['successfulRequests']
 
     payload = json.dumps({
-        'maxRequestsAllowed': maxRequestsAllowed,
-        'targetSuccessfulRequests': targetSuccessfulRequests,
-        'params': pattern_config
+        'maxRequests': max_requests,
+        'successfulRequests': successful_requests,
+        'patternParams': pattern_config
     })
     response = requestsSesstion.post(
         pattern_template['url'], 

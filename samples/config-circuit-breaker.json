@@ -9,17 +9,17 @@
     ],
     "status": 503
   },
-  "concurrentUsers": [
+  "users": [
     50,
     100
   ],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
-  "maxRequestsAllowed": 500,
-  "targetSuccessfulRequests": 25,
-  "patterns": [
+  "maxRequests": 500,
+  "succRequests": 25,
+  "clientSpecs": [
     {
-      "pattern": "circuit_breaker",
+      "strategy": "circuit_breaker",
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
@@ -33,7 +33,7 @@
       }
     },
     {
-      "pattern": "circuit_breaker",
+      "strategy": "circuit_breaker",
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j/cb",

@@ -20,7 +20,7 @@ namespace ResiliencePatterns.Polly.Controllers
         [HttpPost]
         public async Task<ResilienceModuleMetrics> IndexAsync(Config<RetryConfig> config)
         {
-            var retry = CreateRetryExponencialBackoff(config.Params);
+            var retry = CreateRetryExponencialBackoff(config.PatternParams);
             var metrics = await _backendService.MakeRequestAsync(retry, config);
             return metrics;
         }

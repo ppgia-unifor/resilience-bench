@@ -20,7 +20,7 @@ public class CircuitBreakerController {
 
     @PostMapping
     public ResponseEntity<?> index(@RequestBody Config<CircuitBreakerRequestModel> config) {
-        var backendService = new BackendServiceWithCircuitBreaker(restClient, config.getParams());
+        var backendService = new BackendServiceWithCircuitBreaker(restClient, config.getPatternParams());
         var metrics = backendService.doHttpRequest(config);
         return ResponseEntity.ok(metrics);
     }

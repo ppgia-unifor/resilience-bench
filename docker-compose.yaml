@@ -42,7 +42,4 @@ services:
       - 9901:9901
       - 9211:9211
     volumes:
-      - ./server/envoy.yaml:/etc/envoy/envoy.yaml
-      - ./server/supervisord.conf:/etc/supervisor/conf.d/default.conf
       - ./runtime:/srv/runtime
-      - ./server/fault-injection:/opt/app/fault-injection
