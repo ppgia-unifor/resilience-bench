@@ -136,7 +136,7 @@ def do_test(scenario, user_id):
         result['users'] = users
         result['round'] = idx_round
         result['lib'] = pattern_template['lib']
-        result['pattern'] = pattern_template['pattern']
+        result['strategy'] = pattern_template['strategy']
         result['faultPercentage'] = fault_percentage
         for fault_key in fault_spec.keys():
             result[f'fault{fault_key.capitalize()}'] = fault_spec[fault_key]        
