@@ -1,6 +1,7 @@
 import os
 from os import environ
 import json
+from urllib.parse import urlparse
 import jstyleson
 import requests
 import concurrent.futures
@@ -10,8 +11,8 @@ from datetime import datetime
 from pytz import timezone
 from utils import expand_config_template
 from storage import save_to_file, copy_file
-from envoy import Envoy
 from logger import get_logger
+from toxiproxy import Toxiproxy
 
 logger = get_logger('app')
 
@@ -76,7 +77,11 @@ def main():
 
     scenario_groups = build_scenarios(conf, test_id)
     all_results = []
-    envoy = Envoy()
+    toxiproxy = Toxiproxy()
+    upstream = scenario['targetUrl']
+    url_parsed = urlparse(scenario['targetUrl'])
+
+    proxy = toxiproxy.create(upstream, listen='{url_parsed.schema}://{url_parsed.hostname}:9008/{url_parsed.path}', enabled=True)
 
     for scenario_group in scenario_groups.keys():
         total_group_scenarios = len(scenario_groups[scenario_group])
@@ -90,7 +95,10 @@ def main():
             logger.info(f'group[{scenario_group}] processing scenario {scenario_group_count}/{total_group_scenarios}')
             users = scenario['users'] + 1
 
-            envoy.setup_fault(scenario['faultSpec'], int(scenario['faultPercentage']))
+            proxy.add_toxic(scenario['faultSpec'])
+            
+            
+            #envoy.setup_fault(scenario['faultSpec'], int(scenario['faultPercentage']))
     
             with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
                 futures = []

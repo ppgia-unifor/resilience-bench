@@ -1,14 +1,14 @@
 {
   "fault": {
-    "type": "delay",
+    "type": "latency | down | bandwidth | slow_close | timeout | reset_peer | slicer | limit_data",
+    "attributes": [],
     "percentage": [
       0,
       20,
       40,
       60,
       80
-    ],
-    "duration": 1000
+    ]
   },
   "users": [
     50,

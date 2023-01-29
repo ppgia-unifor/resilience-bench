@@ -34,6 +34,11 @@ services:
       - polly
       - server
 
+  proxy:
+    image: ghcr.io/shopify/toxiproxy
+    ports:
+      - 8474:8474
+
   server:
     build:
       context: server

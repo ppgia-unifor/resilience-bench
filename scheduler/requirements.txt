@@ -1,6 +1,6 @@
 pandas
 requests
+future
 boto3
-docker
 pytz
 jstyleson
