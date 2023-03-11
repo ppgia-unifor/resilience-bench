@@ -35,6 +35,7 @@ def build_scenarios(conf, test_id):
     rounds = conf['rounds'] + 1
     max_requests = conf['maxRequests']
     successful_requests = conf['succRequests']
+    target_url = conf['targetUrl']
     all_scenarios = []
     scenario_groups = {}
     
@@ -54,7 +55,8 @@ def build_scenarios(conf, test_id):
                             'faultPercentage': fault_percentage,
                             'faultSpec': fault_spec,
                             'maxRequests': max_requests,
-                            'successfulRequests': successful_requests
+                            'successfulRequests': successful_requests,
+                            'targetUrl': target_url
                         })
             scenario_group_id = 'f'+str(fault_percentage)+'u'+str(user)
             scenario_groups[scenario_group_id] = scenarios
@@ -116,10 +118,12 @@ def do_test(scenario, user_id):
     idx_round = scenario['round']
     max_requests = scenario['maxRequests']
     successful_requests = scenario['successfulRequests']
+    target_url = scenario['targetUrl']
 
     payload = json.dumps({
         'maxRequests': max_requests,
         'successfulRequests': successful_requests,
+        'targetUrl': target_url,
         'patternParams': pattern_config
     })
     response = requestsSesstion.post(
