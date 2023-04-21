@@ -78,10 +78,11 @@ def main():
     scenario_groups = build_scenarios(conf, test_id)
     all_results = []
     toxiproxy = Toxiproxy()
-    upstream = scenario['targetUrl']
-    url_parsed = urlparse(scenario['targetUrl'])
+    upstream = conf['targetUrl']
+    # url_parsed = urlparse(conf['targetUrl'])
+    # print(url_parsed)
 
-    proxy = toxiproxy.create(upstream, listen='{url_parsed.schema}://{url_parsed.hostname}:9008/{url_parsed.path}', enabled=True)
+    proxy = toxiproxy.create('https://httpbin.org', name='test', listen=conf['targetUrl'], enabled=True)
 
     for scenario_group in scenario_groups.keys():
         total_group_scenarios = len(scenario_groups[scenario_group])

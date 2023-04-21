@@ -10,13 +10,12 @@
     "status": 503
   },
   "users": [
-    100,
-    200
+    1
   ],
-  "targetUrl": "http://server:9211/bytes/1000",
-  "rounds": 10,
-  "maxRequests": 500,
-  "succRequests": 10,
+  "targetUrl": "127.0.0.1:9000",
+  "rounds": 1,
+  "maxRequests": 5,
+  "succRequests": 1,
   "clientSpecs": [
     {
       "strategy": "baseline",

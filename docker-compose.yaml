@@ -5,15 +5,11 @@ services:
     build:
       context: ./clients/polly
     container_name: polly
-    depends_on:
-      - server
   
   resilience4j:
     build:
       context: ./clients/resilience4j
     container_name: resilience4j
-    depends_on:
-      - server
 
   scheduler:
     build: 
@@ -32,19 +28,26 @@ services:
     depends_on:
       - resilience4j
       - polly
-      - server
 
   proxy:
     image: ghcr.io/shopify/toxiproxy
     ports:
       - 8474:8474
+      - 9909:9909
+      - 9908:9908
 
-  server:
-    build:
-      context: server
-    container_name: server
+  server: 
+    image: envoyproxy/envoy:tools-dev
     ports:
       - 9901:9901
       - 9211:9211
-    volumes:
-      - ./runtime:/srv/runtime
+
+  # server:
+  #   build:
+  #     context: server
+  #   container_name: server
+  #   ports:
+  #     - 9901:9901
+  #     - 9211:9211
+  #   volumes:
+  #     - ./runtime:/srv/runtime

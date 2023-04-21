@@ -10,7 +10,7 @@ class Proxy(object):
     """ Represents a Proxy object """
 
     def __init__(self, **kwargs):
-
+        print('args' + str(kwargs))
         self.name = kwargs["name"]
         self.upstream = kwargs["upstream"]
         self.enabled = kwargs["enabled"]

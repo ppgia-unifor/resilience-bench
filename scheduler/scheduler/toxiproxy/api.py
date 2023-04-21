@@ -9,7 +9,7 @@ from .exceptions import ProxyExists, NotFound, InvalidToxic
 class APIConsumer(object):
     """ Toxiproxy API Consumer """
 
-    host = "127.0.0.1"
+    host = "proxy"
     port = 8474
     base_url = "http://%s:%s" % (host, port)
 
