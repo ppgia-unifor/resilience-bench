@@ -13,29 +13,16 @@ const backendService: BackendService = new BackendService();
 function handleRequest(req: Request): Config {
   const body = req.body;
   const config = new Config();
-
-  if (body.hasOwnProperty('maxRequests')) {
-    config.maxRequests = body.maxRequests
-  }
-
-  if (body.hasOwnProperty('successfulRequests')) {
-    config.successfulRequests = body.successfulRequests
-  }
-
-  if (body.hasOwnProperty('targetUrl')) {
-    config.targetUrl = body.targetUrl
-  }
-
+  config.maxRequests = body.maxRequests;
+  config.successfulRequests = body.successfulRequests;
+  config.targetUrl = body.targetUrl;
   return config;
 }
 
 routerBaseline.post('/baseline/', (req: Request, res: Response) => {
-
-  const config: Config = handleRequest(req)
+  const config: Config = handleRequest(req);
   const policy: IPolicy = new NoopPolicy();
-
   const result = backendService.makeRequest(config, policy);
-
   res.send(result);
 });
 

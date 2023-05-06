@@ -6,12 +6,11 @@ import routerCircuitBreaker from './pattern/circuitBreaker/CircuitBreakerControl
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT
+const port = process.env.PORT;
 
 app.use('/', routerBaseline);
 app.use('/', routerRetry);
 app.use('/', routerCircuitBreaker);
-
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);

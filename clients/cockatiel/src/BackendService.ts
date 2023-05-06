@@ -10,35 +10,30 @@ export default class BackendService {
 
     let successulCalls: number = 0;
     let totalCalls: number = 0;
-    let metrics = new ResillienceModuleMetrics;
+    const metrics = new ResillienceModuleMetrics();
 
-    let externalStopwatch = new Stopwatch();
-    let requestStopwatch = new Stopwatch();
+    const externalStopwatch = new Stopwatch();
+    const requestStopwatch = new Stopwatch();
 
     policy.onSuccess(() => {
-      successulCalls++
-    })
+      successulCalls++;
+    });
 
     externalStopwatch.start();
     while (successulCalls < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
-
       requestStopwatch.reset();
       requestStopwatch.start();
-
       await policy.execute(() => axios.get(config.targetUrl)
         .then(() => {
-          requestStopwatch.stop()
+          requestStopwatch.stop();
           metrics.registerSuccess(requestStopwatch.getTime());
         })
         .catch(() => {
-          requestStopwatch.stop()
+          requestStopwatch.stop();
           metrics.registerError(requestStopwatch.getTime());
         })
-
-      )
-
+      );
       totalCalls++
-
     }
 
     externalStopwatch.stop();
@@ -46,5 +41,4 @@ export default class BackendService {
 
     return metrics;
   }
-
 }

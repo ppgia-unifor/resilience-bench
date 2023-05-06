@@ -12,19 +12,9 @@ const backendService: BackendService = new BackendService();
 
 function handleRequest(body: any): Config {
   const config = new Config();
-
-  if (body.hasOwnProperty('maxRequests')) {
-    config.maxRequests = body.maxRequests
-  }
-
-  if (body.hasOwnProperty('successfulRequests')) {
-    config.successfulRequests = body.successfulRequests
-  }
-
-  if (body.hasOwnProperty('targetUrl')) {
-    config.targetUrl = body.targetUrl
-  }
-
+  config.maxRequests = body.maxRequests;
+  config.successfulRequests = body.successfulRequests;
+  config.targetUrl = body.targetUrl;
   return config;
 }
 
@@ -39,22 +29,15 @@ function createPolicy(patternConfig: any): IPolicy {
           initialDelay: patternConfig.initialDelay,
         }),
       maxAttempts: patternConfig.maxAttempts
-    })
+    });
 }
 
 routerRetry.post('/retry/', (req: Request, res: Response) => {
-
-
   const body = req.body;
-
-  const config: Config = handleRequest(body)
-
+  const config: Config = handleRequest(body);
   const policy: IPolicy = createPolicy(body.patternParams);
-
   const result = backendService.makeRequest(config, policy);
-
   res.send(result);
 });
 
-
-export default routerRetry
+export default routerRetry;
