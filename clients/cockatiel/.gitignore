@@ -1,0 +1,14 @@
+build/
+
+# nodejs
+node_modules
+npm-debug
+newrelic_agent.log
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+# build
+
+# test coverage
+.nyc_output
+coverage
+lib-cov
