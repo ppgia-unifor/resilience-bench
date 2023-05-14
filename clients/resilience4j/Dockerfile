@@ -5,5 +5,5 @@ RUN mvn -f /usr/src/app/pom.xml clean package
 
 FROM openjdk:11
 COPY --from=build /usr/src/app/target/resilience4j-0.0.1-SNAPSHOT.jar /usr/app/resilience4j-0.0.1-SNAPSHOT.jar
-EXPOSE 8080
+EXPOSE 80
 ENTRYPOINT ["java","-jar","/usr/app/resilience4j-0.0.1-SNAPSHOT.jar"]

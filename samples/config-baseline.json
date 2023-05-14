@@ -31,6 +31,13 @@
       "lib": "resilience4j",
       "url": "http://resilience4j/baseline",
       "patternConfig": {}
+    },
+    {
+      "strategy": "baseline",
+      "platform": "nodejs",
+      "lib": "cockatiel",
+      "url": "http://cockatiel/baseline",
+      "patternConfig": {}
     }
   ]
 }
