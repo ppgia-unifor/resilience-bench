@@ -23,6 +23,9 @@ jobs:
           - dockerfile: ./clients/resilience4j/Dockerfile
             image: ghcr.io/ppgia-unifor/resilience-bench-r4j-client
             context: ./clients/resilience4j
+          - dockerfile: ./clients/cockatiel/Dockerfile
+            image: ghcr.io/ppgia-unifor/resilience-bench-cockatiel-client
+            context: ./clients/cockatiel
     permissions:
       contents: read
       packages: write
