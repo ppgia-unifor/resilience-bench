@@ -30,8 +30,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./samples/config-all-delay.json:/opt/app/conf/conf.json
       - ./results:/opt/app/resilience-tests
+      - /home/vagrant/.aws/credentials:/root/.aws/credentials
     environment:
-      - DISK_PATH=/opt/app/resilience-tests
+      - AWS_BUCKET_NAME=phd-carlos-results
+      - AWS_OUTPUT_PATH=matheus-experiments
       - CONFIG_FILE=/opt/app/conf/conf.json
       - ENVOY_FAULT_INJECTION_PATH=/opt/app/fault-injection
       - DOCKER_HOST=/var/run/docker.sock
