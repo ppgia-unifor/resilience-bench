@@ -2,21 +2,17 @@
   "fault": {
     "type": "abort",
     "percentage": [
-      0,
-      25,
-      50,
-      75
+      25
     ],
     "status": 503
   },
   "users": [
-    100,
-    200
+    10
   ],
   "targetUrl": "http://server:9211/bytes/1000",
-  "rounds": 10,
-  "maxRequests": 500,
-  "succRequests": 10,
+  "rounds": 2,
+  "maxRequests": 50,
+  "succRequests": 5,
   "clientSpecs": [
     {
       "strategy": "baseline",
