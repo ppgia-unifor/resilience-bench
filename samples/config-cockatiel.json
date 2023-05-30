@@ -1,0 +1,62 @@
+{
+    "fault": {
+      "type": "abort",
+      "percentage": [
+        25,
+        50
+      ],
+      "status": 503
+    },
+    "users": [
+      5,
+      10,
+      15
+    ],
+    "targetUrl": "http://server:9211/bytes/1000",
+    "rounds": 5,
+    "maxRequests": 500,
+    "succRequests": 5,
+    "clientSpecs": [
+      {
+        "strategy": "retry",
+        "platform": "nodejs",
+        "lib": "cockatiel",
+        "url": "http://cockatiel/retry",
+        "patternConfig": {
+          "exponent": [
+            1,
+            2,
+            3
+          ],
+          "maxDelay": [
+            2,
+            4,
+            6
+          ],
+          "initialDelay": [
+            200,
+            400,
+            600
+          ]
+        }
+      },
+      {
+        "strategy": "circuitbreaker",
+        "platform": "nodejs",
+        "lib": "cockatiel",
+        "url": "http://cockatiel/circuitbreaker",
+        "patternConfig": {
+          "halfOpenAfter": [
+            1,
+            2,
+            3
+          ],
+          "exceptionsAllowedBeforeBreaking": [
+            2,
+            4,
+            6
+          ]
+        }
+      }
+    ]
+  }
