@@ -1,20 +1,6 @@
 version: '3.4'
 
-services:  
-  polly:
-    build:
-      context: ./clients/polly
-    container_name: polly
-    depends_on:
-      - server
-  
-  resilience4j:
-    build:
-      context: ./clients/resilience4j
-    container_name: resilience4j
-    depends_on:
-      - server
-
+services:
   cockatiel:
     build:
       context: ./clients/cockatiel
@@ -39,8 +25,6 @@ services:
       - DOCKER_HOST=/var/run/docker.sock
       - TIME_ZONE=America/Sao_Paulo
     depends_on:
-      - resilience4j
-      - polly
       - server
 
   server:
