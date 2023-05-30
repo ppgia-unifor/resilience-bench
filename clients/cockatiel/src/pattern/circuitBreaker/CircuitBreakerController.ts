@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import bodyParser from "body-parser";
-import { circuitBreaker, ConsecutiveBreaker, handleAll, IPolicy } from 'cockatiel';
+import { circuitBreaker, ConsecutiveBreaker, handleAll, IPolicy, SamplingBreaker } from 'cockatiel';
 import { Config } from '../../Config';
 import BackendService from '../../BackendService';
 
@@ -18,7 +18,7 @@ function handleRequest(body: any): Config {
   return config;
 }
 
-function createPolicy(patternConfig: any): IPolicy {
+function createPolicyConsecutive(patternConfig: any): IPolicy {
   return circuitBreaker(
     handleAll,
     {
@@ -28,12 +28,35 @@ function createPolicy(patternConfig: any): IPolicy {
   );
 }
 
-routerCircuitBreaker.post('/circuitbreaker/', (req: Request, res: Response) => {
+function createPolicySampling(patternConfig: any): IPolicy {
+  return circuitBreaker(
+    handleAll,
+    {
+      halfOpenAfter: patternConfig.halfOpenAfter,
+      breaker: new SamplingBreaker({
+        threshold: patternConfig.threshold,
+        duration: patternConfig.duration,
+        minimumRps: patternConfig.minimumRps
+      }),
+    }
+  );
+}
+
+routerCircuitBreaker.post('/circuitbreaker/consecutive/', (req: Request, res: Response) => {
   const body = req.body;
   const config: Config = handleRequest(body);
-  const policy: IPolicy = createPolicy(body.patternParams);
+  const policy: IPolicy = createPolicyConsecutive(body.patternParams);
   const result = backendService.makeRequest(config, policy);
   res.send(result);
 });
+
+routerCircuitBreaker.post('/circuitbreaker/sampling/', (req: Request, res: Response) => {
+  const body = req.body;
+  const config: Config = handleRequest(body);
+  const policy: IPolicy = createPolicySampling(body.patternParams);
+  const result = backendService.makeRequest(config, policy);
+  res.send(result);
+});
+
 
 export default routerCircuitBreaker
