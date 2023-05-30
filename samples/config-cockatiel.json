@@ -24,14 +24,10 @@
         "url": "http://cockatiel/retry",
         "patternConfig": {
           "exponent": [
-            1,
-            2,
-            3
+            2
           ],
           "maxDelay": [
-            2,
-            4,
-            6
+            2
           ],
           "initialDelay": [
             200,
@@ -47,9 +43,7 @@
         "url": "http://cockatiel/circuitbreaker",
         "patternConfig": {
           "halfOpenAfter": [
-            1,
-            2,
-            3
+              2
           ],
           "exceptionsAllowedBeforeBreaking": [
             2,
