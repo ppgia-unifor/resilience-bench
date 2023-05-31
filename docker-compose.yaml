@@ -34,5 +34,3 @@ services:
     ports:
       - 9901:9901
       - 9211:9211
-    volumes:
-      - ./runtime:/srv/runtime
