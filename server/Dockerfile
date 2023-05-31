@@ -9,6 +9,8 @@ RUN git clone https://github.com/postmanlabs/httpbin.git /opt/httpbin && \
     pip3 install gunicorn decorator brotlipy gevent Flask meinheld "werkzeug>=0.14.1" six flasgger pyyaml && \
     pip3 install --no-cache-dir /opt/httpbin
 
+RUN mkdir -p /srv/runtime/v1
+RUN mkdir -p /srv/runtime/current
 ADD envoy.yaml /etc/envoy/envoy.yaml
 ADD supervisord.conf /etc/supervisor/conf.d/default.conf
 ADD ./fault-injection /opt/app/fault-injection
