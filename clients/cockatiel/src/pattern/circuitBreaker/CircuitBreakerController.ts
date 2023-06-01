@@ -47,7 +47,12 @@ routerCircuitBreaker.post('/circuitbreaker/consecutive/', (req: Request, res: Re
   const config: Config = handleRequest(body);
   const policy: IPolicy = createPolicyConsecutive(body.patternParams);
   const result = backendService.makeRequest(config, policy);
-  res.send(result);
+    result.then(prom => {
+    res.json(prom)
+  }).catch( _ =>{
+    res.sendStatus(500)
+  })
+
 });
 
 routerCircuitBreaker.post('/circuitbreaker/sampling/', (req: Request, res: Response) => {
@@ -55,7 +60,11 @@ routerCircuitBreaker.post('/circuitbreaker/sampling/', (req: Request, res: Respo
   const config: Config = handleRequest(body);
   const policy: IPolicy = createPolicySampling(body.patternParams);
   const result = backendService.makeRequest(config, policy);
-  res.send(result);
+  result.then(prom => {
+    res.json(prom)
+  }).catch( _ =>{
+    res.sendStatus(500)
+  })
 });
 
 

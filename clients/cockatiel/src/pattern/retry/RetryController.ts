@@ -37,7 +37,11 @@ routerRetry.post('/retry/', (req: Request, res: Response) => {
   const config: Config = handleRequest(body);
   const policy: IPolicy = createPolicy(body.patternParams);
   const result = backendService.makeRequest(config, policy);
-  res.send(result);
+  result.then(prom => {
+    res.json(prom)
+  }).catch( _ =>{
+    res.sendStatus(500)
+  })
 });
 
 export default routerRetry;

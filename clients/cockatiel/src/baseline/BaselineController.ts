@@ -20,10 +20,15 @@ function handleRequest(req: Request): Config {
 }
 
 routerBaseline.post('/baseline/', (req: Request, res: Response) => {
+  console.log("Recebido");
   const config: Config = handleRequest(req);
   const policy: IPolicy = new NoopPolicy();
   const result = backendService.makeRequest(config, policy);
-  res.send(result);
+  result.then(prom => {
+    res.json(prom)
+  }).catch( _ =>{
+    res.sendStatus(500)
+  })
 });
 
 export default routerBaseline
