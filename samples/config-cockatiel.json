@@ -31,7 +31,7 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/consecutive",
       "patternConfig": {
-        "halfOpenAfter": 100000,
+        "halfOpenAfter": 200000,
         "exceptionsAllowedBeforeBreaking": 2
       }
     },
@@ -41,7 +41,7 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/sampling",
       "patternConfig": {
-        "halfOpenAfter": 100000,
+        "halfOpenAfter": 200000,
         "threshold": 0.2,
         "duration": 30000,
         "minimumRps": 10
