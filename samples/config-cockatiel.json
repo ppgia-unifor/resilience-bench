@@ -21,7 +21,7 @@
       "url": "http://cockatiel/retry",
       "patternConfig": {
         "exponent": 2,
-        "maxDelay": 2,
+        "maxDelay": 20000,
         "initialDelay": 200
       }
     },
