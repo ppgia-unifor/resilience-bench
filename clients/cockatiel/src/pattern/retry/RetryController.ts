@@ -43,5 +43,4 @@ routerRetry.post('/retry/', (req: Request, res: Response) => {
     res.sendStatus(500)
   })
 });
-
 export default routerRetry;

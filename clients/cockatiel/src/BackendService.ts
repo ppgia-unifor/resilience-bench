@@ -2,15 +2,15 @@ import { Stopwatch } from "ts-stopwatch";
 import { IPolicy } from "cockatiel";
 import axios from "axios";
 import { Config } from "./Config";
-import { ResillienceModuleMetrics } from "./ResillienceModuleMetrics";
+import ResilienceModuleMetrics from "./ResilienceModuleMetrics";
 
 export default class BackendService {
 
-  public async makeRequest(config: Config, policy: IPolicy): Promise<ResillienceModuleMetrics> {
+  public async makeRequest(config: Config, policy: IPolicy): Promise<JSON> {
 
     let successulCalls: number = 0;
     let totalCalls: number = 0;
-    const metrics = new ResillienceModuleMetrics();
+    const metrics = new ResilienceModuleMetrics();
 
     const externalStopwatch = new Stopwatch();
     const requestStopwatch = new Stopwatch();
@@ -39,6 +39,6 @@ export default class BackendService {
     externalStopwatch.stop();
     metrics.registerTotals(totalCalls, successulCalls, externalStopwatch.getTime());
 
-    return metrics;
+    return metrics.toJSON();
   }
 }
