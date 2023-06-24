@@ -9,4 +9,5 @@ class BenchmarkBuilderTest(unittest.TestCase):
         conf = json.load(json_file)
         benchmark = BenchmarkBuilder.build_scenario_from_dict(conf)
         self.assertIsNotNone(benchmark)
+        self.assertEquals(len(benchmark.scenarios), 14)
         self.assertEquals(benchmark.rounds, 10)
