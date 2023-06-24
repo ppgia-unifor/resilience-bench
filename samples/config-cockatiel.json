@@ -10,10 +10,18 @@
   },
   "users": [5],
   "targetUrl": "http://server:9211/bytes/1000",
-  "rounds": 10,
+  "rounds": 5,
   "maxRequests": 500,
   "succRequests": 10,
   "clientSpecs": [
+    {
+      "strategy": "baseline",
+      "platform": "nodejs",
+      "lib": "cockatiel",
+      "url": "http://cockatiel/baseline",
+      "patternConfig": {
+      }
+    },
     {
       "strategy": "retry",
       "platform": "nodejs",
@@ -21,8 +29,9 @@
       "url": "http://cockatiel/retry",
       "patternConfig": {
         "exponent": 2,
-        "maxDelay": 20000,
-        "initialDelay": 200
+        "maxDelay": 500,
+        "initialDelay": 200,
+        "maxAttemps": 5
       }
     },
     {
@@ -31,7 +40,7 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/consecutive",
       "patternConfig": {
-        "halfOpenAfter": 20000,
+        "halfOpenAfter": 500,
         "exceptionsAllowedBeforeBreaking": 2
       }
     },
@@ -41,9 +50,9 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/sampling",
       "patternConfig": {
-        "halfOpenAfter": 20000,
+        "halfOpenAfter": 500,
         "threshold": 0.2,
-        "duration": 30000,
+        "duration": 300,
         "minimumRps": 10
       }
     }
