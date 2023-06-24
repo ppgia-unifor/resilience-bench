@@ -29,8 +29,8 @@ class BenchmarkBuilder:
         benchmark = Benchmark()
         benchmark.rounds = conf["rounds"]
 
-        for fault in ScenarioBuilder.expand_fault(fault_spec):
-            for workload in ScenarioBuilder.expand_workloads(conf["workload"]):
+        for fault in BenchmarkBuilder.expand_fault(fault_spec):
+            for workload in BenchmarkBuilder.expand_workloads(conf["workload"]):
                 for client_spec in clients_spec:
                     pattern_configs = expand_config_template(
                         client_spec.get("patternConfig", {})
