@@ -39,8 +39,10 @@ routerRetry.post('/retry/', (req: Request, res: Response) => {
   const result = backendService.makeRequest(config, policy);
   result.then(prom => {
     res.json(prom)
-  }).catch( _ =>{
+  }).catch(err => {
+      console.log("ERRO retry:" + err)
     res.sendStatus(500)
   })
+
 });
 export default routerRetry;

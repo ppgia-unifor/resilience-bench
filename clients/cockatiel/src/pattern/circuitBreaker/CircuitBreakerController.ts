@@ -49,7 +49,8 @@ routerCircuitBreaker.post('/circuitbreaker/consecutive/', (req: Request, res: Re
   const result = backendService.makeRequest(config, policy);
     result.then(prom => {
     res.json(prom)
-  }).catch( _ =>{
+  }).catch( err =>{
+    console.log("ERRO circuitbreaker/consecutive:" + err)
     res.sendStatus(500)
   })
 
@@ -62,7 +63,8 @@ routerCircuitBreaker.post('/circuitbreaker/sampling/', (req: Request, res: Respo
   const result = backendService.makeRequest(config, policy);
   result.then(prom => {
     res.json(prom)
-  }).catch( _ =>{
+  }).catch( err =>{
+    console.log("ERRO circuitbreaker/sampling:" + err)
     res.sendStatus(500)
   })
 });

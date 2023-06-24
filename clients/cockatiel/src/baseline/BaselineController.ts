@@ -25,7 +25,8 @@ routerBaseline.post('/baseline/', (req: Request, res: Response) => {
   const result = backendService.makeRequest(config, policy);
   result.then(prom => {
     res.json(prom)
-  }).catch( _ =>{
+  }).catch( err =>{
+    console.log("ERRO baseline:" + err)
     res.sendStatus(500)
   })
 });

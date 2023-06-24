@@ -89,7 +89,7 @@ export default class ResilienceModuleMetrics {
         this.errorTime += elapsedTime;
     }
 
-    public registerTotals(totalCalls: number, successfulCalls: number, totalExecutionTime: number): void {
+    public registerTotals(successfulCalls: number, totalCalls:number, totalExecutionTime: number): void {
         this.successfulCalls = successfulCalls;
         this.unsuccessfulCalls = totalCalls - successfulCalls;
         this.totalExecutionTime = totalExecutionTime;
