@@ -2,7 +2,7 @@ from utils import expand_config_template
 from models import Workload, Benchmark, Scenario, Fault, FaultType, ClientSpec
 
 
-class ScenarioBuilder:
+class BenchmarkBuilder:
     @staticmethod
     def expand_fault(fault_spec):
         return [
