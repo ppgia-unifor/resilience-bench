@@ -1,0 +1,97 @@
+{
+    "fault": {
+        "type": "delay",
+        "percentage": [
+            50
+        ],
+        "duration": 100
+    },
+    "workload": {
+        "users": [
+            10
+        ],
+        "rate": "linear",
+        "duration": 30
+    },
+    "targetUrl": "http://server:9211/bytes/1000",
+    "rounds": 10,
+    "maxRequests": 500,
+    "succRequests": 10,
+    "clientSpecs": [
+        {
+            "strategy": "baseline",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://client-polly.default.svc.cluster.local/baseline"
+        },
+        {
+            "strategy": "baseline",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://client-r4j.default.svc.cluster.local/baseline"
+        },
+        {
+            "strategy": "retry",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://client-polly.default.svc.cluster.local/retry",
+            "patternConfig": {
+                "count": 5,
+                "exponentialBackoffPow": 1.5,
+                "sleepDuration": [
+                    50,
+                    100,
+                    150
+                ]
+            }
+        },
+        {
+            "strategy": "retry",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://client-r4j.default.svc.cluster.local/retry",
+            "patternConfig": {
+                "maxAttempts": 6,
+                "multiplier": 1.5,
+                "initialIntervalMillis": [
+                    50,
+                    100,
+                    150
+                ]
+            }
+        },
+        {
+            "strategy": "circuit_breaker",
+            "platform": "dotnet",
+            "lib": "polly",
+            "url": "http://polly/circuitbreaker",
+            "patternConfig": {
+                "exceptionsAllowedBeforeBreaking": 2,
+                "durationOfBreaking": [
+                    50,
+                    100,
+                    150
+                ]
+            }
+        },
+        {
+            "strategy": "circuit_breaker",
+            "platform": "java",
+            "lib": "resilience4j",
+            "url": "http://client-r4j.default.svc.cluster.local/cb",
+            "patternConfig": {
+                "slowCallRateThreshold": 100,
+                "slowCallDurationThreshold": 1000,
+                "slidingWindowSize": 2,
+                "failureRateThreshold": 100,
+                "minimumNumberOfCalls": 2,
+                "permittedNumberOfCallsInHalfOpenState": 1,
+                "waitDurationInOpenState": [
+                    50,
+                    100,
+                    150
+                ]
+            }
+        }
+    ]
+}

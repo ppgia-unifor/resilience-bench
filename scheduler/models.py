@@ -1,12 +1,14 @@
 from enum import Enum
+from dataclasses import dataclass, field
+from typing import List
 
-
+@dataclass(frozen=True)
 class Workload:
     users: int
     rate: str
     duration: int
 
-
+@dataclass(frozen=True)
 class ClientSpec:
     strategy: str
     platform: str
@@ -16,13 +18,24 @@ class ClientSpec:
     
 
 class FaultType(Enum):
-    DELAY = 1
-    ABORT = 2
+    DELAY = "delay"
+    ABORT = "abort"
 
 
+@dataclass(frozen=True)
 class Fault:
-    faultType: FaultType
+    fault_type: FaultType
     percentage: int
     duration: int
+    status: int
+
+@dataclass(frozen=True)
+class Scenario:
+    workload: Workload
+    fault: Fault
+    spec: ClientSpec
 
 
+class Benchmark:
+    rounds: int
+    scenarios: List[Scenario] = []
