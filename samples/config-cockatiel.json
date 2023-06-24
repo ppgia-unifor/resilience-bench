@@ -8,9 +8,9 @@
     ],
     "status": 503
   },
-  "users": [5],
+  "users": [100],
   "targetUrl": "http://server:9211/bytes/1000",
-  "rounds": 5,
+  "rounds": 10,
   "maxRequests": 500,
   "succRequests": 10,
   "clientSpecs": [
