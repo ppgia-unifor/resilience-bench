@@ -45,57 +45,32 @@ def main():
     # conf = json.load(conf_file)
     test_id = ""
     # copy_file(config_file_path, f"{test_id}/scenarios-original.json")
-    
+
     conf = k8s.get_benchmark("my-new-benchmark-object")
     benchmark = build_scenarios(conf, test_id)
     
     for scenario in benchmark.scenarios:
-        print(scenario)
+        data = {}
+        for prop in scenario.spec.pattern_config.keys():
+            data[prop] = str(scenario.spec.pattern_config[prop])
+        k8s.update_config_map(name="resilience-bench-current-config", data=data)
+        do_test(scenario)
+    
 
-    # for scenario_key in benchmark.keys():
-    #     scenarios = benchmark.get(scenario_key)
-    #     total_scenarios = len(scenarios)
-    #     logger.info(
-    #         f"group[{scenario_key}] starting processing {total_scenarios} scenarios"
-    #     )
-    #     results = []
-    #     for scenario_index, scenario in enumerate(scenarios, start=1):
-    #         logger.info(
-    #             f"group[{scenario_key}] processing scenario {scenario_index}/{total_scenarios}"
-    #         )
-    #         users = scenario.user + 1
-
-    #         with concurrent.futures.ThreadPoolExecutor(max_workers=users) as executor:
-    #             futures = [
-    #                 executor.submit(do_test, scenario=scenario, user_id=user_id)
-    #                 for user_id in range(1, users)
-    #             ]
-    #             for index_result, future in enumerate(
-    #                 concurrent.futures.as_completed(futures), start=1
-    #             ):
-    #                 results.append(future.result())
-    #                 logger.info(
-    #                     f"group[{scenario_key}] collecting user results {index_result}/{scenario.user}"
-    #                 )
-
-    #     all_results += results
-    #     save_to_file(f"{test_id}/results_{scenario_key}", results, "csv")
-
-    # save_to_file(f"{test_id}/results", all_results, "csv")
-
-
-def do_test(scenario: Scenario, user_id: int):
+def do_test(scenario: Scenario):
     start_time = datetime.now()
-    response = start_client(scenario)
-    result = {}
-    if response.status_code == 200:
-        result = extract_successful_response(response, user_id, start_time, scenario)
-    else:
-        result["error"] = True
-        result["errorMessage"] = response.text
-        result["statusCode"] = response.status_code
+    print("running test", scenario)
+    # set confimap
+    
+    # result = {}
+    # if response.status_code == 200:
+    #     result = extract_successful_response(response, user_id, start_time, scenario)
+    # else:
+    #     result["error"] = True
+    #     result["errorMessage"] = response.text
+    #     result["statusCode"] = response.status_code
 
-    return result
+    # return result
 
 
 def start_client(scenario: Scenario):
