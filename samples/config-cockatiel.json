@@ -28,9 +28,9 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/retry",
       "patternConfig": {
-        "exponent": 2,
-        "maxDelay": 500,
-        "initialDelay": 200,
+        "exponent": 1.5,
+        "maxDelay": 200,
+        "initialDelay": 50,
         "maxAttemps": 5
       }
     },
@@ -40,8 +40,8 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/consecutive",
       "patternConfig": {
-        "halfOpenAfter": 500,
-        "exceptionsAllowedBeforeBreaking": 5
+        "halfOpenAfter": 50,
+        "exceptionsAllowedBeforeBreaking": 2
       }
     },
     {
@@ -50,7 +50,7 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/sampling",
       "patternConfig": {
-        "halfOpenAfter": 500,
+        "halfOpenAfter": 50,
         "threshold": 0.2,
         "duration": 300,
         "minimumRps": 10
