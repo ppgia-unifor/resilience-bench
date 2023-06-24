@@ -41,7 +41,7 @@
       "url": "http://cockatiel/circuitbreaker/consecutive",
       "patternConfig": {
         "halfOpenAfter": 500,
-        "exceptionsAllowedBeforeBreaking": 2
+        "exceptionsAllowedBeforeBreaking": 5
       }
     },
     {
