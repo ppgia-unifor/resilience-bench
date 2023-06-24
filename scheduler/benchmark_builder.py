@@ -16,21 +16,21 @@ class BenchmarkBuilder:
         ]
 
     @staticmethod
-    def expand_workloads(workload_spec):
+    def expand_workload(workload_spec):
         return [
             Workload(users, workload_spec["rate"], workload_spec["duration"])
             for users in workload_spec["users"]
         ]
 
     @staticmethod
-    def build_scenario_from_json(conf) -> Benchmark:
+    def build_scenario_from_dict(conf) -> Benchmark:
         fault_spec = conf["fault"]
         clients_spec = conf["clientSpecs"]
         benchmark = Benchmark()
         benchmark.rounds = conf["rounds"]
 
         for fault in BenchmarkBuilder.expand_fault(fault_spec):
-            for workload in BenchmarkBuilder.expand_workloads(conf["workload"]):
+            for workload in BenchmarkBuilder.expand_workload(conf["workload"]):
                 for client_spec in clients_spec:
                     pattern_configs = expand_config_template(
                         client_spec.get("patternConfig", {})
