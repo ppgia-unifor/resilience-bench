@@ -2,27 +2,29 @@ import os
 from os import environ
 from os import path
 import json
-import requests
-import concurrent.futures
-from urllib3.util.retry import Retry
-from requests.adapters import HTTPAdapter
+# import requests
+# import concurrent.futures
+# from urllib3.util.retry import Retry
+# from requests.adapters import HTTPAdapter
 from datetime import datetime
 from pytz import timezone
-from storage import save_to_file, copy_file
+# from storage import save_to_file, copy_file
 from logger import get_logger
 from models import Scenario
 from benchmark_builder import BenchmarkBuilder
 from k8s import K8s
+from locust_client import Locust
 
 logger = get_logger("app")
 
-requestsSession = requests.Session()
-retries = Retry(total=10, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
-requestsSession.mount("http://", HTTPAdapter(max_retries=retries, pool_maxsize=500))
+# requestsSession = requests.Session()
+# retries = Retry(total=10, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+# requestsSession.mount("http://", HTTPAdapter(max_retries=retries, pool_maxsize=500))
 
 TIME_ZONE = environ.get("TIME_ZONE")
 
 k8s = K8s()
+locust = Locust()
 
 def get_current_time():
     return (
@@ -59,6 +61,7 @@ def main():
 
 def do_test(scenario: Scenario):
     start_time = datetime.now()
+    locust.start(scenario.workload)
     print("running test", scenario)
     # set confimap
     
