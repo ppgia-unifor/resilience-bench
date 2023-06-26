@@ -13,16 +13,22 @@ export default class BackendService {
     const metrics = new ResilienceModuleMetrics();
 
     const externalStopwatch = new Stopwatch();
+    const internalStopwatch = new Stopwatch();
 
-    policy.onSuccess(({ duration }) => {
-      metrics.registerSuccess(duration);
+    policy.onSuccess(() => {
+      internalStopwatch.stop();
+      metrics.registerSuccess(interalStopwatch.getTime());
      })
-    policy.onFailure(({ duration }) => {
-      metrics.registerError(duration);
+
+    policy.onFailure(() => {
+      internalStopwatch.stop();
+      metrics.registerError(internalStopwatch.getTime());
     })
 
     externalStopwatch.start();
     while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
+      internalStopwatch.reset();
+      internalStopwatch.start();
       let res = await policy
         .execute(() => axios.get(config.targetUrl))
         .catch(() => { })
