@@ -99,9 +99,14 @@ def main():
                 
                 index_result = 0
                 for future in concurrent.futures.as_completed(futures):
-                    results.append(future.result())
-                    index_result += 1
-                    logger.info(f'group[{scenario_group}] collecting user results {index_result}/{users-1}')
+                    try:
+                        result = future.result()
+                        results.append(result)
+                        index_result += 1
+                        logger.info(f'group[{scenario_group}] collecting user results {index_result}/{users-1}')
+                    except:
+                        logger.error(f'group[{scenario_group}] did not run. user: {index_result}/{users-1}')
+                        continue
 
         all_results += results
         save_to_file(f'{test_id}/results_{scenario_group}', results, 'csv')
