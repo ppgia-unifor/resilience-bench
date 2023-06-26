@@ -17,7 +17,7 @@ export default class BackendService {
 
     policy.onSuccess(() => {
       internalStopwatch.stop();
-      metrics.registerSuccess(interalStopwatch.getTime());
+      metrics.registerSuccess(internalStopwatch.getTime());
      })
 
     policy.onFailure(() => {
