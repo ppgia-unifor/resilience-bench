@@ -7,7 +7,6 @@ import ResilienceModuleMetrics from "./ResilienceModuleMetrics";
 export default class BackendService {
 
   public async makeRequest(config: Config, policy: IPolicy): Promise<JSON> {
-
     let successfulCall: number = 0;
     let totalCall: number = 0;
     const metrics = new ResilienceModuleMetrics();
@@ -20,20 +19,25 @@ export default class BackendService {
       internalStopwatch.reset();
       internalStopwatch.start();
 
-      try {
-        const response = await policy.execute(() => axios.get(config.targetUrl));
-        internalStopwatch.stop();
-        metrics.registerSuccess(internalStopwatch.getTime());
-        if (response.status == 200) {
-          successfulCall++;
+      await policy.execute(async () => {
+        try {
+          const response = await axios.get(config.targetUrl);
+          internalStopwatch.stop();
+          if (response.status == 200) {
+            metrics.registerSuccess(internalStopwatch.getTime());
+            successfulCall++;
+          } else {
+            throw new Error(`request failed: status ${response.status}`);
+          }
+        } catch {
+          if (internalStopwatch.isRunning()) {
+            internalStopwatch.stop();
+          }
+          metrics.registerError(internalStopwatch.getTime());
         }
-      } catch {
-        internalStopwatch.stop();
-        metrics.registerError(internalStopwatch.getTime());
-      }
+      });
       totalCall++;
     }
-
     externalStopwatch.stop();
     console.log("successfulCall: " + successfulCall + " unsuccessfulCall: " + (totalCall - successfulCall) + " successfulRequests: " + metrics.getSuccessfulRequests() + " unsuccessfulRequests: " + metrics.getUnsuccessfulRequests() + " time: " + externalStopwatch.getTime())
     metrics.registerTotals(successfulCall, totalCall, externalStopwatch.getTime());
