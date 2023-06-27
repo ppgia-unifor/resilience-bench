@@ -24,7 +24,7 @@ export default class BackendService {
         const response = await policy.execute.execute(() => axios.get(config.targetUrl));
         internalStopwatch.stop();
         metrics.registerSuccess(internalStopwatch.getTime());
-        if (res?.status == 200) {
+        if (response.status == 200) {
           successfulCall++;
         }
       } catch {
