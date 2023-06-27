@@ -21,7 +21,7 @@ export default class BackendService {
       internalStopwatch.start();
 
       try {
-        const response = await policy.execute.execute(() => axios.get(config.targetUrl));
+        const response = await policy.execute(() => axios.get(config.targetUrl));
         internalStopwatch.stop();
         metrics.registerSuccess(internalStopwatch.getTime());
         if (response.status == 200) {
