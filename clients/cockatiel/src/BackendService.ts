@@ -12,32 +12,43 @@ export default class BackendService {
     const metrics = new ResilienceModuleMetrics();
 
     const externalStopwatch = new Stopwatch();
-    const internalStopwatch = new Stopwatch();
+    const requestStopwatch = new Stopwatch();
+
+    let circuitOpenError: boolean = false;
+
+    policy.onSuccess(() => {
+      requestStopwatch.stop();
+      metrics.registerSuccess(requestStopwatch.getTime());
+    })
+
+    policy.onFailure(() => {
+      requestStopwatch.stop();
+      metrics.registerError(requestStopwatch.getTime());
+    })
 
     externalStopwatch.start();
     while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
-      internalStopwatch.reset();
-      internalStopwatch.start();
+      circuitOpenError = false;
+      requestStopwatch.reset();
+      requestStopwatch.start();
+      let res = await policy
+        .execute(() => axios.get(config.targetUrl))
+        .catch((err) => {
+          if (err instanceof BrokenCircuitError) {
+            circuitOpenError = true;
+          }
+        })
 
-      await policy.execute(async () => {
-        try {
-          const response = await axios.get(config.targetUrl);
-          internalStopwatch.stop();
-          if (response.status == 200) {
-            metrics.registerSuccess(internalStopwatch.getTime());
-            successfulCall++;
-          } else {
-            throw new Error(`request failed: status ${response.status}`);
-          }
-        } catch {
-          if (internalStopwatch.isRunning()) {
-            internalStopwatch.stop();
-          }
-          metrics.registerError(internalStopwatch.getTime());
-        }
-      });
-      totalCall++;
+      if (res?.status == 200) {
+        successfulCall++
+      }
+
+      if (!circuitOpenError) {
+        totalCall++;
+      }
+
     }
+
     externalStopwatch.stop();
     console.log("successfulCall: " + successfulCall + " unsuccessfulCall: " + (totalCall - successfulCall) + " successfulRequests: " + metrics.getSuccessfulRequests() + " unsuccessfulRequests: " + metrics.getUnsuccessfulRequests() + " time: " + externalStopwatch.getTime())
     metrics.registerTotals(successfulCall, totalCall, externalStopwatch.getTime());
