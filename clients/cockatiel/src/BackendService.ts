@@ -19,26 +19,19 @@ export default class BackendService {
     while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
       internalStopwatch.reset();
       internalStopwatch.start();
-      let res = await policy
-        .execute(() => axios.get(config.targetUrl))
-        .then(() => {
-          internalStopwatch.stop();
-          metrics.registerSuccess(internalStopwatch.getTime());
 
-        })
-        .catch(() => {
-          internalStopwatch.stop();
-          metrics.registerError(internalStopwatch.getTime());
-
-
-        })
-
-      if (res?.status == 200) {
-        successfulCall++
+      try {
+        const response = await policy.execute.execute(() => axios.get(config.targetUrl));
+        internalStopwatch.stop();
+        metrics.registerSuccess(internalStopwatch.getTime());
+        if (res?.status == 200) {
+          successfulCall++;
+        }
+      } catch {
+        internalStopwatch.stop();
+        metrics.registerError(internalStopwatch.getTime());
       }
-
       totalCall++;
-
     }
 
     externalStopwatch.stop();
