@@ -1,5 +1,5 @@
 import { Stopwatch } from "ts-stopwatch";
-import { IPolicy } from "cockatiel";
+import { BrokenCircuitError, IPolicy } from "cockatiel";
 import axios from "axios";
 import { Config } from "./Config";
 import ResilienceModuleMetrics from "./ResilienceModuleMetrics";
@@ -14,7 +14,7 @@ export default class BackendService {
     const externalStopwatch = new Stopwatch();
     const requestStopwatch = new Stopwatch();
 
-    let circuitOpenError: boolean = false;
+    let errorType: any;
 
     policy.onSuccess(() => {
       requestStopwatch.stop();
@@ -22,30 +22,30 @@ export default class BackendService {
     })
 
     policy.onFailure(() => {
-      requestStopwatch.stop();
-      metrics.registerError(requestStopwatch.getTime());
+      if (errorType != null && !(errorType instanceof BrokenCircuitError)) {
+        requestStopwatch.stop();
+        metrics.registerError(requestStopwatch.getTime());
+      }
     })
 
     externalStopwatch.start();
     while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
-      circuitOpenError = false;
       requestStopwatch.reset();
       requestStopwatch.start();
       let res = await policy
-        .execute(() => axios.get(config.targetUrl))
-        .catch((err) => {
-          if (err instanceof BrokenCircuitError) {
-            circuitOpenError = true;
-          }
-        })
+        .execute(() =>
+          axios.get(config.targetUrl)
+            .catch((err) => {
+              errorType = err;
+              throw err;
+            }))
+        .catch(() => { })
 
       if (res?.status == 200) {
         successfulCall++
       }
 
-      if (!circuitOpenError) {
-        totalCall++;
-      }
+      totalCall++;
 
     }
 
