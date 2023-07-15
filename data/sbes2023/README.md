@@ -1,7 +1,10 @@
-# SBES 2023 Dataset
-The experimental dataset used in the SBES 2023 paper is available at Zenodo in the [retry-polly-r4j-dataset.zip](https://zenodo.org/record/7938926/files/retry-polly-r4j-dataset.zip?download=1) file.
+# SBES 2023 Configuration File and Dataset
 
-This zip file includes two csv files, named "results-polly.csv" and "results-r4j.csv", containing the experimental data obtained with the [Polly](https://github.com/App-vNext/Polly) and [Resilience4j](https://github.com/resilience4j/resilience4j) resilience libraries, respectively. Each csv file is structured with two sets of attributes (or columns): the first set corresponds to the performance metrics collected during each test, while the second set corresponds to the test parameters.
+The Resilience Bench configurion file used to run the experiments described in the SBES 2023 paper is available as a [JSON file](https://github.com/ppgia-unifor/resilience-bench/tree/main/samples/config-retry.json) in the [samples folder](https://github.com/ppgia-unifor/resilience-bench/tree/main/samples/).
+
+The experimental dataset produced after running these experiments is available at Zenodo in the [retry-polly-r4j-dataset.zip](https://zenodo.org/record/7938926/files/retry-polly-r4j-dataset.zip?download=1) file.
+
+This zip file includes two csv files, named "results-polly.csv" and "results-r4j.csv", containing the experimental data obtained with the [Polly](https://github.com/App-vNext/Polly) and [Resilience4j](https://github.com/resilience4j/resilience4j) resilience libraries, respectively. Each csv file is structured with two sets of attributes (columns): the first set corresponds to the performance metrics collected during each test, while the second set corresponds to the test parameters.
 
 ### Performance Metrics
 * `successfulCalls` number of successful invocations of the target service by the client application.
