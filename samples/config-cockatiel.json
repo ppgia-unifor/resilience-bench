@@ -22,6 +22,13 @@
       "patternConfig": {
       }
     },
+     {
+      "strategy": "baseline",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/baseline",
+      "patternConfig": {}
+    },
     {
       "strategy": "retry",
       "platform": "nodejs",
@@ -34,6 +41,17 @@
         "maxAttemps": 5
       }
     },
+     {
+      "strategy": "retry",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/retry",
+      "patternConfig": {
+        "count": 5,
+        "exponentialBackoffPow": 1.5,
+        "sleepDuration": 50
+      }
+    },
     {
       "strategy": "circuitbreaker_consecutive",
       "platform": "nodejs",
@@ -42,6 +60,16 @@
       "patternConfig": {
         "halfOpenAfter": 50,
         "exceptionsAllowedBeforeBreaking": 2
+      }
+    },
+    {
+      "strategy": "circuit_breaker",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/circuitbreaker",
+      "patternConfig": {
+        "exceptionsAllowedBeforeBreaking": 2,
+        "durationOfBreaking": 50
       }
     },
     {
