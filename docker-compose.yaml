@@ -1,6 +1,13 @@
 version: '3.4'
 
 services:
+  polly:
+    build:
+      context: ./clients/polly
+    container_name: polly
+    depends_on:
+      - server
+
   cockatiel:
     build:
       context: ./clients/cockatiel
@@ -26,6 +33,8 @@ services:
       - TIME_ZONE=America/Sao_Paulo
     depends_on:
       - server
+      - cockatiel
+      - polly
 
   server:
     build:
