@@ -2,13 +2,11 @@
 
 ResilienceBench is a language-agnostic benchmark environment to support the experimental evaluation of microservice resiliency patterns, such as [Retry](https://docs.microsoft.com/en-us/azure/architecture/patterns/retry) and [Circuit Breaker](https://docs.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker), using open source resilience libraries, such as C\#'s [Polly](https://github.com/App-vNext/Polly) and Java's [Resilience4j](https://github.com/resilience4j/resilience4j). 
 
-![Build status](https://github.com/ppgia-unifor/resilience-bench/actions/workflows/docker-image.yml/badge.svg)
-
 Jump to:
 
-* [Documentation](/docs)
+* [Documentation](/docs/README.md)
 
-* [Installation instructions](docs/installation.md)
+* [Installation instructions](INSTALL.md)
 
 * [Demo video](#demo-video)
 
