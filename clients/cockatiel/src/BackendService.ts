@@ -1,8 +1,9 @@
 import { Stopwatch } from "ts-stopwatch";
 import { BrokenCircuitError, IPolicy } from "cockatiel";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Config } from "./Config";
 import ResilienceModuleMetrics from "./ResilienceModuleMetrics";
+import { queue } from "async";
 
 export default class BackendService {
 
@@ -32,18 +33,25 @@ export default class BackendService {
     while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
       requestStopwatch.reset();
       requestStopwatch.start();
-      let res = await policy
-        .execute(() =>
-          axios.get(config.targetUrl)
-            .catch((err) => {
-              errorType = err;
-              throw err;
-            }))
-        .catch(() => { })
+      var q = queue(function(item, callback) {
 
-      if (res?.status == 200) {
-        successfulCall++
-      }
+        let res = policy
+          .execute(() =>
+            axios.get(config.targetUrl)
+              .catch((err) => {
+                errorType = err;
+                throw err;
+              }))
+          .catch(() => { })
+
+
+        res.then(() => {
+          successfulCall++;
+        })
+
+      });
+
+      q.drain();
 
       totalCall++;
 
