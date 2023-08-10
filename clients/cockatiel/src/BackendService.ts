@@ -1,9 +1,8 @@
 import { Stopwatch } from "ts-stopwatch";
 import { BrokenCircuitError, IPolicy } from "cockatiel";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { Config } from "./Config";
 import ResilienceModuleMetrics from "./ResilienceModuleMetrics";
-import { queue } from "async";
 
 export default class BackendService {
 
@@ -30,32 +29,37 @@ export default class BackendService {
     })
 
     externalStopwatch.start();
-    while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
-      requestStopwatch.reset();
-      requestStopwatch.start();
-      var q = queue(function(item, callback) {
+    async function makeSequentialBlockingRequests(config: Config , metrics: ResilienceModuleMetrics, policy: IPolicy, axios: any) {
+      while (
+        successfulCall < config.successfulRequests &&
+        config.maxRequests > metrics.getTotalRequests()
+      ) {
+        requestStopwatch.reset();
+        requestStopwatch.start();
 
-        let res = policy
-          .execute(() =>
-            axios.get(config.targetUrl)
-              .catch((err) => {
-                errorType = err;
-                throw err;
-              }))
-          .catch(() => { })
+        try {
+          const res = await policy.execute(async () => {
+            try {
+              return await axios.get(config.targetUrl);
+            } catch (err) {
+              errorType = err;
+              throw err;
+            }
+          });
 
+          if (res?.status === 200) {
+            successfulCall++;
+          }
 
-        res.then(() => {
-          successfulCall++;
-        })
-
-      });
-
-      q.drain();
-
-      totalCall++;
-
+          totalCall++;
+        } catch (error) {
+          // Handle any errors that occurred during policy execution
+        }
+      }
     }
+
+    // Call the function to start the sequential blocking requests
+    makeSequentialBlockingRequests(config, metrics, policy, axios);
 
     externalStopwatch.stop();
     console.log("successfulCall: " + successfulCall + " unsuccessfulCall: " + (totalCall - successfulCall) + " successfulRequests: " + metrics.getSuccessfulRequests() + " unsuccessfulRequests: " + metrics.getUnsuccessfulRequests() + " time: " + externalStopwatch.getTime())
