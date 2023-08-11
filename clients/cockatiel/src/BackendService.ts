@@ -29,38 +29,24 @@ export default class BackendService {
     })
 
     externalStopwatch.start();
-    async function makeSequentialBlockingRequests(config: Config , metrics: ResilienceModuleMetrics, policy: IPolicy, axios: any) {
-      while (
-        successfulCall < config.successfulRequests &&
-        config.maxRequests > metrics.getTotalRequests()
-      ) {
-        requestStopwatch.reset();
-        requestStopwatch.start();
-
-        try {
-          const res = await policy.execute(async () => {
-            try {
-              return await axios.get(config.targetUrl);
-            } catch (err) {
+    while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
+      requestStopwatch.reset();
+      requestStopwatch.start();
+      let res = await policy.execute(async () =>
+          axios.get(config.targetUrl)
+            .catch((err) => {
               errorType = err;
               throw err;
-            }
-          });
+            }))
+        .catch(() => { })
 
-          if (res?.status === 200) {
-            successfulCall++;
-          }
-
-          totalCall++;
-        } catch (error) {
-          // Handle any errors that occurred during policy execution
-        }
+      if (res?.status == 200) {
+        successfulCall++
       }
+
+      totalCall++;
+
     }
-
-    // Call the function to start the sequential blocking requests
-    makeSequentialBlockingRequests(config, metrics, policy, axios);
-
     externalStopwatch.stop();
     console.log("successfulCall: " + successfulCall + " unsuccessfulCall: " + (totalCall - successfulCall) + " successfulRequests: " + metrics.getSuccessfulRequests() + " unsuccessfulRequests: " + metrics.getUnsuccessfulRequests() + " time: " + externalStopwatch.getTime())
     metrics.registerTotals(successfulCall, totalCall, externalStopwatch.getTime());
