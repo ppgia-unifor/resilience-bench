@@ -8,10 +8,7 @@ const routerBaseline: Router = Router();
 
 routerBaseline.use(bodyParser.json());
 
-const backendService: BackendService = new BackendService();
-
-function handleRequest(req: Request): Config {
-  const body = req.body;
+function handleRequest(body: any): Config {
   const config = new Config();
   config.maxRequests = body.maxRequests;
   config.successfulRequests = body.successfulRequests;
@@ -19,16 +16,19 @@ function handleRequest(req: Request): Config {
   return config;
 }
 
-routerBaseline.post('/baseline/', (req: Request, res: Response) => {
-  const config: Config = handleRequest(req);
-  const policy: IPolicy = new NoopPolicy();
-  const result = backendService.makeRequest(config, policy);
-  result.then(prom => {
-    res.json(prom)
-  }).catch( err =>{
-    console.log("ERRO baseline:" + err)
-    res.sendStatus(500)
-  })
+routerBaseline.post('/baseline/', async (req: Request, res: Response) => {
+  try {
+
+    const body = req.body;
+    const config: Config = handleRequest(body);
+    const policy: IPolicy = new NoopPolicy();
+    const backendService = new BackendService();
+    const result = await backendService.makeRequest(config, policy);
+
+    res.send(result);
+  } catch (error: any) {
+    res.status(500).send({ error: error.message || 'Internal Server Error' });
+  }
 });
 
 export default routerBaseline

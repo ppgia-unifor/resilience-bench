@@ -8,8 +8,6 @@ const routerRetry: Router = Router();
 
 routerRetry.use(bodyParser.json());
 
-const backendService: BackendService = new BackendService();
-
 function handleRequest(body: any): Config {
   const config = new Config();
   config.maxRequests = body.maxRequests;
@@ -32,17 +30,18 @@ function createPolicy(patternConfig: any): IPolicy {
     });
 }
 
-routerRetry.post('/retry/', (req: Request, res: Response) => {
-  const body = req.body;
-  const config: Config = handleRequest(body);
-  const policy: IPolicy = createPolicy(body.patternParams);
-  const result = backendService.makeRequest(config, policy);
-  result.then(prom => {
-    res.json(prom)
-  }).catch(err => {
-      console.log("ERRO retry:" + err)
-    res.sendStatus(500)
-  })
+routerRetry.post('/retry/', async (req: Request, res: Response) => {
+  try {
 
+    const body = req.body;
+    const config: Config = handleRequest(body);
+    const policy: IPolicy = createPolicy(body.patternParams);
+    const backendService = new BackendService();
+    const result = await backendService.makeRequest(config, policy);
+
+    res.send(result);
+  } catch (error: any) {
+    res.status(500).send({ error: error.message || 'Internal Server Error' });
+  }
 });
 export default routerRetry;

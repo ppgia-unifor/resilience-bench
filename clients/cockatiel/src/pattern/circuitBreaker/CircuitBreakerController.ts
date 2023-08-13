@@ -8,8 +8,6 @@ const routerCircuitBreaker: Router = Router();
 
 routerCircuitBreaker.use(bodyParser.json());
 
-const backendService: BackendService = new BackendService();
-
 function handleRequest(body: any): Config {
   const config = new Config();
   config.maxRequests = body.maxRequests;
@@ -42,31 +40,35 @@ function createPolicySampling(patternConfig: any): IPolicy {
   );
 }
 
-routerCircuitBreaker.post('/circuitbreaker/consecutive/', (req: Request, res: Response) => {
-  const body = req.body;
-  const config: Config = handleRequest(body);
-  const policy: IPolicy = createPolicyConsecutive(body.patternParams);
-  const result = backendService.makeRequest(config, policy);
-    result.then(prom => {
-    res.json(prom)
-  }).catch( err =>{
-    console.log("ERRO circuitbreaker/consecutive:" + err)
-    res.sendStatus(500)
-  })
+routerCircuitBreaker.post('/circuitbreaker/consecutive/', async (req: Request, res: Response) => {
+  try {
 
+    const body = req.body;
+    const config: Config = handleRequest(body);
+    const policy: IPolicy = createPolicyConsecutive(body.patternParams);
+    const backendService = new BackendService();
+    const result = await backendService.makeRequest(config, policy);
+
+    res.send(result);
+  } catch (error: any) {
+    res.status(500).send({ error: error.message || 'Internal Server Error' });
+  }
 });
 
-routerCircuitBreaker.post('/circuitbreaker/sampling/', (req: Request, res: Response) => {
-  const body = req.body;
-  const config: Config = handleRequest(body);
-  const policy: IPolicy = createPolicySampling(body.patternParams);
-  const result = backendService.makeRequest(config, policy);
-  result.then(prom => {
-    res.json(prom)
-  }).catch( err =>{
-    console.log("ERRO circuitbreaker/sampling:" + err)
-    res.sendStatus(500)
-  })
+
+routerCircuitBreaker.post('/circuitbreaker/sampling/', async (req: Request, res: Response) => {
+  try {
+
+    const body = req.body;
+    const config: Config = handleRequest(body);
+    const policy: IPolicy = createPolicySampling(body.patternParams);
+    const backendService = new BackendService();
+    const result = await backendService.makeRequest(config, policy);
+
+    res.send(result);
+  } catch (error: any) {
+    res.status(500).send({ error: error.message || 'Internal Server Error' });
+  }
 });
 
 
