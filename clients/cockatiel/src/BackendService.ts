@@ -32,12 +32,12 @@ export default class BackendService {
     while (successfulCall < config.successfulRequests && config.maxRequests > metrics.getTotalRequests()) {
       requestStopwatch.reset();
       requestStopwatch.start();
-      let res = await policy.execute(() =>
-          axios.get(config.targetUrl)
-            .catch((err) => {
-              errorType = err;
-              throw err;
-            }))
+      let res = await policy.execute(async () =>
+        await axios.get(config.targetUrl)
+          .catch((err) => {
+            errorType = err;
+            throw err;
+          }))
         .catch(() => { })
 
       if (res?.status == 200) {
