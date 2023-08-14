@@ -7,7 +7,7 @@
     "status": 503
   },
   "users": [
-    100
+    5
   ],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
@@ -52,7 +52,7 @@
       }
     },
     {
-      "strategy": "circuitbreaker_consecutive",
+      "strategy": "circuit_breaker",
       "platform": "nodejs",
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/consecutive",
