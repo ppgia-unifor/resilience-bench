@@ -3,6 +3,7 @@ import { BrokenCircuitError, IPolicy } from "cockatiel";
 import axios from "axios";
 import { Config } from "./Config";
 import ResilienceModuleMetrics from "./ResilienceModuleMetrics";
+import logger from "./logger";
 
 export default class BackendService {
 
@@ -48,7 +49,7 @@ export default class BackendService {
 
     }
     externalStopwatch.stop();
-    console.log("successfulCall: " + successfulCall + " unsuccessfulCall: " + (totalCall - successfulCall) + " successfulRequests: " + metrics.getSuccessfulRequests() + " unsuccessfulRequests: " + metrics.getUnsuccessfulRequests() + " time: " + externalStopwatch.getTime())
+    logger.info("successfulCall: " + successfulCall + " unsuccessfulCall: " + (totalCall - successfulCall) + " successfulRequests: " + metrics.getSuccessfulRequests() + " unsuccessfulRequests: " + metrics.getUnsuccessfulRequests() + " time: " + externalStopwatch.getTime())
     metrics.registerTotals(successfulCall, totalCall, externalStopwatch.getTime());
 
     return metrics.toJSON();
