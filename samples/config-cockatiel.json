@@ -2,12 +2,14 @@
   "fault": {
     "type": "abort",
     "percentage": [
-      25,50,75
+      25,
+      50,
+      75
     ],
     "status": 503
   },
   "users": [
-    5
+    100
   ],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
@@ -69,6 +71,18 @@
       "patternConfig": {
         "exceptionsAllowedBeforeBreaking": 2,
         "durationOfBreaking": 50
+      }
+    },
+    {
+      "strategy": "circuit_breaker_sampling",
+      "platform": "nodejs",
+      "lib": "cockatiel",
+      "url": "http://cockatiel/circuitbreaker/sampling/",
+      "patternConfig": {
+        "halfOpenAfter": 50,
+        "threshold": 0.2,
+        "duration": 50,
+        "minimumRps": 10
       }
     }
   ]
