@@ -7,7 +7,7 @@
     "status": 503
   },
   "users": [
-    100
+    50, 100, 150
   ],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
