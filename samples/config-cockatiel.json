@@ -2,9 +2,7 @@
   "fault": {
     "type": "abort",
     "percentage": [
-      25,
-      50,
-      75
+      25, 50, 75
     ],
     "status": 503
   },
