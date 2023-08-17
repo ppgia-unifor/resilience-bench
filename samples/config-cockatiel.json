@@ -2,12 +2,16 @@
   "fault": {
     "type": "abort",
     "percentage": [
-      25, 50, 75
+      25,
+      50,
+      75
     ],
     "status": 503
   },
   "users": [
-    50, 100, 150
+    50,
+    100,
+    150
   ],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 10,
@@ -36,7 +40,11 @@
       "patternConfig": {
         "exponent": 1.5,
         "maxDelay": 200,
-        "initialDelay": 50,
+        "initialDelay": [
+          25,
+          50,
+          75
+        ],
         "maxAttemps": 5
       }
     },
@@ -48,7 +56,11 @@
       "patternConfig": {
         "count": 5,
         "exponentialBackoffPow": 1.5,
-        "sleepDuration": 50
+        "sleepDuration": [
+          25,
+          50,
+          75
+        ]
       }
     },
     {
@@ -57,7 +69,11 @@
       "lib": "cockatiel",
       "url": "http://cockatiel/circuitbreaker/consecutive",
       "patternConfig": {
-        "halfOpenAfter": 50,
+        "halfOpenAfter": [
+          25,
+          50,
+          75
+        ],
         "exceptionsAllowedBeforeBreaking": 2
       }
     },
@@ -68,7 +84,11 @@
       "url": "http://polly/circuitbreaker",
       "patternConfig": {
         "exceptionsAllowedBeforeBreaking": 2,
-        "durationOfBreaking": 50
+        "durationOfBreaking": [
+          25,
+          50,
+          75
+        ]
       }
     },
     {
@@ -79,7 +99,11 @@
       "patternConfig": {
         "halfOpenAfter": 50,
         "threshold": 0.2,
-        "duration": 50,
+        "duration": [
+          25,
+          50,
+          75
+        ],
         "minimumRps": 10
       }
     }
