@@ -7,7 +7,7 @@ This data is related to the paper published in SBES 2023.
 
 The Resilience Bench configurion file used to run the experiments described in the SBES 2023 paper is available as a JSON in the file [config-retry.json](config-retry.json).
 
-The experimental dataset produced after running these experiments is available at Zenodo in the [https://zenodo.org/record/7938926/](https://zenodo.org/record/7938926/).
+The experimental dataset produced after running these experiments is available at Zenodo in this [link](https://zenodo.org/record/7938926/).
 
 This zip file includes two csv files, named "results-polly.csv" and "results-r4j.csv", containing the experimental data obtained with the [Polly](https://github.com/App-vNext/Polly) and [Resilience4j](https://github.com/resilience4j/resilience4j) resilience libraries, respectively. Each csv file is structured with two sets of attributes (columns): the first set corresponds to the performance metrics collected during each test, while the second set corresponds to the test parameters.
 
