@@ -1,5 +1,10 @@
 # SBES 2023 Configuration File and Dataset
 
+This data is related to the paper published in SBES 2023.
+
+> Carlos M. Aderaldo and Nabor C. Mendonça. 2023. How The Retry Pattern Impacts Application Performance: A Controlled Experiment. In XXXVII Brazilian Symposium on Software Engineering (SBES 2023), September 25–29, 2023, Campo Grande, Brazil. ACM, New York, NY, USA, 10 pages. [https://doi.org/10.1145/3613372.3613409](https://doi.org/10.1145/3613372.3613409)
+---
+
 The Resilience Bench configurion file used to run the experiments described in the SBES 2023 paper is available as a [JSON file](https://github.com/ppgia-unifor/resilience-bench/tree/main/samples/config-retry.json) in the [samples folder](https://github.com/ppgia-unifor/resilience-bench/tree/main/samples/).
 
 The experimental dataset produced after running these experiments is available at Zenodo in the [retry-polly-r4j-dataset.zip](https://zenodo.org/record/7938926/files/retry-polly-r4j-dataset.zip?download=1) file.
@@ -37,11 +42,3 @@ This zip file includes two csv files, named "results-polly.csv" and "results-r4j
 * `sleepDurationType` backoff delay increment type.
 * `exponentialBackoffPow` float value to multiply the initial backoff delay before a new retry.
 * `sleepDuration` initial backoff delay.
-
-
-This data is related to the paper published in SBES'2023.
-
-
-> Carlos M. Aderaldo and Nabor C. Mendonça. 2023. How The Retry Pattern Impacts Application Performance: A Controlled Experiment. In XXXVII Brazilian Symposium on Software Engineering (SBES 2023), September 25–29, 2023, Campo Grande, Brazil. ACM, New York, NY, USA, 10 pages. https: //doi.org/10.1145/3613372.3613409
-
-
