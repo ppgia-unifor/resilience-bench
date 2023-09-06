@@ -37,3 +37,11 @@ This zip file includes two csv files, named "results-polly.csv" and "results-r4j
 * `sleepDurationType` backoff delay increment type.
 * `exponentialBackoffPow` float value to multiply the initial backoff delay before a new retry.
 * `sleepDuration` initial backoff delay.
+
+
+This data is related to the paper published in SBES'2023.
+
+
+> Carlos M. Aderaldo and Nabor C. Mendonça. 2023. How The Retry Pattern Impacts Application Performance: A Controlled Experiment. In XXXVII Brazilian Symposium on Software Engineering (SBES 2023), September 25–29, 2023, Campo Grande, Brazil. ACM, New York, NY, USA, 10 pages. https: //doi.org/10.1145/3613372.3613409
+
+
