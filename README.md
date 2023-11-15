@@ -22,6 +22,8 @@ This short (2m:20s) video provides a quick overview of the steps necessary to in
 
 ## Publications
 
+Aderaldo, C. M., and Mendonça, N. C. (2023). [How The Retry Pattern Impacts Application Performance](https://doi.org/10.1145/3613372.3613409): A Controlled Experiment. In Proceedings of the XXXVII Brazilian Symposium on Software Engineering (SBES '23). Association for Computing Machinery, New York, NY, USA, 47–56. https://doi.org/10.1145/3613372.3613409
+
 Costa, T. M., Vasconcelos, D. M., Aderaldo, C. M., and Mendonça, N. C. (2022). [Avaliação de Desempenho de Dois Padrões de Resiliência para Microsserviços: Retry e Circuit Breaker](publications/sbrc2022-final.pdf). In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). The experimental dataset used in this paper is available in the [/data/sbrc2022](data/sbrc2022/) folder.
 
 Aderaldo, C. M., and Mendonça, N. C. (2022). [ResilienceBench: Um ambiente para avaliação experimental de padrões de resiliência para microsserviços ](). In 40th Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2022). The version presented in the conference and described in the paper is available [here](publications/sbrc_tools_2022.pdf).
