@@ -42,7 +42,7 @@ namespace ResiliencePatterns.Polly.Controllers
                 .Or<TaskCanceledException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: circuitBreakerConfig.FailureThreshold,
-                    samplingDuration: TimeSpan.FromSeconds(circuitBreakerConfig.SamplingDuration),
+                    samplingDuration: TimeSpan.FromMilliseconds(circuitBreakerConfig.SamplingDuration),
                     minimumThroughput: circuitBreakerConfig.MinimumThroughput,
                     durationOfBreak: TimeSpan.FromSeconds(5) // default value: 5 seconds
                 );
