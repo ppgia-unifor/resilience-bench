@@ -28,12 +28,24 @@ namespace ResiliencePatterns.Polly.Controllers
 
         private static AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)
         {
+            if (circuitBreakerConfig.ExceptionsAllowedBeforeBreaking > 0) {
+                return Policy
+                    .Handle<HttpRequestException>()
+                    .Or<TaskCanceledException>()
+                    .CircuitBreakerAsync(
+                        exceptionsAllowedBeforeBreaking: circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
+                        durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking)
+                    );
+            }
             return Policy
                 .Handle<HttpRequestException>()
                 .Or<TaskCanceledException>()
-                .CircuitBreakerAsync(
-                    exceptionsAllowedBeforeBreaking: circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
-                    durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking));
+                .AdvancedCircuitBreakerAsync(
+                    failureThreshold: circuitBreakerConfig.FailureThreshold,
+                    samplingDuration: TimeSpan.FromSeconds(circuitBreakerConfig.SamplingDuration),
+                    minimumThroughput: circuitBreakerConfig.MinimumThroughput,
+                    durationOfBreak: TimeSpan.FromSeconds(5) // default value: 5 seconds
+                );
         }
     }
 }
