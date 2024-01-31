@@ -15,13 +15,6 @@ services:
     depends_on:
       - server
 
-  cockatiel:
-    build:
-      context: ./clients/cockatiel
-    container_name: cockatiel
-    depends_on:
-      - server
-
   scheduler:
     build: 
       context: ./scheduler
