@@ -1,22 +1,14 @@
 {
   "fault": {
     "type": "abort",
-    "percentage": [
-      0,
-      25,
-      50,
-      75
-    ],
+    "percentage": [25, 50, 75],
     "status": 503
   },
-  "users": [
-    50,
-    100
-  ],
+  "users": [50, 100, 150],
   "targetUrl": "http://server:9211/bytes/1000",
-  "rounds": 10,
+  "rounds": 5,
   "maxRequests": 500,
-  "succRequests": 25,
+  "succRequests": 10,
   "clientSpecs": [
     {
       "strategy": "circuit_breaker",
@@ -24,12 +16,9 @@
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
       "patternConfig": {
-        "exceptionsAllowedBeforeBreaking": 2,
-        "durationOfBreaking": [
-          50,
-          100,
-          200
-        ]
+        "FailureThreshold": [0.2, 0.4, 0.6],
+        "MinimumThroughput": [10, 50, 100],
+        "SamplingDuration": [10, 30, 50]
       }
     },
     {
@@ -38,17 +27,9 @@
       "lib": "resilience4j",
       "url": "http://resilience4j/cb",
       "patternConfig": {
-        "slowCallRateThreshold": 100,
-        "slowCallDurationThreshold": 1000,
-        "slidingWindowSize": 2,
-        "failureRateThreshold": 100,
-        "minimumNumberOfCalls": 2,
-        "permittedNumberOfCallsInHalfOpenState": 1,
-        "waitDurationInOpenState": [
-          50,
-          100,
-          200
-        ]
+        "failureRateThreshold": [20, 40, 60],
+        "minimumNumberOfCalls": [10, 50, 100],
+        "slidingWindowSize": [10, 30, 50]
       }
     }
   ]

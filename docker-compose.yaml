@@ -28,10 +28,11 @@ services:
     container_name: scheduler
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./samples/config-all-delay.json:/opt/app/conf/conf.json
+      - ./samples/config-circuit-breaker.json:/opt/app/conf/conf.json
       - ./results:/opt/app/resilience-tests
     environment:
-      - DISK_PATH=/opt/app/resilience-tests
+      - AWS_BUCKET_NAME=phd-carlos-results
+      - AWS_OUTPUT_PATH=jss-circuit-breaker
       - CONFIG_FILE=/opt/app/conf/conf.json
       - ENVOY_FAULT_INJECTION_PATH=/opt/app/fault-injection
       - DOCKER_HOST=/var/run/docker.sock
@@ -40,7 +41,6 @@ services:
       - resilience4j
       - polly
       - server
-
   server:
     build:
       context: server
