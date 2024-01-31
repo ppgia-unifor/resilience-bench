@@ -18,7 +18,7 @@
       "patternConfig": {
         "FailureThreshold": [0.2, 0.4, 0.6],
         "MinimumThroughput": [10, 15, 20],
-        "SamplingDuration": [5, 10, 20]
+        "SamplingDuration": [5000, 10000, 20000]
       }
     },
     {
