@@ -8,8 +8,6 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.vavr.CheckedFunction0;
 import org.springframework.http.ResponseEntity;
 
-import java.time.Duration;
-
 import static io.github.resilience4j.circuitbreaker.CircuitBreaker.decorateCheckedSupplier;
 
 public class BackendServiceWithCircuitBreaker extends BackendServiceTemplate {
@@ -29,15 +27,18 @@ public class BackendServiceWithCircuitBreaker extends BackendServiceTemplate {
         return decorateCheckedSupplier(circuitBreakerPolicy, checkedFunction);
     }
 
-    private static CircuitBreakerConfig createCircuitBreaker(CircuitBreakerRequestModel params) {
-        return CircuitBreakerConfig.custom()
-                .failureRateThreshold(params.getFailureRateThreshold())
-                .slidingWindowSize(params.getSlidingWindowSize())
-                .minimumNumberOfCalls(params.getMinimumNumberOfCalls())
-                .waitDurationInOpenState(Duration.ofMillis(params.getWaitDurationInOpenState()))
-                .permittedNumberOfCallsInHalfOpenState(params.getPermittedNumberOfCallsInHalfOpenState())
-                .slowCallRateThreshold(params.getSlowCallRateThreshold())
-                .slowCallDurationThreshold(Duration.ofMillis(params.getSlowCallDurationThreshold()))
-                .build();
+    static CircuitBreakerConfig createCircuitBreaker(CircuitBreakerRequestModel params) {
+        var builder = CircuitBreakerConfig.custom().slidingWindowType(params.getSlidingWindowType());
+
+        if (params.getFailureRateThreshold() != null) {
+            builder.failureRateThreshold(params.getFailureRateThreshold());
+        }
+        if (params.getSlidingWindowSize() != null) {
+            builder.slidingWindowSize(params.getSlidingWindowSize());
+        }
+        if (params.getMinimumNumberOfCalls() != null) {
+            builder.minimumNumberOfCalls(params.getMinimumNumberOfCalls());
+        }
+        return builder.build();
     }
 }

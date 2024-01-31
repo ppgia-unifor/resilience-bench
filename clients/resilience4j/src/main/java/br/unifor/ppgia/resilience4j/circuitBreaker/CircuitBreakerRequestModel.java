@@ -1,29 +1,26 @@
 package br.unifor.ppgia.resilience4j.circuitBreaker;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType;
+
 public class CircuitBreakerRequestModel {
     private final Float failureRateThreshold;
     private final Integer slidingWindowSize;
     private final Integer minimumNumberOfCalls;
-    private final Integer waitDurationInOpenState; // [ms]
-    private final Integer permittedNumberOfCallsInHalfOpenState;
-    private final Integer slowCallRateThreshold;
-    private final Integer slowCallDurationThreshold; //[ms]
+    private final SlidingWindowType slidingWindowType;
 
     public CircuitBreakerRequestModel(Float failureRateThreshold,
                                       Integer slidingWindowSize,
                                       Integer minimumNumberOfCalls,
-                                      Integer waitDurationInOpenState,
-                                      Integer permittedNumberOfCallsInHalfOpenState,
-                                      Integer slowCallRateThreshold,
-                                      Integer slowCallDurationThreshold
-    ) {
+                                      String slidingWindowType) {
         this.failureRateThreshold = failureRateThreshold;
         this.slidingWindowSize = slidingWindowSize;
         this.minimumNumberOfCalls = minimumNumberOfCalls;
-        this.waitDurationInOpenState = waitDurationInOpenState;
-        this.permittedNumberOfCallsInHalfOpenState = permittedNumberOfCallsInHalfOpenState;
-        this.slowCallRateThreshold = slowCallRateThreshold;
-        this.slowCallDurationThreshold = slowCallDurationThreshold;
+
+        if (slidingWindowType == null || slidingWindowType.isEmpty()) {
+            this.slidingWindowType = SlidingWindowType.COUNT_BASED;
+        } else {
+            this.slidingWindowType = SlidingWindowType.valueOf(slidingWindowType);
+        }
     }
 
     public Float getFailureRateThreshold() {
@@ -38,19 +35,7 @@ public class CircuitBreakerRequestModel {
         return minimumNumberOfCalls;
     }
 
-    public Integer getWaitDurationInOpenState() {
-        return waitDurationInOpenState;
-    }
-
-    public Integer getPermittedNumberOfCallsInHalfOpenState() {
-        return permittedNumberOfCallsInHalfOpenState;
-    }
-
-    public Integer getSlowCallRateThreshold() {
-        return slowCallRateThreshold;
-    }
-
-    public Integer getSlowCallDurationThreshold() {
-        return slowCallDurationThreshold;
+    public SlidingWindowType getSlidingWindowType() {
+        return slidingWindowType;
     }
 }
