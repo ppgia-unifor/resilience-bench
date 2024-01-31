@@ -21,7 +21,7 @@ services:
     container_name: scheduler
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./samples/config-circuit-breaker.json:/opt/app/conf/conf.json
+      - ./samples/config-circuit-breaker-time.json:/opt/app/conf/conf.json
       - ./results:/opt/app/resilience-tests
       - /home/vagrant/.aws/credentials:/root/.aws/credentials
     environment:

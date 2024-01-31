@@ -17,8 +17,8 @@
       "url": "http://polly/circuitbreaker",
       "patternConfig": {
         "FailureThreshold": [0.2, 0.4, 0.6],
-        "MinimumThroughput": [10, 50, 100],
-        "SamplingDuration": [10, 30, 50]
+        "MinimumThroughput": [10, 15, 20],
+        "SamplingDuration": [5, 10, 20]
       }
     },
     {
@@ -28,8 +28,9 @@
       "url": "http://resilience4j/cb",
       "patternConfig": {
         "failureRateThreshold": [20, 40, 60],
-        "minimumNumberOfCalls": [10, 50, 100],
-        "slidingWindowSize": [10, 30, 50]
+        "minimumNumberOfCalls": [10, 15, 20],
+        "slidingWindowSize": [5, 10, 20],
+        "slidingWindowType": "TIME_BASED"
       }
     }
   ]
