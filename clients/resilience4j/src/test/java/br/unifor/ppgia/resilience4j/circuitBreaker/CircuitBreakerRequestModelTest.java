@@ -2,6 +2,8 @@ package br.unifor.ppgia.resilience4j.circuitBreaker;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+
 import static io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,7 +18,7 @@ class CircuitBreakerRequestModelTest {
             null
     );
 
-    assertEquals(target.getSlidingWindowType(), SlidingWindowType.COUNT_BASED);
+    assertEquals(target.getSlidingWindowType(), CircuitBreakerConfig.DEFAULT_SLIDING_WINDOW_TYPE);
   }
   @Test
   void getSlidingWindowTypeEmptyTest() {
@@ -27,7 +29,7 @@ class CircuitBreakerRequestModelTest {
             ""
     );
 
-    assertEquals(target.getSlidingWindowType(), SlidingWindowType.COUNT_BASED);
+    assertEquals(target.getSlidingWindowType(), CircuitBreakerConfig.DEFAULT_SLIDING_WINDOW_TYPE);
   }
   @Test
   void getSlidingWindowTypeCountBasedTest() {

@@ -28,18 +28,18 @@ class CircuitBreakerControllerIT {
   void sendAllParametersTest() {
     headers.add("Content-type", "application/json");
     var entity = new HttpEntity<>("{\n" +
-            "  \"maxRequests\": 10,\n" +
-            "  \"successfulRequests\": 10,\n" +
-            "  \"targetUrl\": \"http://localhost:8080\",\n" +
-            "  \"patternParams\": {\n" +
-            "    \"failureRateThreshold\": 60,\n" +
-            "    \"minimumNumberOfCalls\": 100,\n" +
-            "    \"slidingWindowSize\": 10\n" +
-            "  }\n" +
-            "}", headers);
+        "  \"maxRequests\": 10,\n" +
+        "  \"successfulRequests\": 10,\n" +
+        "  \"targetUrl\": \"http://localhost:8080\",\n" +
+        "  \"patternParams\": {\n" +
+        "    \"failureRateThreshold\": 60,\n" +
+        "    \"minimumNumberOfCalls\": 100,\n" +
+        "    \"slidingWindowSize\": 10\n" +
+        "  }\n" +
+        "}", headers);
     var response = restTemplate.exchange(
-            createURLWithPort("/cb"),
-            HttpMethod.POST, entity, String.class);
+        createURLWithPort("/cb"),
+        HttpMethod.POST, entity, String.class);
 
     assertEquals(response.getStatusCode(), HttpStatus.OK);
   }

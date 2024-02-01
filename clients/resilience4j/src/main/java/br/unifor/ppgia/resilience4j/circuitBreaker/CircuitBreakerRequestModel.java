@@ -1,5 +1,6 @@
 package br.unifor.ppgia.resilience4j.circuitBreaker;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType;
 
 public class CircuitBreakerRequestModel {
@@ -9,15 +10,15 @@ public class CircuitBreakerRequestModel {
     private final SlidingWindowType slidingWindowType;
 
     public CircuitBreakerRequestModel(Float failureRateThreshold,
-                                      Integer slidingWindowSize,
-                                      Integer minimumNumberOfCalls,
-                                      String slidingWindowType) {
+            Integer slidingWindowSize,
+            Integer minimumNumberOfCalls,
+            String slidingWindowType) {
         this.failureRateThreshold = failureRateThreshold;
         this.slidingWindowSize = slidingWindowSize;
         this.minimumNumberOfCalls = minimumNumberOfCalls;
 
         if (slidingWindowType == null || slidingWindowType.isEmpty()) {
-            this.slidingWindowType = SlidingWindowType.COUNT_BASED;
+            this.slidingWindowType = CircuitBreakerConfig.DEFAULT_SLIDING_WINDOW_TYPE;
         } else {
             this.slidingWindowType = SlidingWindowType.valueOf(slidingWindowType);
         }
