@@ -13,6 +13,9 @@ class BackendServiceWithCircuitBreakerTest {
             0.5f,
             10,
             10,
+            10,
+            10,
+            10,
             "COUNT_BASED"
     ));
 

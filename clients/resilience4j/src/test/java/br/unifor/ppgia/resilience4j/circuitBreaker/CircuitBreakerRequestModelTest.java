@@ -15,9 +15,11 @@ class CircuitBreakerRequestModelTest {
             0.5f,
             10,
             10,
+            10,
+            10,
+            10,
             null
     );
-
     assertEquals(target.getSlidingWindowType(), CircuitBreakerConfig.DEFAULT_SLIDING_WINDOW_TYPE);
   }
   @Test
@@ -26,18 +28,23 @@ class CircuitBreakerRequestModelTest {
             0.5f,
             10,
             10,
+            10,
+            10,
+            10,
             ""
     );
-
     assertEquals(target.getSlidingWindowType(), CircuitBreakerConfig.DEFAULT_SLIDING_WINDOW_TYPE);
   }
   @Test
   void getSlidingWindowTypeCountBasedTest() {
     var target = new CircuitBreakerRequestModel(
-      0.5f,
-      10,
-      10,
-      "COUNT_BASED"
+            0.5f,
+            10,
+            10,
+            10,
+            10,
+            10,
+            "COUNT_BASED"
     );
 
     assertEquals(target.getSlidingWindowType(), SlidingWindowType.COUNT_BASED);
@@ -46,12 +53,14 @@ class CircuitBreakerRequestModelTest {
   @Test
   void getSlidingWindowTypeTimeBasedTest() {
     var target = new CircuitBreakerRequestModel(
-      0.5f,
-      10,
-      10,
-      "TIME_BASED"
+            0.5f,
+            10,
+            10,
+            10,
+            10,
+            10,
+            "TIME_BASED"
     );
-
     assertEquals(target.getSlidingWindowType(), SlidingWindowType.TIME_BASED);
   }
 }
