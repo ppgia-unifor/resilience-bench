@@ -28,24 +28,20 @@ namespace ResiliencePatterns.Polly.Controllers
 
         private static AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)
         {
-            if (circuitBreakerConfig.ExceptionsAllowedBeforeBreaking > 0) {
-                return Policy
-                    .Handle<HttpRequestException>()
-                    .Or<TaskCanceledException>()
-                    .CircuitBreakerAsync(
-                        exceptionsAllowedBeforeBreaking: circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
-                        durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking)
-                    );
-            }
-            return Policy
-                .Handle<HttpRequestException>()
-                .Or<TaskCanceledException>()
-                .AdvancedCircuitBreakerAsync(
-                    failureThreshold: circuitBreakerConfig.FailureThreshold,
-                    samplingDuration: TimeSpan.FromMilliseconds(circuitBreakerConfig.SamplingDuration),
-                    minimumThroughput: circuitBreakerConfig.MinimumThroughput,
-                    durationOfBreak: TimeSpan.FromSeconds(5) // default value: 5 seconds
+            var policy = Policy.Handle<HttpRequestException>().Or<TaskCanceledException>();
+            if (circuitBreakerConfig.ExceptionsAllowedBeforeBreaking > 0)
+            {
+                return policy.CircuitBreakerAsync(
+                    exceptionsAllowedBeforeBreaking: circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
+                    durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking)
                 );
+            }
+            return policy.AdvancedCircuitBreakerAsync(
+                failureThreshold: circuitBreakerConfig.FailureThreshold,
+                samplingDuration: TimeSpan.FromMilliseconds(circuitBreakerConfig.SamplingDuration),
+                minimumThroughput: circuitBreakerConfig.MinimumThroughput,
+                durationOfBreak: TimeSpan.FromSeconds(5) // default value: 5 seconds
+            );
         }
     }
 }
