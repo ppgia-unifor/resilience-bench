@@ -4,7 +4,7 @@
     "percentage": [25, 50, 75],
     "status": 503
   },
-  "users": [50, 150],
+  "users": [50, 100, 150],
   "targetUrl": "http://server:9211/bytes/1000",
   "rounds": 5,
   "maxRequests": 500,
@@ -30,8 +30,8 @@
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
       "patternConfig": {
-        "ExceptionsAllowedBeforeBreaking": [2, 4, 6],
-        "DurationOfBreaking": [25, 50, 75]
+        "ExceptionsAllowedBeforeBreaking": [1, 3, 5, 7, 9],
+        "DurationOfBreaking": [10, 30, 50, 70, 90]
       }
     },
     {
@@ -40,8 +40,8 @@
       "lib": "resilience4j",
       "url": "http://resilience4j/cb",
       "patternConfig": {
-        "slidingWindowSize": [2, 4, 6],
-        "waitDurationInOpenState": [25, 50, 75],
+        "slidingWindowSize": [1, 3, 5, 7, 9],
+        "waitDurationInOpenState": [10, 30, 50, 70, 90],
         "slidingWindowType": "COUNT_BASED"
       }
     }
