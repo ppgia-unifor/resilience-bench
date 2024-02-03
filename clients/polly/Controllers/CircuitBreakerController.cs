@@ -40,7 +40,7 @@ namespace ResiliencePatterns.Polly.Controllers
                 failureThreshold: circuitBreakerConfig.FailureThreshold,
                 samplingDuration: TimeSpan.FromMilliseconds(circuitBreakerConfig.SamplingDuration),
                 minimumThroughput: circuitBreakerConfig.MinimumThroughput,
-                durationOfBreak: TimeSpan.FromSeconds(5) // default value: 5 seconds
+                durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking)
             );
         }
     }

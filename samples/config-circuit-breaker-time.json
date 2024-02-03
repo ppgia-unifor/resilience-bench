@@ -25,26 +25,29 @@
       "patternConfig": {}
     },
     {
-      "strategy": "circuit_breaker",
+      "strategy": "circuit_breaker_time_based",
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
       "patternConfig": {
+        "SamplingDuration": [1000, 3000, 5000],
         "FailureThreshold": [0.2, 0.4, 0.6],
         "MinimumThroughput": [10, 15, 20],
-        "SamplingDuration": [5000, 10000, 20000]
+        "BreakDuration": [100, 300, 500]
       }
     },
     {
-      "strategy": "circuit_breaker",
+      "strategy": "circuit_breaker_time_based",
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j/cb",
       "patternConfig": {
+        "permittedNumberOfCallsInHalfOpenState": 1,
+        "slidingWindowType": "TIME_BASED",
+        "slidingWindowSize": [1000, 3000, 5000],
         "failureRateThreshold": [20, 40, 60],
         "minimumNumberOfCalls": [10, 15, 20],
-        "slidingWindowSize": [5, 10, 20],
-        "slidingWindowType": "TIME_BASED"
+        "waitDurationInOpenState": [100, 300, 500]
       }
     }
   ]

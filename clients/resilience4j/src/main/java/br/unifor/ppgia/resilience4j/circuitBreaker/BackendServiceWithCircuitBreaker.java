@@ -31,11 +31,9 @@ public class BackendServiceWithCircuitBreaker extends BackendServiceTemplate {
 
     static CircuitBreakerConfig createCircuitBreaker(CircuitBreakerRequestModel params) {
         var builder = CircuitBreakerConfig.custom().slidingWindowType(params.getSlidingWindowType());
+
         if (params.getPermittedNumberOfCallsInHalfOpenState() != null) {
             builder.permittedNumberOfCallsInHalfOpenState(params.getPermittedNumberOfCallsInHalfOpenState());
-        }
-        if (params.getPermittedNumberOfCallsInOpenState() != null) {
-            builder.ringBufferSizeInClosedState(params.getPermittedNumberOfCallsInOpenState());
         }
         if (params.getWaitDurationInOpenState() != null) {
             builder.waitDurationInOpenState(Duration.ofMillis(params.getWaitDurationInOpenState()));
