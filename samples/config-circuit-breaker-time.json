@@ -30,9 +30,9 @@
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
       "patternConfig": {
-        "SamplingDuration": [1000, 1500, 2000],
+        "SamplingDuration": 5000,
         "FailureThreshold": [0.2, 0.4, 0.6],
-        "MinimumThroughput": [10, 15, 20],
+        "MinimumThroughput": [5, 10, 15],
         "BreakDuration": [100, 150, 200]
       }
     },
@@ -44,9 +44,9 @@
       "patternConfig": {
         "permittedNumberOfCallsInHalfOpenState": 1,
         "slidingWindowType": "TIME_BASED",
-        "slidingWindowSize": [1000, 1500, 2000],
+        "slidingWindowSize": 5000,
         "failureRateThreshold": [20, 40, 60],
-        "minimumNumberOfCalls": [10, 15, 20],
+        "minimumNumberOfCalls": [5, 10, 15],
         "waitDurationInOpenState": [100, 150, 200]
       }
     }
