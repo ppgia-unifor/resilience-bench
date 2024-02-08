@@ -11,7 +11,7 @@
   "succRequests": 10,
   "clientSpecs": [
     {
-      "pattern": "circuit_breaker",
+      "strategy": "circuit_breaker",
       "platform": "dotnet",
       "lib": "polly",
       "url": "http://polly/circuitbreaker",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "pattern": "circuit_breaker",
+      "strategy": "circuit_breaker",
       "platform": "java",
       "lib": "resilience4j",
       "url": "http://resilience4j/cb",
