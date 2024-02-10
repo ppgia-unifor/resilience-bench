@@ -17,9 +17,9 @@
       "url": "http://polly/circuitbreaker",
       "patternConfig": {
         "SamplingDuration": 30000,
-        "FailureThreshold": [0.2, 0.4, 0.6],
-        "MinimumThroughput": [5, 10, 15],
-        "DurationOfBreaking": [100, 200, 300]
+        "FailureThreshold": [0.1, 0.3, 0.5, 0.7, 0.9],
+        "MinimumThroughput": [2, 6, 10, 14, 18],
+        "DurationOfBreaking": [100, 200, 300, 400, 500]
       }
     },
     {
@@ -31,9 +31,9 @@
         "permittedNumberOfCallsInHalfOpenState": 1,
         "slidingWindowType": "TIME_BASED",
         "slidingWindowSize": 30000,
-        "failureRateThreshold": [20, 40, 60],
-        "minimumNumberOfCalls": [5, 10, 15],
-        "waitDurationInOpenState": [100, 200, 300]
+        "failureRateThreshold": [10, 30, 50, 70, 90],
+        "minimumNumberOfCalls": [2, 6, 10, 14, 18],
+        "waitDurationInOpenState": [100, 200, 300, 400, 500]
       }
     }
   ]
