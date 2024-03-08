@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace ResiliencePatterns.Polly
 {
@@ -20,7 +21,12 @@ namespace ResiliencePatterns.Polly
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging().AddControllers().AddJsonOptions(opt =>
+            services.AddLogging(opt => 
+            {
+                opt.AddConsole(c => {
+                    c.TimestampFormat = "yyyy-MM-dd HH:mm:ss";
+                });
+            }).AddControllers().AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });

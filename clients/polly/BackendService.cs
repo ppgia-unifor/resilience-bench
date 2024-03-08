@@ -18,7 +18,6 @@ namespace ResiliencePatterns.Polly
             _clientFactory = clientFactory;
             HttpClient = _clientFactory.CreateClient("backend");
             _logger = logger;
-            _logger.LogInformation("http client created point to {baseAddress}", HttpClient.BaseAddress);
         }
 
         public HttpClient HttpClient { get; }

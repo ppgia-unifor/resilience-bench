@@ -13,7 +13,7 @@ namespace ResiliencePatterns.Polly.Controllers
     {
         private readonly BackendService _backendService;
 
-        public CircuitBreakerController(BackendService backendService)
+        public CircuitBreakerController(BackendService backendService) 
         {
             _backendService = backendService;
         }
@@ -21,26 +21,26 @@ namespace ResiliencePatterns.Polly.Controllers
         [HttpPost]
         public async Task<ResilienceModuleMetrics> IndexAsync(Config<CircuitBreakerConfig> config)
         {
-            var cb = CreateCircuitBreakerSimplePolicy(config.PatternParams);
+            var cb = CreateCircuitBreaker(config.PatternParams);
             var metrics = await _backendService.MakeRequestAsync(cb, config);
             return metrics;
         }
 
-        private static AsyncPolicy CreateCircuitBreakerSimplePolicy(CircuitBreakerConfig circuitBreakerConfig)
+        private AsyncPolicy CreateCircuitBreaker(CircuitBreakerConfig circuitBreakerConfig)
         {
             var policy = Policy.Handle<HttpRequestException>().Or<TaskCanceledException>();
             if (circuitBreakerConfig.ExceptionsAllowedBeforeBreaking > 0)
             {
                 return policy.CircuitBreakerAsync(
                     exceptionsAllowedBeforeBreaking: circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
-                    durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking)
+                    durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreak)
                 );
             }
             return policy.AdvancedCircuitBreakerAsync(
                 failureThreshold: circuitBreakerConfig.FailureThreshold,
                 samplingDuration: TimeSpan.FromMilliseconds(circuitBreakerConfig.SamplingDuration),
                 minimumThroughput: circuitBreakerConfig.MinimumThroughput,
-                durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreaking)
+                durationOfBreak: TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreak)
             );
         }
     }

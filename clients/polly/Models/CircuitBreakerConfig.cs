@@ -2,7 +2,7 @@
 {
     public class CircuitBreakerConfig
     {
-        public int DurationOfBreaking { get; set; }
+        public int DurationOfBreak { get; set; }
         public int ExceptionsAllowedBeforeBreaking { get; set; }
         public bool IsSimpleConfiguration { get; set; }
         public double FailureThreshold { get; set; }

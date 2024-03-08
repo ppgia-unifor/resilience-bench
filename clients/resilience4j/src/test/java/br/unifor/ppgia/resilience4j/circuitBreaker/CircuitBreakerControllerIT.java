@@ -28,20 +28,25 @@ class CircuitBreakerControllerIT {
   void sendAllParametersTest() {
     headers.add("Content-type", "application/json");
     var entity = new HttpEntity<>("{\n" +
-        "  \"maxRequests\": 10,\n" +
-        "  \"successfulRequests\": 10,\n" +
-        "  \"targetUrl\": \"http://localhost:8080\",\n" +
-        "  \"patternParams\": {\n" +
-        "    \"failureRateThreshold\": 60,\n" +
-        "    \"minimumNumberOfCalls\": 100,\n" +
-        "    \"slidingWindowSize\": 10\n" +
-        "  }\n" +
-        "}", headers);
+            "\"maxRequests\": 12,\n" +
+            "\"successfulRequests\": 12,\n" +
+            "\"targetUrl\": \"http://localhost:9211/status/200\",\n" +
+            "\"patternParams\": {\n" +
+                "\"permittedNumberOfCallsInHalfOpenState\": 1,\n" +
+                "\"slidingWindowType\": \"TIME_BASED\",\n" +
+                "\"slidingWindowSize\": 10000,\n" +
+                "\"failureRateThreshold\": 40,\n" +
+                "\"minimumNumberOfCalls\": 1,\n" +
+                "\"waitDurationInOpenState\": 5000\n" +
+              "}\n" +
+            "}", headers);
     var response = restTemplate.exchange(
         createURLWithPort("/cb"),
-        HttpMethod.POST, entity, String.class);
+        HttpMethod.POST, entity, String.class
+    );
 
     assertEquals(response.getStatusCode(), HttpStatus.OK);
+    System.out.println(response.getBody());
   }
 
   private String createURLWithPort(String uri) {
