@@ -1,0 +1,37 @@
+# Configuration File and Dataset
+
+The experimental dataset produced after running these experiments is available at Zenodo in this [link](https://zenodo.org/record/7938926/).
+
+This folder includes the csv files containing the experimental data obtained with the [Polly](https://github.com/App-vNext/Polly) and [Resilience4j](https://github.com/resilience4j/resilience4j) resilience libraries, respectively. Each csv file is structured with two sets of attributes (columns): the first set corresponds to the performance metrics collected during each test, while the second set corresponds to the test parameters.
+
+### Performance Metrics
+* `successfulCalls` number of successful invocations of the target service by the client application.
+* `unsuccessfulCalls` number of unsuccessful invocations of the target service by the client application.
+* `totalCalls` total number of invocations of the target service by the client application.
+* `successfulRequests` number of successful invocations of the target service by the resilience library.
+* `unsuccessfulRequests` number of unsuccessful invocations of the target service by the resilience library.
+* `totalRequests` total number of invocations of the target service by the resilience library.
+* `successTime` total (accumulated) time the resilience library spent waiting for a successful response from the target service.
+* `successTimePerRequest` average response time of the target service measured by the resilience library.
+* `errorTime` total (accumulated) time the resilience library spent waiting for an unsuccessful response from the target service.
+* `errorTimePerRequest` average error time of the target service measured by the resilience library.
+* `totalContentionTime` total time the client application spent waiting for either a successful or an unsuccessful response from the target service..
+* `contentionRate` fraction of the client application's total execution time spent waiting for either a successful or an unsuccessful response from the target service.
+* `totalExecutionTime` total execution time of the client application.
+* `throughput` average number of successful requests handled by the target service per second.
+
+### Test parameters
+* `userId` ID of the client application's virtual user.
+* `startTime` start time of the test.
+* `endTime` end time of the test.
+* `users` total number of client application's virtual users. 
+* `round` test ID.
+* `lib` resilience library used to invoke the target service.
+* `pattern` resilience pattern used to invoke the target service.
+* `faultPercentage` percentage of fauts injected into the target service's invocation stream.
+* `faultType` type of faut injected into the target service's invocation stream.
+* `faultStatus` faut status injected into the target service's invocation stream.
+* `count` maximum number of retries allowed (including the first invocation attempt).
+* `sleepDurationType` backoff delay increment type.
+* `exponentialBackoffPow` float value to multiply the initial backoff delay before a new retry.
+* `sleepDuration` initial backoff delay.
