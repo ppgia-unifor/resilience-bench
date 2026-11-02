@@ -73,7 +73,9 @@ def main():
     conf_file = open(os.environ.get('CONFIG_FILE'), 'r')
     conf = jstyleson.load(conf_file)
     if 'windows' in conf['fault']:
-        validate_windows(conf['fault']['windows'])
+        validate_windows(conf['fault']['windows'], conf['fault'].get('repeat', False))
+    elif 'repeat' in conf['fault']:
+        raise ValueError('fault.repeat requires fault.windows')
     
     test_id = conf['testId'] if 'testId' in conf else get_current_time().strftime('%a %b %d %Hh%Mm%Ss %Y')
     copy_file(os.environ.get('CONFIG_FILE'), f'{test_id}/scenarios-original.json')
@@ -99,7 +101,8 @@ def main():
             fault_spec = scenario['faultSpec']
             timeline = None
             if 'windows' in fault_spec:
-                timeline = FaultTimeline(envoy, fault_spec, int(scenario['faultPercentage']), fault_spec['windows'])
+                timeline = FaultTimeline(envoy, fault_spec, int(scenario['faultPercentage']), fault_spec['windows'],
+                                         fault_spec.get('repeat', False))
             else:
                 envoy.setup_fault(fault_spec, int(scenario['faultPercentage']))
 
