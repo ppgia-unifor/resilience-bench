@@ -89,6 +89,7 @@ The latter parameter is useful to prevent the client application from never reac
 | duration | `number` | no | Duration (in miliseconds) of the delay failures to injected by the proxy service. Required when type is *delay*. |
 | status | `number` | no | HTTP status code to be returned by the proxy service to the client service upon each failed invocation. Required when type is *abort*. |
 | windows | `array of windows` | no | Time windows during which the failure is injected. When present, `percentage` applies only inside the windows and no failures are injected outside them. When omitted, failures are injected throughout the whole scenario. See [Time-window failures](#time-window-failures). |
+| repeat | `boolean` | no | When `true`, the list of `windows` starts over after its last window until the scenario ends. When `false` or omitted, the windows happen once. Requires `windows`. |
 
 #### Time-window failures
 
@@ -101,14 +102,28 @@ By default, each request fails independently with the given `percentage` probabi
     "percentage": [100],
     "windows": [
         { "start": 2000, "duration": 5000 },
-        { "start": 15000, "duration": 5000 }
+        { "start": 8000, "duration": 5000 }
     ]
 }
 ```
 
-Each window has a `start` and a `duration`, both in milliseconds. `start` is measured from the beginning of each scenario execution (every round starts its own clock). Windows must be sorted by `start` and must not overlap. Inside a window, the proxy service fails `percentage` percent of the requests (use `100` for a full outage). Outside the windows, no failures are injected. Delay failures work the same way. See [samples/config-abort-windows.json](../samples/config-abort-windows.json) for a complete example.
+Each window has a `start` and a `duration`, both in milliseconds. `start` is how long the service works normally before the window: the first window's `start` counts from the beginning of the scenario execution (every round starts its own clock), and each following window's `start` counts from the end of the previous window. In the example above, the service works for 2 s, fails for 5 s, works for 8 s, fails for 5 s, and then works until the scenario ends. Inside a window, the proxy service fails `percentage` percent of the requests (use `100` for a full outage). Outside the windows, no failures are injected. Delay failures work the same way. See [samples/config-abort-windows.json](../samples/config-abort-windows.json) for a complete example.
 
-A scenario still ends when `succRequests` or `maxRequests` is reached, so it must last longer than the end of its last window, otherwise later windows never happen. The clients invoke the target service in a tight loop: a successful request takes a few milliseconds, and a request aborted by the proxy takes well under one millisecond, so size `succRequests` so that the scenario outlasts the windows, and `maxRequests` so that the failures during the windows do not exhaust it. The `faultWindowsStarted`, `faultWindowsCompleted` and `scenarioDurationMs` result columns show whether each scenario covered all windows, and the scheduler logs a warning when it did not.
+By default, the windows happen once. To make the service alternate between working and failing for the whole scenario, set `repeat` to `true`: after the last window, the list starts over, and its first `start` counts from the end of the last window. For example, to have the service work for 10 s and then fail for 5 s, over and over:
+
+```json
+"fault": {
+    "type": "abort",
+    "status": 503,
+    "percentage": [100],
+    "windows": [
+        { "start": 10000, "duration": 5000 }
+    ],
+    "repeat": true
+}
+```
+
+A scenario still ends when `succRequests` or `maxRequests` is reached, so it must last longer than the end of its last window, otherwise later windows never happen. With `repeat`, the scenario usually ends partway through a cycle, and it must last at least one pass through the list. The clients invoke the target service in a tight loop: a successful request takes a few milliseconds, and a request aborted by the proxy takes well under one millisecond, so size `succRequests` so that the scenario outlasts the windows, and `maxRequests` so that the failures during the windows do not exhaust it. The `faultWindowsStarted`, `faultWindowsCompleted` and `scenarioDurationMs` result columns show whether each scenario covered all windows, and the scheduler logs a warning when it did not finish the list once.
 
 
 ### Resilience parameters
@@ -276,14 +291,19 @@ Each CSV file also contains an additional set columns corresponding to the contr
             <td>JSON list of the failure time windows. Only present for time-window failures</td>
         </tr>
         <tr>
+            <td>faultRepeat</td>
+            <td><code>boolean</code></td>
+            <td>Whether the list of failure time windows repeats until the scenario ends. Only present when <code>repeat</code> is set in the configuration</td>
+        </tr>
+        <tr>
             <td>faultWindowsStarted</td>
             <td><code>number</code></td>
-            <td>Number of failure time windows that started before the scenario ended. Only present for time-window failures</td>
+            <td>Number of failure time windows that started before the scenario ended, counting every pass through the list when <code>repeat</code> is set. Only present for time-window failures</td>
         </tr>
         <tr>
             <td>faultWindowsCompleted</td>
             <td><code>number</code></td>
-            <td>Number of failure time windows that ended before the scenario ended. Only present for time-window failures</td>
+            <td>Number of failure time windows that ended before the scenario ended, counting every pass through the list when <code>repeat</code> is set. Only present for time-window failures</td>
         </tr>
         <tr>
             <td>scenarioDurationMs</td>
