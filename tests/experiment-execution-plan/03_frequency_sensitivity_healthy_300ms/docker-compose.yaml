@@ -1,0 +1,10 @@
+# Compose override; use with the repository root docker-compose.yaml.
+services:
+  scheduler:
+    volumes:
+      - ./tests/experiment-execution-plan/03_frequency_sensitivity_healthy_300ms/config.json:/opt/app/conf/conf.json:ro
+      - ./tests/experiment-execution-plan/03_frequency_sensitivity_healthy_300ms/results:/opt/app/resilience-tests
+    environment:
+      DISK_PATH: /opt/app/resilience-tests
+      AWS_BUCKET_NAME: ""
+      AWS_OUTPUT_PATH: ""
