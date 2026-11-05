@@ -22,3 +22,14 @@ This bundle contains ten named experiment folders. Each folder contains a Resili
 - Preserve raw CSVs, scheduler logs, and Envoy access logs. Exclude transition errors, missed windows, incomplete coverage, and fault leakage.
 
 Each Compose file is an override for the repository-root `docker-compose.yaml`; run it from the repository root. It selects that experiment's config and results directory. Run experiments sequentially because the base stack uses fixed container names and shared Envoy fault state. Docker runtime execution has not yet been verified.
+
+
+## Running the complete suite
+
+From the repository root, run:
+
+```bash
+bash tests/experiment-execution-plan/run-all.sh
+```
+
+The runner validates each Compose configuration, builds and runs the ten experiments sequentially, and tears down each Compose project before continuing. It stops on the first failure by default; pass `--keep-going` to continue after failures. Per-experiment Compose output is saved to that experiment's `results/compose-run.log` file. Requires Docker Compose v2.
