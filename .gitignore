@@ -604,5 +604,3 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,maven,windows,dotnetcore,visualstudio,intellij+all,visualstudiocode,vagrant
 
 runtime/
-results/
-resilience-tests/
