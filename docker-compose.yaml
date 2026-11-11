@@ -27,19 +27,22 @@ services:
       context: ./scheduler
     container_name: scheduler
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./samples/config-all-delay.json:/opt/app/conf/conf.json
       - ./results:/opt/app/resilience-tests
+      - envoy-logs:/opt/app/envoy-logs
     environment:
       - DISK_PATH=/opt/app/resilience-tests
       - CONFIG_FILE=/opt/app/conf/conf.json
-      - ENVOY_FAULT_INJECTION_PATH=/opt/app/fault-injection
-      - DOCKER_HOST=/var/run/docker.sock
+      - ENVOY_ADMIN_URL=http://server:9901
+      - ENVOY_ACCESS_LOG_PATH=/opt/app/envoy-logs/access.log
       - TIME_ZONE=America/Sao_Paulo
     depends_on:
-      - resilience4j
-      - polly
-      - server
+      resilience4j:
+        condition: service_started
+      polly:
+        condition: service_started
+      server:
+        condition: service_healthy
 
   server:
     build:
@@ -48,5 +51,16 @@ services:
     ports:
       - 9901:9901
       - 9211:9211
+    # Envoy and httpbin take about a second to start; scenarios run before that would hit an unready server.
+    # httpbin is checked directly on 8080 so health checks stay out of envoy's access log.
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:9901/ready', timeout=2); u.urlopen('http://127.0.0.1:8080/get', timeout=2)"]
+      start_period: 30s
+      start_interval: 1s
+      interval: 30s
+      timeout: 3s
     volumes:
-      - ./runtime:/srv/runtime
+      - envoy-logs:/var/log/envoy
+
+volumes:
+  envoy-logs:

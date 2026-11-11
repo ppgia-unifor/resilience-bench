@@ -1,0 +1,82 @@
+{
+  "testId": "journal_legacy_bernoulli",
+  "users": [
+    50,
+    150
+  ],
+  "rounds": 5,
+  "maxRequests": 1000000,
+  "succRequests": 5000,
+  "targetUrl": "http://server:9211/bytes/1000",
+  "fault": {
+    "type": "abort",
+    "status": 503,
+    "percentage": [
+      0,
+      50
+    ]
+  },
+  "clientSpecs": [
+    {
+      "strategy": "baseline",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/baseline",
+      "patternConfig": {}
+    },
+    {
+      "strategy": "baseline",
+      "platform": "java",
+      "lib": "resilience4j",
+      "url": "http://resilience4j/baseline",
+      "patternConfig": {}
+    },
+    {
+      "strategy": "retry",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/retry",
+      "patternConfig": {
+        "count": 5,
+        "sleepDuration": 50,
+        "exponentialBackoffPow": 1.5
+      }
+    },
+    {
+      "strategy": "retry",
+      "platform": "java",
+      "lib": "resilience4j",
+      "url": "http://resilience4j/retry",
+      "patternConfig": {
+        "maxAttempts": 6,
+        "initialIntervalMillis": 50,
+        "multiplier": 1.5
+      }
+    },
+    {
+      "strategy": "circuit_breaker",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/circuitbreaker",
+      "patternConfig": {
+        "exceptionsAllowedBeforeBreaking": 10,
+        "durationOfBreaking": 300
+      }
+    },
+    {
+      "strategy": "circuit_breaker",
+      "platform": "java",
+      "lib": "resilience4j",
+      "url": "http://resilience4j/cb",
+      "patternConfig": {
+        "slowCallRateThreshold": 100,
+        "slowCallDurationThreshold": 1000,
+        "slidingWindowSize": 10,
+        "failureRateThreshold": 50,
+        "minimumNumberOfCalls": 10,
+        "permittedNumberOfCallsInHalfOpenState": 1,
+        "waitDurationInOpenState": 300
+      }
+    }
+  ]
+}

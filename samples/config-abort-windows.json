@@ -1,0 +1,86 @@
+{
+  "fault": {
+    "type": "abort",
+    "status": 503,
+    "percentage": [
+      100
+    ],
+    "windows": [
+      {
+        "start": 2000,
+        "duration": 5000
+      }
+    ]
+  },
+  "users": [
+    50,
+    100
+  ],
+  "targetUrl": "http://server:9211/bytes/1000",
+  "rounds": 10,
+  "maxRequests": 100000,
+  "succRequests": 5000,
+  "clientSpecs": [
+    {
+      "strategy": "baseline",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/baseline",
+      "patternConfig": {}
+    },
+    {
+      "strategy": "baseline",
+      "platform": "java",
+      "lib": "resilience4j",
+      "url": "http://resilience4j/baseline",
+      "patternConfig": {}
+    },
+    {
+      "strategy": "retry",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/retry",
+      "patternConfig": {
+        "count": 5,
+        "exponentialBackoffPow": 1.5,
+        "sleepDuration": 50
+      }
+    },
+    {
+      "strategy": "retry",
+      "platform": "java",
+      "lib": "resilience4j",
+      "url": "http://resilience4j/retry",
+      "patternConfig": {
+        "maxAttempts": 6,
+        "multiplier": 1.5,
+        "initialIntervalMillis": 50
+      }
+    },
+    {
+      "strategy": "circuit_breaker",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/circuitbreaker",
+      "patternConfig": {
+        "exceptionsAllowedBeforeBreaking": 2,
+        "durationOfBreaking": 100
+      }
+    },
+    {
+      "strategy": "circuit_breaker",
+      "platform": "java",
+      "lib": "resilience4j",
+      "url": "http://resilience4j/cb",
+      "patternConfig": {
+        "slowCallRateThreshold": 100,
+        "slowCallDurationThreshold": 1000,
+        "slidingWindowSize": 2,
+        "failureRateThreshold": 100,
+        "minimumNumberOfCalls": 2,
+        "permittedNumberOfCallsInHalfOpenState": 1,
+        "waitDurationInOpenState": 100
+      }
+    }
+  ]
+}

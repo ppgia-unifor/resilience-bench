@@ -1,0 +1,51 @@
+{
+  "testId": "journal_smoke",
+  "users": [
+    50,
+    150
+  ],
+  "rounds": 5,
+  "maxRequests": 1000000,
+  "succRequests": 5000,
+  "targetUrl": "http://server:9211/bytes/1000",
+  "fault": {
+    "type": "abort",
+    "status": 503,
+    "percentage": [
+      100
+    ],
+    "windows": [
+      {
+        "start": 1000,
+        "duration": 100
+      }
+    ]
+  },
+  "clientSpecs": [
+    {
+      "strategy": "baseline",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/baseline",
+      "patternConfig": {}
+    },
+    {
+      "strategy": "baseline",
+      "platform": "java",
+      "lib": "resilience4j",
+      "url": "http://resilience4j/baseline",
+      "patternConfig": {}
+    },
+    {
+      "strategy": "retry",
+      "platform": "dotnet",
+      "lib": "polly",
+      "url": "http://polly/retry",
+      "patternConfig": {
+        "count": 5,
+        "sleepDuration": 50,
+        "exponentialBackoffPow": 1.5
+      }
+    }
+  ]
+}
